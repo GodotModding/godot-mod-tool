@@ -112,14 +112,14 @@ layout_mode = 2
 offset_top = 237.0
 offset_right = 1102.0
 offset_bottom = 263.0
-text = "Game start parameters:"
+text = "Runner Script Name:"
 
 [node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 offset_top = 267.0
 offset_right = 1102.0
 offset_bottom = 298.0
-placeholder_text = "--something"
+placeholder_text = "runner.cmd"
 
 [node name="FileDialog" type="FileDialog" parent="MarginContainer"]
 title = "Open a File or Directory"

@@ -3,9 +3,9 @@ extends Control
 const SAVE_PATH = 'user://save.json'
 
 var data = {
+	'runner_script_name': '',
 	'game_folder': '',
 	'game_exe': '',
-	'game_start_params': '',
 	'mod_folder': '',
 	'mod_folder_name': '',
 }
@@ -29,14 +29,7 @@ func _input(event):
 		
 func start_game():
 	copy_folder()
-#	OS.shell_open("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Brotato\\ModLoader.cmd")
-#	OS.execute(data.game_exe, data.game_start_params.split(' '))
-
-	# TODO: Lets try to run it in a seperate thread and display the ouput in a windows
-	# If this is to muche hassle - maybe just run a seperate script with OS.shell_open()
-	var output = []
-	OS.execute("CMD.exe", ["/C", "cd C:/Program Files (x86)/Steam/steamapps/common/Brotato/ && Brotato.exe --enable-mods --main-pack ModLoader.pck --script run.gd && pause"], output, true, true)
-	print(output)
+	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
 
 func copy_folder():
 	if(data.game_folder != '' && data.mod_folder != ''):
@@ -47,7 +40,7 @@ func copy_folder():
 func update_UI():
 	current_game_exe.text = str("Game Folder: ", data.game_exe)
 	current_mod_folder.text = str("Mod Folder: ", data.mod_folder)
-	line_edit.text = data.game_start_params
+	line_edit.text = data.runner_script_name
 
 func write_zip_file():
 	var writer := ZIPPacker.new()
@@ -91,7 +84,7 @@ func _on_file_dialog_file_selected(path):
 
 
 func _on_line_edit_text_changed(new_text):
-	data.game_start_params = new_text
+	data.runner_script_name = new_text
 
 func _notification(what):
 	if(what == NOTIFICATION_WM_CLOSE_REQUEST):
