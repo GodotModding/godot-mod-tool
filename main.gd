@@ -3,9 +3,10 @@ extends Control
 const SAVE_PATH = 'user://save.json'
 
 var data = {
-	'runner_script_name': '',
+	'runner_script_name': 'runner.cmd',
 	'game_folder': '',
 	'game_exe': '',
+	'game_mod_folder': 'mods',
 	'mod_folder': '',
 	'mod_folder_name': '',
 }
@@ -28,8 +29,8 @@ func _input(event):
 		start_game()
 		
 func start_game():
-	copy_folder()
-	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+	Utils.zip_folder(data.mod_folder, data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip")))
+#	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
 
 func copy_folder():
 	if(data.game_folder != '' && data.mod_folder != ''):
@@ -38,21 +39,9 @@ func copy_folder():
 		print(str('ERROR: missing mod / game folder'))
 
 func update_UI():
-	current_game_exe.text = str("Game Folder: ", data.game_exe)
+	current_game_exe.text = str("Game .exe: ", data.game_exe)
 	current_mod_folder.text = str("Mod Folder: ", data.mod_folder)
 	line_edit.text = data.runner_script_name
-
-func write_zip_file():
-	var writer := ZIPPacker.new()
-	var err := writer.open("user://archive.zip")
-	if err != OK:
-		return err
-	writer.start_file("hello.txt")
-	writer.write_file("Hello World".to_utf8_buffer())
-	writer.close_file()
-
-	writer.close()
-	return OK
 
 func _on_btn_game_folder_pressed():
 	file_dialog.show()
