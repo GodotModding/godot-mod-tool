@@ -26,73 +26,42 @@ theme_override_constants/margin_bottom = 25
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-offset_left = 25.0
-offset_top = 25.0
-offset_right = 1127.0
-offset_bottom = 623.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_right = 1102.0
-offset_bottom = 70.0
 
 [node name="current_game_exe" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-offset_right = 1102.0
-offset_bottom = 26.0
 text = "Game .exe: %GAME_FOLDER_PATH%"
 
 [node name="current_mod_folder" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 30.0
-offset_right = 1102.0
-offset_bottom = 56.0
 text = "Mod Folder: %MOD_FOLDER_PATH%"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-anchors_preset = 0
-offset_top = 60.0
-offset_right = 1102.0
-offset_bottom = 70.0
 
 [node name="Btn_GameExe" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 74.0
-offset_right = 1102.0
-offset_bottom = 105.0
 mouse_default_cursor_shape = 2
 text = "Game .exe"
 
 [node name="Btn_ModFolder" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 109.0
-offset_right = 1102.0
-offset_bottom = 140.0
 mouse_default_cursor_shape = 2
 text = "Mod Folder"
 
 [node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-anchors_preset = 0
-offset_top = 144.0
-offset_right = 1102.0
-offset_bottom = 154.0
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 158.0
-offset_right = 1102.0
-offset_bottom = 184.0
 text = "Start Game Key:"
 
 [node name="Btn_StartGameKey" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 188.0
-offset_right = 1102.0
-offset_bottom = 219.0
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 toggle_mode = true
@@ -102,23 +71,13 @@ script = ExtResource("2_h0ijg")
 [node name="Spacer3" type="Control" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
-anchors_preset = 0
-offset_top = 223.0
-offset_right = 1102.0
-offset_bottom = 233.0
 
 [node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 237.0
-offset_right = 1102.0
-offset_bottom = 263.0
 text = "Runner Script Name:"
 
 [node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-offset_top = 267.0
-offset_right = 1102.0
-offset_bottom = 298.0
 placeholder_text = "runner.cmd"
 
 [node name="FileDialog" type="FileDialog" parent="MarginContainer"]

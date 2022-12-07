@@ -29,12 +29,13 @@ func _input(event):
 		start_game()
 		
 func start_game():
-	Utils.zip_folder(data.mod_folder, data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip")))
-#	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+	zip_folder()
+	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
 
-func copy_folder():
+func zip_folder():
 	if(data.game_folder != '' && data.mod_folder != ''):
-		Utils.copy_directory_recursively(data.mod_folder, str(data.game_folder,'/',data.mod_folder_name))
+		# Create zip folder - in game mod folder - from source mod folder
+		Utils.zip_folder(data.mod_folder, data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip")))
 	else:
 		print(str('ERROR: missing mod / game folder'))
 
@@ -46,7 +47,6 @@ func update_UI():
 func _on_btn_game_folder_pressed():
 	file_dialog.show()
 	current_dialog = 'game'
-
 
 func _on_btn_mod_folder_pressed():
 	file_dialog.show()
@@ -67,10 +67,8 @@ func handle_file_dialog(dir):
 func _on_file_dialog_dir_selected(dir):
 	handle_file_dialog(dir)
 
-
 func _on_file_dialog_file_selected(path):
 	handle_file_dialog(path)
-
 
 func _on_line_edit_text_changed(new_text):
 	data.runner_script_name = new_text
