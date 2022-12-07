@@ -80,6 +80,18 @@ text = "Runner Script Name:"
 layout_mode = 2
 placeholder_text = "runner.cmd"
 
+[node name="Spacer4" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Excluded File Extensions:"
+
+[node name="LineEdit_ExcludedFileExtensions" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = ".something, .something.else, ..."
+
 [node name="FileDialog" type="FileDialog" parent="MarginContainer"]
 title = "Open a File or Directory"
 position = Vector2i(30, 35)
@@ -92,5 +104,6 @@ access = 2
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Btn_ModFolder" to="." method="_on_btn_mod_folder_pressed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Btn_StartGameKey" to="MarginContainer/VBoxContainer/Btn_StartGameKey" method="_toggled"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit_ExcludedFileExtensions" to="." method="_on_line_edit_excluded_file_extensions_text_changed"]
 [connection signal="dir_selected" from="MarginContainer/FileDialog" to="." method="_on_file_dialog_dir_selected"]
 [connection signal="file_selected" from="MarginContainer/FileDialog" to="." method="_on_file_dialog_file_selected"]
