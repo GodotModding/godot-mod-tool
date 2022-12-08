@@ -92,6 +92,15 @@ text = "Excluded File Extensions:"
 layout_mode = 2
 placeholder_text = ".something, .something.else, ..."
 
+[node name="Spacer5" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Error_Message" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "%ERROR_MESSAGE%"
+horizontal_alignment = 1
+
 [node name="FileDialog" type="FileDialog" parent="MarginContainer"]
 title = "Open a File or Directory"
 position = Vector2i(30, 35)

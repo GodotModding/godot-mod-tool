@@ -61,6 +61,12 @@ func is_file_extension(path, extensions):
 	
 	return is_extension
 
+func is_file_there(path):
+	return FileAccess.file_exists(path)
+
+func is_dir_there(path):
+	return DirAccess.dir_exists_absolute(path)
+
 func get_entries(string) -> Array:
 	var regex = RegEx.new()
 	# https://stackoverflow.com/a/5001626

@@ -20,6 +20,7 @@ var current_dialog : String
 @onready var btn_start_game_key = $MarginContainer/VBoxContainer/Btn_StartGameKey
 @onready var line_edit = $MarginContainer/VBoxContainer/LineEdit
 @onready var line_edit_excluded_file_extensions = $MarginContainer/VBoxContainer/LineEdit_ExcludedFileExtensions
+@onready var error_message = $MarginContainer/VBoxContainer/Error_Message
 
 
 # Called when the node enters the scene tree for the first time.
@@ -29,24 +30,27 @@ func _ready():
 
 func _input(event):
 	if event.is_action("start_game"):
+		hide_error_message()
 		start_game()
 		
 func start_game():
-	zip_folder()
-	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+	if(data.game_folder != '' && data.mod_folder != '' && Utils.is_dir_there(data.mod_folder) && Utils.is_dir_there(data.game_folder.path_join(data.game_mod_folder))):
+		zip_folder()
+		OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+	else:
+		show_error_message("missing mod / game folder")
 
 func zip_folder():
-	if(data.game_folder != '' && data.mod_folder != ''):
-		# Create zip folder - in game mod folder - from source mod folder
-		var game_mod_folder_path = data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip"))
-		Utils.zip_folder(data.mod_folder, game_mod_folder_path, data.exluded_file_extensions)
-	else:
-		print(str('ERROR: missing mod / game folder'))
+	# Create zip folder - in game mod folder - from source mod folder
+	var game_mod_folder_path = data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip"))
+	Utils.zip_folder(data.mod_folder, game_mod_folder_path, data.exluded_file_extensions)
+
 
 func update_UI():
 	current_game_exe.text = str("Game .exe: ", data.game_exe)
 	current_mod_folder.text = str("Mod Folder: ", data.mod_folder)
 	line_edit.text = data.runner_script_name
+	hide_error_message()
 	
 	line_edit_excluded_file_extensions.text = ", ".join(data.exluded_file_extensions)
 	
@@ -69,6 +73,13 @@ func handle_file_dialog(dir):
 		var mod_folder_split = dir.split("/")
 		data.mod_folder_name = mod_folder_split[mod_folder_split.size() - 1]
 		current_mod_folder.text = str("Mod Folder: ", dir)
+
+func show_error_message(message: String):
+	print(str("ERROR: ", message))
+	error_message.text = str("ERROR: ", message)
+
+func hide_error_message():
+	error_message.text = ''
 
 func _on_file_dialog_dir_selected(dir):
 	handle_file_dialog(dir)
