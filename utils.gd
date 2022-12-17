@@ -5,6 +5,12 @@ func zip_folder(src_path, dst_path, extensions_excluded):
 	zip(writer, src_path, dst_path, extensions_excluded)
 	close_writer(writer)
 
+func zip_files(file_paths, dst_path, extensions_excluded):
+	var writer = create_writer(dst_path)
+	for file_path in file_paths:
+		zip(writer, file_path, dst_path, extensions_excluded)
+	close_writer(writer)
+	
 func create_writer(dst_path):
 	var writer := ZIPPacker.new()
 	writer.open(dst_path) # global path to the zip file
@@ -19,33 +25,17 @@ func zip(writer, src_path, dst_path, extensions_excluded = []):
 	var src_path_split = src_path.split(zip_name, true, 1)
 	var zip_path = str(zip_name, src_path_split[1])
 	
-	var directory = DirAccess.open(src_path)
-	if(DirAccess.get_open_error() == OK):
-		directory.list_dir_begin()
-		var file_name = directory.get_next()
-		while (file_name != "" && file_name != "." && file_name != ".."):
-			# If it is a directory - call the function again with the current directory name as src_path
-			if(directory.current_is_dir()):
-				zip(writer, src_path.path_join(file_name), dst_path, extensions_excluded)
-			# If it is a file - add it to the zip archive
-			else:
-				var current_src_file_path = str(src_path, '/', file_name)
-				# check for excluded extensions
-				if(is_file_extension(current_src_file_path, extensions_excluded)):
-					file_name = directory.get_next()
-					continue
-				
-				var file = FileAccess.open(current_src_file_path, FileAccess.READ)
-				var file_length = file.get_length()
-				var file_content = file.get_buffer(file_length)
-				
-				
-				var current_zip_file_path = str(zip_path, '/', file_name)
-				writer.start_file(current_zip_file_path) # path inside the zip file
-				writer.write_file(file_content)
-				writer.close_file()
-				
-			file_name = directory.get_next()
+	# check for excluded extensions
+	if(is_file_extension(src_path, extensions_excluded)):
+		return
+	
+	var file = FileAccess.open(src_path, FileAccess.READ)
+	var file_length = file.get_length()
+	var file_content = file.get_buffer(file_length)
+	
+	writer.start_file(zip_path) # path inside the zip file
+	writer.write_file(file_content)
+	writer.close_file()
 
 func is_file_extension(path, extensions):
 	var is_extension = false
@@ -76,6 +66,14 @@ func get_entries(string) -> Array:
 		results.push_back(result.get_string())
 	return results
 
+func get_regex_results(string, regex_exp: String):
+	var regex = RegEx.new()
+	regex.compile(regex_exp)
+	var results = []
+	for result in regex.search_all(string):
+		results.push_back(result.get_string())
+	return results
+
 func file_save(content, path):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(content))
@@ -84,3 +82,61 @@ func file_load(path):
 	var file = FileAccess.open(path, FileAccess.READ)
 	var content = file.get_as_text()
 	return JSON.parse_string(content)
+
+func file_get_as_text(path):
+	var file = FileAccess.open(path, FileAccess.READ)
+	var content = file.get_as_text()
+	return content
+
+func file_save_as_text(content, path):
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(content)
+
+# https://gist.github.com/willnationsdev/00d97aa8339138fd7ef0d6bd42748f6e
+# p_match is a string that filters the list of files.
+# If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
+# If it is true, a regex object compiles p_match and runs it against the FILEPATH.
+func get_flat_view_dict(p_dir = "res://", p_match = "", p_match_is_regex = false):
+	var regex = null
+	if p_match_is_regex:
+		regex = RegEx.new()
+		regex.compile(p_match)
+		if not regex.is_valid():
+			return []
+
+	var dirs = [p_dir]
+	var first = true
+	var data = []
+	while not dirs.is_empty():
+		var dir_name = dirs.back()
+		dirs.pop_back()
+
+		var dir = DirAccess.open(dir_name)
+		if(DirAccess.get_open_error() == OK):
+			dir.list_dir_begin()
+			var file_name = dir.get_next()
+			while file_name != "":
+				if not dir_name == "res://":
+					first = false
+				# If a directory, then add to list of directories to visit
+				if dir.current_is_dir():
+					dirs.push_back(dir.get_current_dir() + "/" + file_name)
+				# If a file, check if we already have a record for the same name
+				else:
+					var path = dir.get_current_dir() + ("/" if not first else "") + file_name
+					# grab all
+					if p_match == "":
+						data.append(path)
+					# grab matching strings
+					elif p_match_is_regex == false && file_name.find(p_match, 0) != -1:
+						data.append(path)
+					# grab matching regex
+					elif p_match_is_regex == true:
+						var regex_match = regex.search(path)
+						if regex_match != null:
+							data.append(path)
+				# Move on to the next file in this directory
+				file_name = dir.get_next()
+			# We've exhausted all files in this directory. Close the iterator.
+			dir.list_dir_end()
+	return data

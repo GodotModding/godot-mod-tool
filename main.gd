@@ -12,6 +12,7 @@ var data = {
 	'exluded_file_extensions': ['.translation', '.csv.import']
 }
 
+var mod_file_paths = []
 var current_dialog : String
 
 @onready var file_dialog = $MarginContainer/FileDialog
@@ -32,18 +33,59 @@ func _input(event):
 	if event.is_action("start_game"):
 		hide_error_message()
 		start_game()
-		
+
 func start_game():
-	if(data.game_folder != '' && data.mod_folder != '' && Utils.is_dir_there(data.mod_folder) && Utils.is_dir_there(data.game_folder.path_join(data.game_mod_folder))):
-		zip_folder()
-		OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+	if(!check_paths()):
+		return
+	
+	mod_file_paths = Utils.get_flat_view_dict(data.mod_folder)
+	remap_imports()
+	zip_folder()
+	OS.shell_open(str(data.game_folder, '/', data.runner_script_name))
+
+func check_paths():
+	# Game Folder selected
+	if(data.game_folder == ''):
+		show_error_message("Game Folder not defined - click the \"Game .exe\" Button.")
+		return false
+	# Mod Folder selected
+	elif(data.mod_folder == ''):
+		show_error_message("Mod Folder not defined - click the \"Mod Folder\" Button.")
+		return false
+	# Dev Mod Folder
+	elif(!Utils.is_dir_there(data.mod_folder)):
+		show_error_message("Mod Folder not found")
+		return false
+	# Game Mod Folder
+	elif(!Utils.is_dir_there(data.game_folder.path_join(data.game_mod_folder))):
+		show_error_message("Mod Folder in Game Directory not found")
+		return false
+	# Runner Script
+	elif(!Utils.is_file_there(data.game_folder.path_join(data.runner_script_name))):
+		show_error_message("Runner Script in Game Directory not found")
+		return false
 	else:
-		show_error_message("missing mod / game folder")
+		return true
+	
+	
+	
+
+# TODO: Tag remapped files - or check in some way if there is a need to run this again.
+func remap_imports():
+	# Find all .import files
+	for file_path in mod_file_paths:
+		if file_path.get_extension() == "import":
+			# open file
+			var text = Utils.file_get_as_text(file_path)
+			# change the "path" to point to the mod _import folder
+			text = text.replace(".import", str(data.mod_folder_name, "/_import"))
+			# save file
+			Utils.file_save_as_text(text, file_path)
 
 func zip_folder():
 	# Create zip folder - in game mod folder - from source mod folder
 	var game_mod_folder_path = data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip"))
-	Utils.zip_folder(data.mod_folder, game_mod_folder_path, data.exluded_file_extensions)
+	Utils.zip_files(mod_file_paths, game_mod_folder_path, data.exluded_file_extensions)
 
 
 func update_UI():
@@ -56,10 +98,14 @@ func update_UI():
 	
 
 func _on_btn_game_folder_pressed():
+	if(data.game_folder != ''):
+		file_dialog.current_dir = data.game_folder
 	file_dialog.show()
 	current_dialog = 'game'
 
 func _on_btn_mod_folder_pressed():
+	if(data.mod_folder != ''):
+		file_dialog.current_dir = data.mod_folder
 	file_dialog.show()
 	current_dialog = 'mod'
 
