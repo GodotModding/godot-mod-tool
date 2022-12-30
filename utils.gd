@@ -74,6 +74,20 @@ func get_regex_results(string, regex_exp: String):
 		results.push_back(result.get_string())
 	return results
 
+func file_copy(src, dst):
+	# src -> path to some file
+	# dst -> path to some dir
+	
+	var file_name = src.get_file()
+	
+	var file = FileAccess.open(src, FileAccess.READ)
+	var file_length = file.get_length()
+	var file_content = file.get_buffer(file_length)
+	
+	var dst_file_path = str(dst, "/", file_name)
+	var file_new = FileAccess.open(dst_file_path, FileAccess.WRITE)
+	file_new.store_buffer(file_content)
+
 func file_save(content, path):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(JSON.stringify(content))

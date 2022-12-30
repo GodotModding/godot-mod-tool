@@ -71,15 +71,35 @@ func check_paths():
 	
 
 # TODO: Tag remapped files - or check in some way if there is a need to run this again.
-func remap_imports():
+func remap_imports():	
 	# Find all .import files
 	for file_path in mod_file_paths:
 		if file_path.get_extension() == "import":
-			# open file
+			# Open file
 			var text = Utils.file_get_as_text(file_path)
-			# change the "path" to point to the mod _import folder
+			
+			# Get the path to the imported file
+			var path_imported_file_regex_results = Utils.get_regex_results(text, "res\\:\\/\\/\\.import.+?(?=\\\")")
+			var path_imported_file
+			if(path_imported_file_regex_results.size() > 0):
+				path_imported_file = path_imported_file_regex_results[0]
+				path_imported_file = str(data.mod_folder.replace(data.mod_folder_name, ''), path_imported_file.replace('res://', '')) 
+			else:
+				continue
+			
+			var path_mod_import_folder = str(data.mod_folder,"/_import")
+			
+			# Check if the _import folder doesn't exist
+			if(!Utils.is_dir_there(path_mod_import_folder)):
+				# Creat the _import folder
+				DirAccess.make_dir_absolute(path_mod_import_folder)
+			
+			# Copy the imported file from .import into the mods _import folder
+			Utils.file_copy(path_imported_file, path_mod_import_folder)
+			
+			# Change the "path" to point to the mod _import folder
 			text = text.replace(".import", str(data.mod_folder_name, "/_import"))
-			# save file
+			# Save the .import file
 			Utils.file_save_as_text(text, file_path)
 
 func zip_folder():
