@@ -10,7 +10,7 @@ var data = {
 	'mod_parent_folder': 'mods-unpacked',
 	'mod_folder': '',
 	'mod_folder_name': '',
-	'exluded_file_extensions': ['.translation', '.csv.import']
+	'excluded_file_extensions': ['.translation', '.csv.import']
 }
 
 var mod_file_paths = []
@@ -106,7 +106,7 @@ func remap_imports():
 func zip_folder():
 	# Create zip folder - in game mod folder - from source mod folder
 	var game_mod_folder_path = data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip"))
-	Utils.zip_files(mod_file_paths, data.mod_parent_folder, game_mod_folder_path, data.exluded_file_extensions)
+	Utils.zip_files(mod_file_paths, data.mod_parent_folder, game_mod_folder_path, data.excluded_file_extensions)
 
 
 func update_UI():
@@ -115,7 +115,7 @@ func update_UI():
 	line_edit.text = data.runner_script_name
 	hide_error_message()
 	
-	line_edit_excluded_file_extensions.text = ", ".join(data.exluded_file_extensions)
+	line_edit_excluded_file_extensions.text = ", ".join(data.excluded_file_extensions)
 	
 
 func _on_btn_game_folder_pressed():
@@ -158,7 +158,7 @@ func _on_line_edit_text_changed(new_text):
 	data.runner_script_name = new_text
 
 func _on_line_edit_excluded_file_extensions_text_changed(new_text):
-	data.exluded_file_extensions = Utils.get_entries(new_text)
+	data.excluded_file_extensions = Utils.get_entries(new_text)
 
 func _on_line_edit_parent_folder_name_text_changed(new_text):
 	data.mod_parent_folder = new_text
