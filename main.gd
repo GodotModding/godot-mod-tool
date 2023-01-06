@@ -7,6 +7,7 @@ var data = {
 	'game_folder': '',
 	'game_exe': '',
 	'game_mod_folder': 'mods',
+	'mod_parent_folder': 'mods-unpacked',
 	'mod_folder': '',
 	'mod_folder_name': '',
 	'exluded_file_extensions': ['.translation', '.csv.import']
@@ -158,6 +159,9 @@ func _on_line_edit_text_changed(new_text):
 
 func _on_line_edit_excluded_file_extensions_text_changed(new_text):
 	data.exluded_file_extensions = Utils.get_entries(new_text)
+
+func _on_line_edit_parent_folder_name_text_changed(new_text):
+	data.mod_parent_folder = new_text
 
 func _notification(what):
 	if(what == NOTIFICATION_WM_CLOSE_REQUEST):

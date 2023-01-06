@@ -52,6 +52,19 @@ layout_mode = 2
 mouse_default_cursor_shape = 2
 text = "Mod Folder"
 
+[node name="Spacer6" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Parent Folder Name:"
+
+[node name="LineEdit_ParentFolderName" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "mods-unpacked"
+placeholder_text = "mods-unpacked"
+
 [node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
@@ -111,6 +124,7 @@ access = 2
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Btn_GameExe" to="." method="_on_btn_game_folder_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Btn_ModFolder" to="." method="_on_btn_mod_folder_pressed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit_ParentFolderName" to="." method="_on_line_edit_parent_folder_name_text_changed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Btn_StartGameKey" to="MarginContainer/VBoxContainer/Btn_StartGameKey" method="_toggled"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit_ExcludedFileExtensions" to="." method="_on_line_edit_excluded_file_extensions_text_changed"]
