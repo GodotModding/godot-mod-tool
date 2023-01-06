@@ -106,7 +106,7 @@ func remap_imports():
 func zip_folder():
 	# Create zip folder - in game mod folder - from source mod folder
 	var game_mod_folder_path = data.game_folder.path_join(data.game_mod_folder).path_join(str(data.mod_folder_name,".zip"))
-	Utils.zip_files(mod_file_paths, game_mod_folder_path, data.exluded_file_extensions)
+	Utils.zip_files(mod_file_paths, data.mod_parent_folder, game_mod_folder_path, data.exluded_file_extensions)
 
 
 func update_UI():
@@ -162,6 +162,7 @@ func _on_line_edit_excluded_file_extensions_text_changed(new_text):
 
 func _on_line_edit_parent_folder_name_text_changed(new_text):
 	data.mod_parent_folder = new_text
+	print(data.mod_parent_folder)
 
 func _notification(what):
 	if(what == NOTIFICATION_WM_CLOSE_REQUEST):
