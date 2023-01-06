@@ -10,7 +10,7 @@ var data = {
 	'mod_parent_folder': 'mods-unpacked',
 	'mod_folder': '',
 	'mod_folder_name': '',
-	'excluded_file_extensions': ['.translation', '.csv.import']
+	'excluded_file_extensions': ['.csv.import']
 }
 
 var mod_file_paths = []
