@@ -1,15 +1,4 @@
 extends Node
-
-func zip_folder(src_path, dst_path, extensions_excluded):
-	var writer = create_writer(dst_path)
-	zip(writer, src_path, dst_path, extensions_excluded)
-	close_writer(writer)
-
-func zip_files(file_paths, mod_parent_folder, dst_path, extensions_excluded):
-	var writer = create_writer(dst_path)
-	for file_path in file_paths:
-		zip(writer, file_path, mod_parent_folder, dst_path, extensions_excluded)
-	close_writer(writer)
 	
 func create_writer(dst_path):
 	var writer := ZIPPacker.new()
@@ -20,20 +9,12 @@ func create_writer(dst_path):
 func close_writer(writer):
 	return writer.close()
 
-func zip(writer, src_path, mod_parent_folder, dst_path, extensions_excluded = []):
-	var zip_name = dst_path.get_file().get_slice('.', 0)
-	var src_path_split = src_path.split(zip_name, true, 1)
-	var zip_path = str(mod_parent_folder, '/', zip_name, src_path_split[1])
-	
-	# check for excluded extensions
-	if(is_file_extension(src_path, extensions_excluded)):
-		return
-	
+func zip(writer, src_path, dst_path):
 	var file = FileAccess.open(src_path, FileAccess.READ)
 	var file_length = file.get_length()
 	var file_content = file.get_buffer(file_length)
 	
-	writer.start_file(zip_path) # path inside the zip file
+	writer.start_file(dst_path) # path inside the zip file
 	writer.write_file(file_content)
 	writer.close_file()
 
