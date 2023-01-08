@@ -1,0 +1,132 @@
+[gd_scene load_steps=3 format=3 uid="uid://yd8yokj46j38"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_aqoux"]
+[ext_resource type="Script" path="res://Btn_StartGameKey.gd" id="2_h0ijg"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_aqoux")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="current_game_exe" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game .exe: %GAME_FOLDER_PATH%"
+
+[node name="current_mod_folder" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Mod Folder: %MOD_FOLDER_PATH%"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Btn_GameExe" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Game .exe"
+
+[node name="Btn_ModFolder" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Mod Folder"
+
+[node name="Spacer6" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Parent Folder Name:"
+
+[node name="LineEdit_ParentFolderName" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "mods-unpacked"
+placeholder_text = "mods-unpacked"
+
+[node name="Spacer2" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game Key:"
+
+[node name="Btn_StartGameKey" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+toggle_mode = true
+text = "%SOME_KEY%"
+script = ExtResource("2_h0ijg")
+
+[node name="Spacer3" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Runner Script Name:"
+
+[node name="LineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "runner.cmd"
+
+[node name="Spacer4" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Excluded File Extensions:"
+
+[node name="LineEdit_ExcludedFileExtensions" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+placeholder_text = ".something, .something.else, ..."
+
+[node name="Spacer5" type="Control" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="Error_Message" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "%ERROR_MESSAGE%"
+horizontal_alignment = 1
+
+[node name="FileDialog" type="FileDialog" parent="MarginContainer"]
+title = "Open a File or Directory"
+position = Vector2i(30, 35)
+size = Vector2i(1100, 600)
+ok_button_text = "Open"
+file_mode = 3
+access = 2
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Btn_GameExe" to="." method="_on_btn_game_folder_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Btn_ModFolder" to="." method="_on_btn_mod_folder_pressed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit_ParentFolderName" to="." method="_on_line_edit_parent_folder_name_text_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Btn_StartGameKey" to="MarginContainer/VBoxContainer/Btn_StartGameKey" method="_toggled"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="text_changed" from="MarginContainer/VBoxContainer/LineEdit_ExcludedFileExtensions" to="." method="_on_line_edit_excluded_file_extensions_text_changed"]
+[connection signal="dir_selected" from="MarginContainer/FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="file_selected" from="MarginContainer/FileDialog" to="." method="_on_file_dialog_file_selected"]
