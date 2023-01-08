@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/godot-mod-export/dock.gd" type="Script" id=1]
+
+[sub_resource type="Gradient" id=1]
+interpolation_mode = 1
+colors = PoolColorArray( 0.21875, 0.21875, 0.21875, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[node name="Dock" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 15
+custom_constants/margin_top = 15
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 1009.0
+margin_bottom = 585.0
+custom_constants/separation = 10
+
+[node name="btn_run_game" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_right = 994.0
+margin_bottom = 20.0
+text = "Run Game"
+
+[node name="btn_build" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_top = 30.0
+margin_right = 994.0
+margin_bottom = 50.0
+text = "Only Build"
+
+[node name="btn_ui" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_top = 60.0
+margin_right = 994.0
+margin_bottom = 80.0
+text = "Settings UI"
+
+[node name="Output" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_top = 90.0
+margin_right = 994.0
+margin_bottom = 104.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Output"]
+show_behind_parent = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 2 )
+expand = true
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/btn_run_game" to="." method="_on_btn_run_game_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/btn_build" to="." method="_on_btn_build_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/btn_ui" to="." method="_on_btn_ui_pressed"]

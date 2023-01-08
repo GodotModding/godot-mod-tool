@@ -11,11 +11,24 @@ config_version=4
 [application]
 
 config/name="godot-mod-export-tool-plugin"
+run/main_scene="res://addons/godot-mod-export/dock.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/explore-editor-theme/plugin.cfg", "res://addons/godot-mod-export/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg" )
 
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+
+[input]
+
+godot-mod-export_run={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777248,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [physics]
 
