@@ -29,6 +29,10 @@ config/icon="res://icon.svg"
 
 Utils="*res://utils.gd"
 
+[editor]
+
+run/main_run_args="--headless --build"
+
 [input]
 
 start_game={

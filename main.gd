@@ -2,6 +2,19 @@ extends Control
 
 const SAVE_PATH = 'user://save.json'
 
+var cmd_args = {
+	'--run': build,
+	'--build': only_build,
+	'--?': print_help,
+}
+
+var cmd_args_description = {
+	'--run': 'Run the game with current settings',
+	'--build': 'Export zip with current settings, but don\'t run the game',
+	'--?': 'Show possible commands',
+}
+
+var cmd_args_passed
 var data = {
 	'runner_script_name': 'runner.cmd',
 	'game_folder_path': '',
@@ -30,15 +43,61 @@ var current_dialog : String
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# Load save file stored at SAVE_PATH
 	data = load_save()
+	
+	# Get all cmd line arguments
+	# --run -> Run the game with current settings
+	# --export -> Export zip with current settings but don't run the game
+	# --? --> Show possible commands
+	cmd_args_passed = get_cmd_args()
+
+	handle_cmd_args(cmd_args_passed)
+	
 	update_UI()
 
 func _input(event):
 	if event.is_action("start_game"):
 		hide_error_message()
-		start_game()
+		build()
 
-func start_game():
+func get_cmd_args():
+	var arguments = []
+	for argument in OS.get_cmdline_args():
+		if(argument.begins_with('--')):
+			arguments.append(argument)
+	
+	return arguments
+
+func handle_cmd_args(cmd_args_passed):
+	# If no argument continue with UI Mode
+	if(cmd_args_passed.size() == 0):
+		return
+	
+	# Check if only one command
+	if(cmd_args_passed.size() > 1):
+		print("ERROR: Please provide only one argument")
+		return
+	
+	# Grab the the one cmd arg
+	var cmd_arg = cmd_args_passed[0]
+	
+	# Call the corresponding function of the command is known
+	if(cmd_args.has(cmd_arg)):
+		cmd_args[cmd_arg].call()
+	else:
+		print(str("ERROR: unknown command ", cmd_arg, " , try --? for help."))
+	
+	get_tree().quit()
+
+func print_help():
+	print(JSON.stringify(cmd_args_description, '   '))
+
+func only_build():
+	build(false)
+	print(str('SUCCESS: Build completed export path -> ', str(data.game_folder_path, '/', data.game_mod_folder_name, '/', data.mod_folder_name, '.zip')))
+
+func build(run_game = true):
 	if(!check_paths()):
 		return
 	
@@ -64,7 +123,8 @@ func start_game():
 	zip_folder(zip_file_dst_path, mod_file_paths)
 
 	# Start the game with the specified runner script ( can also just be the game .exe )
-	OS.shell_open(str(data.game_folder_path, '/', data.runner_script_name))
+	if(run_game):
+		OS.shell_open(str(data.game_folder_path, '/', data.runner_script_name))
 
 func check_paths():
 	# Game Folder selected
