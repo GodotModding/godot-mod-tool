@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://mods-unpacked/otDan-GodotExplorerV1/SceneNavigator.gd" type="Script" id=1]
+[ext_resource path="res://mods-unpacked/otDan-GodotExplorerV1/DarkTheme/Dark.theme" type="Theme" id=2]
+
+[node name="SceneNavigatorNode" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource( 2 )
+script = ExtResource( 1 )
+
+[node name="SceneNavigatorCanvas" type="CanvasLayer" parent="."]
+layer = 99
+
+[node name="SceneNavigatorWindow" type="WindowDialog" parent="SceneNavigatorCanvas"]
+visible = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -300.0
+margin_right = 200.0
+margin_bottom = 300.0
+theme = ExtResource( 2 )
+resizable = true
+
+[node name="Tree" type="Tree" parent="SceneNavigatorCanvas/SceneNavigatorWindow"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+columns = 3
+allow_rmb_select = true
+hide_root = true
+select_mode = 1
+
+[node name="SearchNode" type="LineEdit" parent="SceneNavigatorCanvas/SceneNavigatorWindow/Tree"]
+anchor_top = 0.939
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = -5.0
+margin_bottom = -5.0
+hint_tooltip = "Search Through Scene Nodes"
+align = 3
+placeholder_text = "Type Node Name..."
+caret_blink = true
+
+[connection signal="text_changed" from="SceneNavigatorCanvas/SceneNavigatorWindow/Tree/SearchNode" to="." method="_on_SearchNode_text_changed"]

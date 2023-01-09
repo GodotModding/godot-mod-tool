@@ -1,0 +1,11 @@
+{
+  "id": "otDan-GodotExplorerV1",
+  "name": "Godot Explorer",
+  "version": "1.0.0",
+  "compatible_game_version": ["0.6.1.6"],
+  "authors": ["otDan"],
+  "description": "Allows you to inspect the current godot scene tree",
+  "website_url": "https://github.com/GodotModding",
+  "dependencies": [],
+  "incompatibilities": []
+}
