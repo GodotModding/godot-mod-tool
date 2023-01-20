@@ -1,0 +1,3 @@
+[submodule "helper-mods/root/mods-unpacked/GodotExplorer"]
+	path = helper-mods/root/mods-unpacked/GodotExplorer
+	url = https://github.com/otDan/GodotExplorer.git
