@@ -1,14 +1,14 @@
 tool
 extends Control
 
-onready var label_output = $MarginContainer/VBoxContainer/Output
+onready var label_output = $"%Output"
 
 
 
 
 func _run_command(command: String, is_ui_visible = false):
 	label_output.text = ''
-	
+
 	var output = []
 	var global_path = ProjectSettings.globalize_path("res://addons/godot-mod-export/ModDevTool.exe")
 	var exit_code = OS.execute(global_path, ['--headless' if !is_ui_visible else '', command], true, output)
