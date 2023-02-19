@@ -40,5 +40,3 @@ size_flags_horizontal = 3
 show_line_numbers = true
 smooth_scrolling = true
 v_scroll_speed = 160.0
-
-[connection signal="gui_input" from="VSplit/Input" to="." method="_on_Input_gui_input"]
