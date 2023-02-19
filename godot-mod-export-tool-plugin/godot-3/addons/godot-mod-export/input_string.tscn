@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/godot-mod-export/input_string.gd" type="Script" id=1]
+
+[node name="InputString" type="HBoxContainer"]
+anchor_right = 1.0
+margin_bottom = 24.0
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+margin_top = 5.0
+margin_right = 958.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+clip_text = true
+
+[node name="ErrorIcon" type="TextureRect" parent="."]
+visible = false
+margin_left = 960.0
+margin_right = 960.0
+margin_bottom = 24.0
+stretch_mode = 6
+
+[node name="Input" type="LineEdit" parent="."]
+unique_name_in_owner = true
+margin_left = 962.0
+margin_right = 1920.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+placeholder_alpha = 0.5
