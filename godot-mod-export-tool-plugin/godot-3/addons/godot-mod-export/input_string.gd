@@ -50,14 +50,3 @@ func show_error_if_not(condition: bool) -> bool:
 	return condition
 
 
-
-func _on_Input_gui_input(event: InputEvent) -> void:
-	var input := ($"%Input" as TextEdit)
-
-	if event is InputEventPanGesture:
-		input.accept_event()
-
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_WHEEL_UP or event.button_index == BUTTON_WHEEL_DOWN:
-			input.accept_event()
-
