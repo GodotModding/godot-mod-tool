@@ -43,6 +43,10 @@ func save_store():
 
 
 func load_store():
+	var dir = Directory.new()
+	if not dir.file_exists(PATH_SAVE_FILE):
+		return
+	
 	var file = File.new()
 	file.open(PATH_SAVE_FILE, File.READ)
 	var content = file.get_as_text()
