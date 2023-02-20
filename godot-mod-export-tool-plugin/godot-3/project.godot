@@ -144,6 +144,21 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://mods-unpacked/damiBenro-Junker/content/effects/item_tier_stat_modification_effect.gd"
 }, {
+"base": "Node",
+"class": "ModToolStore",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/store.gd"
+}, {
+"base": "Node",
+"class": "ModToolUtils",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/utils.gd"
+}, {
+"base": "Node",
+"class": "ModToolZipBuilder",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/build_zip.gd"
+}, {
 "base": "OptionButton",
 "class": "ScreenStretchButton",
 "language": "GDScript",
@@ -177,6 +192,9 @@ _global_script_class_icons={
 "InspectorGadgetBase": "",
 "InspectorGadgetUtil": "",
 "ItemTierStatGainsModificationEffect": "",
+"ModToolStore": "",
+"ModToolUtils": "",
+"ModToolZipBuilder": "",
 "ScreenStretchButton": ""
 }
 
@@ -201,6 +219,11 @@ godot-mod-export_run={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777248,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[network]
+
+limits/debugger_stdout/max_chars_per_second=20000
+limits/debugger_stdout/max_messages_per_frame=1000
 
 [physics]
 

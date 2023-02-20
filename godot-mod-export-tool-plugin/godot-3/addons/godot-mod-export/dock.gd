@@ -1,9 +1,11 @@
 tool
 extends Control
 
-onready var label_output = $"%Output"
 
 var base_theme: Theme 	# passed from the EditorPlugin
+var store: ModToolStore = ModToolStore.new()
+
+onready var label_output = $"%Output"
 onready var tab_parent_bottom_panel: PanelContainer
 
 
@@ -16,6 +18,8 @@ func _ready() -> void:
 		for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
 			if node.has_method("set_error_icon"):
 				node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+
+	store.label_output = label_output
 
 	_load_manifest()
 	_is_manifest_valid()
@@ -51,7 +55,8 @@ func _on_export_and_run_pressed() -> void:
 
 
 func _on_export_pressed() -> void:
-	pass # todo
+	var zipper = ModToolZipBuilder.new()
+	zipper.build_zip(store)
 
 
 func _on_clear_output_pressed() -> void:
