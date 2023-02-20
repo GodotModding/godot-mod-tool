@@ -120,7 +120,7 @@ align = 1
 [node name="Scroll" type="ScrollContainer" parent="TabContainer/Export/HSplit/Settings"]
 margin_top = 18.0
 margin_right = 335.0
-margin_bottom = 464.0
+margin_bottom = 488.0
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
@@ -143,6 +143,15 @@ input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
+
+[node name="Label" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId" index="0"]
+margin_right = 165.0
+text = "Mod ID"
+
+[node name="Input" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId" index="2"]
+margin_left = 169.0
+margin_right = 335.0
+placeholder_text = "Author-ModName"
 
 [node name="ExportPath" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox" instance=ExtResource( 3 )]
 unique_name_in_owner = true
@@ -185,7 +194,7 @@ size_flags_horizontal = 3
 text = "On"
 
 [node name="Buttons" type="PanelContainer" parent="TabContainer/Export/HSplit/Settings"]
-margin_top = 468.0
+margin_top = 492.0
 margin_right = 335.0
 margin_bottom = 550.0
 
@@ -193,23 +202,17 @@ margin_bottom = 550.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 328.0
-margin_bottom = 75.0
-
-[node name="ExportAndRun" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
-margin_right = 321.0
-margin_bottom = 20.0
-text = "Export Mod & Run Game"
+margin_bottom = 51.0
 
 [node name="Export" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
-margin_top = 24.0
 margin_right = 321.0
-margin_bottom = 44.0
+margin_bottom = 20.0
 text = "Export Mod"
 
 [node name="ModSkeleton" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
-margin_top = 48.0
+margin_top = 24.0
 margin_right = 321.0
-margin_bottom = 68.0
+margin_bottom = 44.0
 text = "Generate Mod Skeleton"
 
 [node name="Mod Manifest" type="PanelContainer" parent="TabContainer"]
@@ -446,7 +449,9 @@ margin_bottom = -4.0
 [connection signal="visibility_changed" from="." to="." method="_on_mod_tools_dock_visibility_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
-[connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/ExportAndRun" to="." method="_on_export_and_run_pressed"]
+[connection signal="text_changed" from="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId/Input" to="." method="_on_ModId_Input_text_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/ModSkeleton" to="." method="_on_mod_skeleton_pressed"]
 [connection signal="pressed" from="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_save_manifest_pressed"]
+
+[editable path="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId"]

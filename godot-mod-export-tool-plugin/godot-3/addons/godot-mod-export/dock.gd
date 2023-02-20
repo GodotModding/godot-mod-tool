@@ -50,10 +50,6 @@ func _is_manifest_valid() -> bool:
 	return is_valid
 
 
-func _on_export_and_run_pressed() -> void:
-	pass # todo
-
-
 func _on_export_pressed() -> void:
 	var zipper = ModToolZipBuilder.new()
 	zipper.build_zip(store)
@@ -93,3 +89,5 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
+func _on_ModId_Input_text_changed(new_text):
+	store.name_mod_dir = new_text
