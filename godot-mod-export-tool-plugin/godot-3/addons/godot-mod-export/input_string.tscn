@@ -9,9 +9,10 @@ script = ExtResource( 1 )
 
 [node name="Label" type="Label" parent="."]
 margin_top = 5.0
-margin_right = 958.0
+margin_right = 510.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
+text = " (optional)"
 clip_text = true
 
 [node name="ErrorIcon" type="TextureRect" parent="."]
@@ -23,8 +24,10 @@ stretch_mode = 6
 
 [node name="Input" type="LineEdit" parent="."]
 unique_name_in_owner = true
-margin_left = 962.0
-margin_right = 1920.0
+margin_left = 514.0
+margin_right = 1024.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 placeholder_alpha = 0.5
+
+[connection signal="text_changed" from="Input" to="." method="_on_Input_text_changed"]

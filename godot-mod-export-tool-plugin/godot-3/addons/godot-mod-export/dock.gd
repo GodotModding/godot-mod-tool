@@ -6,6 +6,7 @@ var base_theme: Theme 	# passed from the EditorPlugin
 var store: ModToolStore = ModToolStore.new()
 
 onready var label_output = $"%Output"
+onready var mod_id = $"%ModId"
 onready var tab_parent_bottom_panel: PanelContainer
 
 
@@ -23,6 +24,7 @@ func _ready() -> void:
 
 	_load_manifest()
 	_is_manifest_valid()
+	_update_ui()
 
 
 func _save_manifest() -> void:
@@ -48,6 +50,10 @@ func _is_manifest_valid() -> bool:
 	# todo
 
 	return is_valid
+
+
+func _update_ui():
+	mod_id.input_text = store.name_mod_dir
 
 
 func _on_export_pressed() -> void:
@@ -89,5 +95,6 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
+# Update the mod name in the ModToolStore
 func _on_ModId_Input_text_changed(new_text):
 	store.name_mod_dir = new_text
