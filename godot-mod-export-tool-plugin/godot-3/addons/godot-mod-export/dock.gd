@@ -46,22 +46,12 @@ func _is_manifest_valid() -> bool:
 	return is_valid
 
 
-func _run_command(command: String, is_ui_visible = false):
-	label_output.text = ''
-
-	var output = []
-	var global_path = ProjectSettings.globalize_path("res://addons/godot-mod-export/ModDevTool.exe")
-	var exit_code = OS.execute(global_path, ['--headless' if !is_ui_visible else '', command], true, output)
-	for text in output:
-		label_output.text = str(label_output.text, '\n', text)
-
-
 func _on_export_and_run_pressed() -> void:
-	_run_command("--run")
+	pass # todo
 
 
 func _on_export_pressed() -> void:
-	_run_command("--build")
+	pass # todo
 
 
 func _on_clear_output_pressed() -> void:
