@@ -5,8 +5,8 @@ extends Control
 var base_theme: Theme 	# passed from the EditorPlugin
 var store: ModToolStore = ModToolStore.new()
 
-onready var label_output = $"%Output"
-onready var mod_id = $"%ModId"
+onready var label_output := $"%Output"
+onready var mod_id := $"%ModId"
 onready var tab_parent_bottom_panel: PanelContainer
 
 
@@ -62,11 +62,11 @@ func _on_export_pressed() -> void:
 
 
 func _on_clear_output_pressed() -> void:
-	pass # todo
+	label_output.clear()
 
 
 func _on_copy_output_pressed() -> void:
-	pass # todo
+	OS.clipboard = label_output.text
 
 
 func _on_save_manifest_pressed() -> void:
