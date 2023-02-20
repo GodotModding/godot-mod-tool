@@ -188,7 +188,7 @@ config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/explore-editor-theme/plugin.cfg", "res://addons/godot-mod-export/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/explore-editor-theme/plugin.cfg", "res://addons/godot-mod-export/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg", "res://addons/inspector-gadget/plugin.cfg", "res://addons/zylann.editor_debugger/plugin.cfg" )
 
 [gui]
 

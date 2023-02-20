@@ -12,10 +12,10 @@ func _ready() -> void:
 	if base_theme:
 		$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
-	# set up warning icons to show if a field is invalid
-	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
-		if node.has_method("set_error_icon"):
-			node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+		# set up warning icons to show if a field is invalid
+		for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
+			if node.has_method("set_error_icon"):
+				node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
 
 	_load_manifest()
 	_is_manifest_valid()
