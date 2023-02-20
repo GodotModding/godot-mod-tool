@@ -2,6 +2,8 @@ tool
 extends Control
 
 
+const ERROR_COLOR = "#ff9090"
+
 var base_theme: Theme 	# passed from the EditorPlugin
 var store: ModToolStore = ModToolStore.new()
 
@@ -56,9 +58,24 @@ func _update_ui():
 	mod_id.input_text = store.name_mod_dir
 
 
+func _is_mod_dir_valid() -> bool:
+	# Check if Mod ID is given
+	if store.name_mod_dir == '':
+		label_output.append_bbcode("\n [color=%s]ERROR: Please provide a Mod ID[/color]" % ERROR_COLOR)
+		return false
+
+	# Check if mod dir exists
+	if not ModLoaderUtils.dir_exists(store.path_mod_dir):
+		label_output.append_bbcode("\n [color=%s]ERROR: Mod folder %s does not exist[/color]" % [ERROR_COLOR, store.path_mod_dir])
+		return false
+
+	return true
+
+
 func _on_export_pressed() -> void:
-	var zipper = ModToolZipBuilder.new()
-	zipper.build_zip(store)
+	if _is_mod_dir_valid():
+		var zipper = ModToolZipBuilder.new()
+		zipper.build_zip(store)
 
 
 func _on_clear_output_pressed() -> void:
