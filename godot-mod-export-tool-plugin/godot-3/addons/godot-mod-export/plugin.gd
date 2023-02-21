@@ -6,7 +6,7 @@ var dock: Control
 
 func _enter_tree():
 	dock = preload("res://addons/godot-mod-export/dock.tscn").instance()
-	dock.base_theme = get_editor_interface().get_base_control().theme
+	dock.editor_interface = get_editor_interface()
 
 	add_control_to_bottom_panel(dock, 'Mod Tools')
 

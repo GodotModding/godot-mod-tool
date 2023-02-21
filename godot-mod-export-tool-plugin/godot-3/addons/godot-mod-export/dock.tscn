@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://addons/godot-mod-export/dock.gd" type="Script" id=1]
+[ext_resource path="res://addons/godot-mod-export/json_editor.gd" type="Script" id=2]
 [ext_resource path="res://addons/godot-mod-export/input_string.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/godot-mod-export/input_string_multiline.tscn" type="PackedScene" id=4]
 
@@ -437,9 +438,74 @@ visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
-margin_top = 24.0
+margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
+
+[node name="VBox" type="VBoxContainer" parent="TabContainer/Default Configuration"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1925.0
+margin_bottom = 1037.0
+
+[node name="HBox" type="HBoxContainer" parent="TabContainer/Default Configuration/VBox"]
+margin_right = 1918.0
+margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="TabContainer/Default Configuration/VBox/HBox"]
+margin_top = 13.0
+margin_right = 1579.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "Default values for user mod configuration "
+
+[node name="ErrorLabel" type="Label" parent="TabContainer/Default Configuration/VBox/HBox"]
+unique_name_in_owner = true
+margin_left = 1583.0
+margin_top = 13.0
+margin_right = 1635.0
+margin_bottom = 27.0
+text = "JSON is valid"
+
+[node name="ShouldValidate" type="CheckButton" parent="TabContainer/Default Configuration/VBox/HBox"]
+unique_name_in_owner = true
+margin_left = 1639.0
+margin_right = 1715.0
+margin_bottom = 40.0
+pressed = true
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="TabContainer/Default Configuration/VBox/HBox"]
+margin_left = 1719.0
+margin_right = 1723.0
+margin_bottom = 40.0
+
+[node name="SaveConfig" type="Button" parent="TabContainer/Default Configuration/VBox/HBox"]
+margin_left = 1727.0
+margin_right = 1918.0
+margin_bottom = 40.0
+text = "Save config to manifest.json"
+
+[node name="ConfigEditor" type="TextEdit" parent="TabContainer/Default Configuration/VBox"]
+unique_name_in_owner = true
+margin_top = 44.0
+margin_right = 1918.0
+margin_bottom = 1030.0
+size_flags_vertical = 3
+text = "{
+	
+}"
+highlight_current_line = true
+syntax_highlighting = true
+show_line_numbers = true
+fold_gutter = true
+highlight_all_occurrences = true
+smooth_scrolling = true
+hiding_enabled = true
+script = ExtResource( 2 )
+
+[node name="ValidationDelay" type="Timer" parent="TabContainer/Default Configuration/VBox/ConfigEditor"]
+one_shot = true
 
 [connection signal="visibility_changed" from="." to="." method="_on_mod_tools_dock_visibility_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
@@ -448,3 +514,6 @@ margin_bottom = -4.0
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/ModSkeleton" to="." method="_on_mod_skeleton_pressed"]
 [connection signal="pressed" from="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_save_manifest_pressed"]
+[connection signal="pressed" from="TabContainer/Default Configuration/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
+[connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]
+[connection signal="timeout" from="TabContainer/Default Configuration/VBox/ConfigEditor/ValidationDelay" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]

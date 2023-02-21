@@ -3,22 +3,35 @@ extends Control
 
 onready var label_output = $"%Output"
 
-var base_theme: Theme 	# passed from the EditorPlugin
-onready var tab_parent_bottom_panel: PanelContainer
+# passed from the EditorPlugin
+var editor_interface: EditorInterface setget set_editor_interface
+var base_theme: Theme
+
+var tab_parent_bottom_panel: PanelContainer
 
 
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
-	if base_theme:
-		$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
+
+	_load_manifest()
+	_is_manifest_valid()
+
+#	var editor_log := get_parent().get_child(0)
+#	var log_text := editor_log.get_child(1)
+
+func set_editor_interface(interface: EditorInterface) -> void:
+	editor_interface = interface
+	base_theme = editor_interface.get_base_control().theme
+
+	$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
 	# set up warning icons to show if a field is invalid
 	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
 		if node.has_method("set_error_icon"):
 			node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
 
-	_load_manifest()
-	_is_manifest_valid()
+	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
+	$"%ConfigEditor".base_theme = base_theme
 
 
 func _save_manifest() -> void:
@@ -75,6 +88,10 @@ func _on_copy_output_pressed() -> void:
 func _on_save_manifest_pressed() -> void:
 	if _is_manifest_valid():
 		_save_manifest()
+
+
+func _on_save_config_pressed() -> void:
+	pass # todo
 
 
 func _on_mod_skeleton_pressed() -> void:
