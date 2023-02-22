@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://addons/godot-mod-export/dock.gd" type="Script" id=1]
-[ext_resource path="res://addons/godot-mod-export/json_editor.gd" type="Script" id=2]
-[ext_resource path="res://addons/godot-mod-export/input_string.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/godot-mod-export/input_string_multiline.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/mod_tool/dock.gd" type="Script" id=1]
+[ext_resource path="res://addons/mod_tool/json_editor.gd" type="Script" id=2]
+[ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=3]
+[ext_resource path="res://addons/mod_tool/input_string_multiline.tscn" type="PackedScene" id=4]
 
 [sub_resource type="InputEventKey" id=1]
 control = true
@@ -166,7 +166,7 @@ Format: Namespace-ModName
 margin_top = 56.0
 margin_right = 335.0
 margin_bottom = 80.0
-hint_tooltip = "Modify the zip before compressing 
+hint_tooltip = "Modify the zip before compressing
 to follow Thunderstore specifications"
 
 [node name="Label" type="Label" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox/HBox"]
@@ -489,7 +489,7 @@ margin_right = 1918.0
 margin_bottom = 1030.0
 size_flags_vertical = 3
 text = "{
-	
+
 }"
 highlight_current_line = true
 syntax_highlighting = true
