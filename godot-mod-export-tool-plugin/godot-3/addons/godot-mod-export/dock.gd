@@ -1,9 +1,14 @@
 tool
 extends Control
 
-onready var label_output = $"%Output"
+
+const ERROR_COLOR = "#ff9090"
 
 var base_theme: Theme 	# passed from the EditorPlugin
+var store: ModToolStore = ModToolStore.new()
+
+onready var label_output := $"%Output"
+onready var mod_id := $"%ModId"
 onready var tab_parent_bottom_panel: PanelContainer
 
 
@@ -12,13 +17,16 @@ func _ready() -> void:
 	if base_theme:
 		$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
-	# set up warning icons to show if a field is invalid
-	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
-		if node.has_method("set_error_icon"):
-			node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+		# set up warning icons to show if a field is invalid
+		for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
+			if node.has_method("set_error_icon"):
+				node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+
+	store.label_output = label_output
 
 	_load_manifest()
 	_is_manifest_valid()
+	_update_ui()
 
 
 func _save_manifest() -> void:
@@ -46,30 +54,36 @@ func _is_manifest_valid() -> bool:
 	return is_valid
 
 
-func _run_command(command: String, is_ui_visible = false):
-	label_output.text = ''
-
-	var output = []
-	var global_path = ProjectSettings.globalize_path("res://addons/godot-mod-export/ModDevTool.exe")
-	var exit_code = OS.execute(global_path, ['--headless' if !is_ui_visible else '', command], true, output)
-	for text in output:
-		label_output.text = str(label_output.text, '\n', text)
+func _update_ui():
+	mod_id.input_text = store.name_mod_dir
 
 
-func _on_export_and_run_pressed() -> void:
-	_run_command("--run")
+func _is_mod_dir_valid() -> bool:
+	# Check if Mod ID is given
+	if store.name_mod_dir == '':
+		label_output.append_bbcode("\n [color=%s]ERROR: Please provide a Mod ID[/color]" % ERROR_COLOR)
+		return false
+
+	# Check if mod dir exists
+	if not ModLoaderUtils.dir_exists(store.path_mod_dir):
+		label_output.append_bbcode("\n [color=%s]ERROR: Mod folder %s does not exist[/color]" % [ERROR_COLOR, store.path_mod_dir])
+		return false
+
+	return true
 
 
 func _on_export_pressed() -> void:
-	_run_command("--build")
+	if _is_mod_dir_valid():
+		var zipper = ModToolZipBuilder.new()
+		zipper.build_zip(store)
 
 
 func _on_clear_output_pressed() -> void:
-	pass # todo
+	label_output.clear()
 
 
 func _on_copy_output_pressed() -> void:
-	pass # todo
+	OS.clipboard = label_output.text
 
 
 func _on_save_manifest_pressed() -> void:
@@ -98,3 +112,6 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
+# Update the mod name in the ModToolStore
+func _on_ModId_Input_text_changed(new_text):
+	store.name_mod_dir = new_text

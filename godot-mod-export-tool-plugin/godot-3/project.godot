@@ -8,6 +8,46 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Resource",
+"class": "ModData",
+"language": "GDScript",
+"path": "res://addons/mod_loader/mod_data.gd"
+}, {
+"base": "Node",
+"class": "ModLoaderUtils",
+"language": "GDScript",
+"path": "res://addons/mod_loader/mod_loader_utils.gd"
+}, {
+"base": "Resource",
+"class": "ModManifest",
+"language": "GDScript",
+"path": "res://addons/mod_loader/mod_manifest.gd"
+}, {
+"base": "Node",
+"class": "ModToolStore",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/store.gd"
+}, {
+"base": "Node",
+"class": "ModToolUtils",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/utils.gd"
+}, {
+"base": "Node",
+"class": "ModToolZipBuilder",
+"language": "GDScript",
+"path": "res://addons/godot-mod-export/build_zip.gd"
+} ]
+_global_script_class_icons={
+"ModData": "",
+"ModLoaderUtils": "",
+"ModManifest": "",
+"ModToolStore": "",
+"ModToolUtils": "",
+"ModToolZipBuilder": ""
+}
+
 [application]
 
 config/name="godot-mod-export-tool-plugin"
@@ -29,6 +69,11 @@ godot-mod-export_run={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777248,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[network]
+
+limits/debugger_stdout/max_chars_per_second=20000
+limits/debugger_stdout/max_messages_per_frame=1000
 
 [physics]
 
