@@ -19,8 +19,11 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
+	store.label_output = label_output
+
 	_load_manifest()
 	_is_manifest_valid()
+	_update_ui()
 
 	get_log_nodes()
 
@@ -82,10 +85,6 @@ func discard_last_console_error() -> void:
 	if log_output_dock_button:
 		log_output_dock_button.icon = StreamTexture.new()
 
-	_load_manifest()
-	_is_manifest_valid()
-	_update_ui()
-
 
 func _save_manifest() -> void:
 	pass # todo
@@ -97,7 +96,7 @@ func _load_manifest() -> void:
 
 func _is_manifest_valid() -> bool:
 	var mod_manifest: Script
-	if File.new().file_exists("res://addons/mod_loader/mod_manifest.gd"):
+	if ModLoaderUtils.file_exists("res://addons/mod_loader/mod_manifest.gd"):
 		mod_manifest = load("res://addons/mod_loader/mod_manifest.gd")
 
 	var is_valid: bool

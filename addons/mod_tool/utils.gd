@@ -102,7 +102,9 @@ static func remove_recursive(path: String) -> void:
 		print("Error removing " + path)
 
 
+# Slightly modified version of:
 # https://gist.github.com/willnationsdev/00d97aa8339138fd7ef0d6bd42748f6e
+# Removed .import from the extension filter.
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.

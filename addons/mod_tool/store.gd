@@ -25,7 +25,7 @@ func init(store: Dictionary) -> void:
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
 	path_export_dir = "res://zips"
-	path_project_dir = ProjectSettings.globalize_path(ModToolUtils.get_local_folder_dir())
+	path_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_temp_dir = "user://temp/" + store.name_mod_dir
 	excluded_file_extensions = [".csv.import"]
 

@@ -9,7 +9,7 @@ func _enter_tree() -> void:
 	dock.editor_interface = get_editor_interface()
 	dock.base_theme = get_editor_interface().get_base_control().theme
 	dock.store.load_store()
-	add_control_to_bottom_panel(dock, 'Mod Tools')
+	add_control_to_bottom_panel(dock, 'Mod Tool')
 
 
 func _exit_tree() -> void:
