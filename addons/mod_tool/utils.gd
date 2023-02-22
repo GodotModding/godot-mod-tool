@@ -2,69 +2,76 @@ extends Node
 class_name ModToolUtils
 
 
+# Utility functions used across the ModTool.
+
+
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
-static func is_file_extension(path, excluded_extensions):
-	var is_extension = false
+static func is_file_extension(path: String, excluded_extensions: PoolStringArray) -> bool:
+	var is_extension := false
 
 	for extension in excluded_extensions:
-		var file_name = path.get_file()
+		var file_name := path.get_file()
 		if(extension in file_name):
 			is_extension = true
 			break
 		else:
 			is_extension = false
 
-
 	return is_extension
 
 
-static func file_get_as_text(path):
-	var file_access = File.new()
+# Returns the content of the file from the given path as a string.
+static func file_get_as_text(path: String) -> String:
+	var file_access := File.new()
 	file_access.open(path, file_access.READ)
-	var content = file_access.get_as_text()
+	var content := file_access.get_as_text()
 	file_access.close()
 	return content
 
 
-static func get_regex_results(string, regex_exp: String):
-	var regex = RegEx.new()
+# Returns the result of the regex on the given string.
+static func get_regex_results(string: String, regex_exp: String) -> Array:
+	var regex := RegEx.new()
+	var results := []
+
 	regex.compile(regex_exp)
-	var results = []
 	for result in regex.search_all(string):
 		results.push_back(result.get_string())
 	return results
 
 
+# Copies a file from a given src to the specified dst path.
+# src = path/to/file.extension
+# dst = other/path/to/file.extension
 static func file_copy(src: String, dst: String) -> void:
 	var file := File.new()
 	var dir := Directory.new()
-	var dst_dir = dst.get_base_dir()
-
+	var dst_dir := dst.get_base_dir()
 
 	file.open(src, File.READ)
-	var file_length = file.get_len()
-	var file_content = file.get_buffer(file_length)
+	var file_length := file.get_len()
+	var file_content := file.get_buffer(file_length)
 	file.close()
 
 	if not dir.dir_exists(dst_dir):
 		dir.make_dir_recursive(dst_dir)
-
 
 	file.open(dst, File.WRITE)
 	file.store_buffer(file_content)
 	file.close()
 
 
+# Takes a directory path to get removed.
 # https://www.davidepesce.com/2019/11/04/essential-guide-to-godot-filesystem-api/
-static func remove_recursive(path):
-	var directory = Directory.new()
+static func remove_recursive(path: String) -> void:
+	var directory := Directory.new()
 
 	# Open directory
-	var error = directory.open(path)
+	var error := directory.open(path)
 	if error == OK:
 		# List directory content
 		directory.list_dir_begin(true)
-		var file_name = directory.get_next()
+		var file_name := directory.get_next()
 		while file_name != "":
 			if directory.current_is_dir():
 				remove_recursive(path + "/" + file_name)
@@ -84,26 +91,26 @@ static func remove_recursive(path):
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
-static func get_flat_view_dict(p_dir = "res://", p_match = "", p_match_is_regex = false):
-	var regex = null
+static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false) -> PoolStringArray:
+	var data: PoolStringArray = []
+	var regex: RegEx
+
 	if p_match_is_regex:
 		regex = RegEx.new()
-		regex.compile(p_match)
+		var _compile_error: int = regex.compile(p_match)
 		if not regex.is_valid():
-			print("regex failed to compile")
-			return []
+			return data
 
-	var dirs = [p_dir]
-	var first = true
-	var data = []
+	var dirs := [p_dir]
+	var first := true
 	while not dirs.empty():
-		var dir = Directory.new()
-		var dir_name = dirs.back()
+		var dir := Directory.new()
+		var dir_name : String = dirs.back()
 		dirs.pop_back()
 
 		if dir.open(dir_name) == OK:
-			dir.list_dir_begin()
-			var file_name = dir.get_next()
+			var _dirlist_error: int = dir.list_dir_begin()
+			var file_name := dir.get_next()
 			while file_name != "":
 				if not dir_name == "res://":
 					first = false
@@ -114,7 +121,7 @@ static func get_flat_view_dict(p_dir = "res://", p_match = "", p_match_is_regex 
 						dirs.push_back(dir.get_current_dir() + "/" + file_name)
 					# If a file, check if we already have a record for the same name
 					else:
-						var path = dir.get_current_dir() + ("/" if not first else "") + file_name
+						var path := dir.get_current_dir() + ("/" if not first else "") + file_name
 						# grab all
 						if not p_match:
 							data.append(path)
@@ -123,7 +130,7 @@ static func get_flat_view_dict(p_dir = "res://", p_match = "", p_match_is_regex 
 							data.append(path)
 						# grab matching regex
 						else:
-							var regex_match = regex.search(path)
+							var regex_match := regex.search(path)
 							if regex_match != null:
 								data.append(path)
 				# Move on to the next file in this directory
