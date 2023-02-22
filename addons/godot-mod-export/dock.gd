@@ -6,7 +6,7 @@ const ERROR_COLOR = "#ff9090"
 
 # passed from the EditorPlugin
 var editor_interface: EditorInterface setget set_editor_interface
-var base_theme: Theme 	
+var base_theme: Theme
 var store: ModToolStore = ModToolStore.new()
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
@@ -31,10 +31,10 @@ func set_editor_interface(interface: EditorInterface) -> void:
 
 	$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
-		# set up warning icons to show if a field is invalid
-		for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
-			if node.has_method("set_error_icon"):
-				node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+	# set up warning icons to show if a field is invalid
+	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
+		if node.has_method("set_error_icon"):
+			node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
 
 	store.label_output = label_output
 
@@ -132,7 +132,7 @@ func _is_mod_dir_valid() -> bool:
 
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
-		var zipper = ModToolZipBuilder.new()
+		var zipper := ModToolZipBuilder.new()
 		zipper.build_zip(store)
 
 
