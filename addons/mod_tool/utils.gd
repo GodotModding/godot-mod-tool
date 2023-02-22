@@ -40,23 +40,6 @@ static func get_regex_results(string: String, regex_exp: String) -> Array:
 	return results
 
 
-# Get the path to a local folder. Primarily used to get the  (packed) mods
-# folder, ie "res://mods" or the OS's equivalent, as well as the configs path
-static func get_local_folder_dir(subfolder: String = "") -> String:
-	var game_install_directory := OS.get_executable_path().get_base_dir()
-
-	if OS.get_name() == "OSX":
-		game_install_directory = game_install_directory.get_base_dir().get_base_dir()
-
-	# Fix for running the game through the Godot editor (as the EXE path would be
-	# the editor's own EXE, which won't have any mod ZIPs)
-	# if OS.is_debug_build():
-	if OS.has_feature("editor"):
-		game_install_directory = "res://"
-
-	return game_install_directory.plus_file(subfolder)
-
-
 # Copies a file from a given src to the specified dst path.
 # src = path/to/file.extension
 # dst = other/path/to/file.extension
