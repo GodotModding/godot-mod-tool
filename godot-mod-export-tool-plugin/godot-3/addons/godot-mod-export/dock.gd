@@ -8,6 +8,8 @@ var editor_interface: EditorInterface setget set_editor_interface
 var base_theme: Theme
 
 var tab_parent_bottom_panel: PanelContainer
+var log_richtext_label: RichTextLabel
+var log_output_dock_button: ToolButton
 
 
 func _ready() -> void:
@@ -16,8 +18,8 @@ func _ready() -> void:
 	_load_manifest()
 	_is_manifest_valid()
 
-#	var editor_log := get_parent().get_child(0)
-#	var log_text := editor_log.get_child(1)
+	get_log_nodes()
+
 
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
@@ -32,6 +34,47 @@ func set_editor_interface(interface: EditorInterface) -> void:
 
 	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
 	$"%ConfigEditor".base_theme = base_theme
+
+
+func get_log_nodes() -> void:
+	var editor_log := get_parent().get_child(0)
+	log_richtext_label = editor_log.get_child(1)
+
+	# The button hbox should be last, but here it is second from last for some reason
+	var dock_tool_button_bar: HBoxContainer = get_parent().get_child(get_parent().get_child_count() -2)
+	if not dock_tool_button_bar:
+		# on project load it can happen that these nodes don't exist yet, wait for parent
+		yield(get_parent(), "ready")
+		dock_tool_button_bar = get_parent().get_child(get_parent().get_child_count() -2)
+	log_output_dock_button = dock_tool_button_bar.get_child(0).get_child(0)
+
+	$"%ConfigEditor".connect("discard_last_console_error", self, "discard_last_console_error")
+
+
+# Removes the last error line from the output console as if nothing happened
+# used in the json validation since the error is displayed right there and
+# it causes a lot of clutter otherwise
+func discard_last_console_error() -> void:
+	# If the console is flooded anyway, ignore
+	var line_count := log_richtext_label.get_line_count()
+	if line_count > 1000:
+		return
+
+	# The last line is an empty line, remove the one before that
+	log_richtext_label.remove_line(line_count -2)
+	log_richtext_label.add_text("\n")
+
+	# If there is an error in the console already, leave the circle on the tool button
+	# All error lines have a space in the beginnig to separate from the circle image
+	# Not the safest way to check, but it's the only one it seems
+	for line in log_richtext_label.text.split("\n"):
+		if (line as String).begins_with(" "):
+			return
+
+	# If there were no other error lines, remove the icon
+	# Setting to null will crash the editor occasionally, this does not
+	if log_output_dock_button:
+		log_output_dock_button.icon = StreamTexture.new()
 
 
 func _save_manifest() -> void:

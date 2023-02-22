@@ -454,14 +454,14 @@ margin_bottom = 40.0
 
 [node name="Label" type="Label" parent="TabContainer/Default Configuration/VBox/HBox"]
 margin_top = 13.0
-margin_right = 1579.0
+margin_right = 1551.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Default values for user mod configuration "
 
 [node name="ErrorLabel" type="Label" parent="TabContainer/Default Configuration/VBox/HBox"]
 unique_name_in_owner = true
-margin_left = 1583.0
+margin_left = 1555.0
 margin_top = 13.0
 margin_right = 1635.0
 margin_bottom = 27.0

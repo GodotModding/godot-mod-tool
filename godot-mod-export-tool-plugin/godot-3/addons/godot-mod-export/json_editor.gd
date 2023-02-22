@@ -1,8 +1,11 @@
 tool
 extends TextEdit
 
+signal discard_last_console_error
+
 var base_theme: Theme setget set_base_theme
 var editor_settings: EditorSettings setget set_editor_settings
+var log_richtext_label: RichTextLabel
 var last_text: String
 
 var highlight_settings: PoolStringArray = [
@@ -68,6 +71,8 @@ func validate() -> void:
 	var parsed := JSON.parse(text)
 	if not parsed.error == OK:
 		$"%ErrorLabel".text = "Line %s: %s" % [parsed.error_line +1, parsed.error_string]
+		emit_signal("discard_last_console_error")
+
 		return
 	$"%ErrorLabel".text = "JSON is valid"
 
