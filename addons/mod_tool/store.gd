@@ -17,13 +17,13 @@ var label_output : RichTextLabel
 
 func set_name_mod_dir(new_name_mod_dir):
 	update_paths(new_name_mod_dir)
-	
+
 
 func init(store: Dictionary):
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
 	path_export_dir = "res://zips"
-	path_project_dir = ProjectSettings.globalize_path(ModToolUtils.get_local_folder_dir())
+	path_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_temp_dir = "user://temp/" + store.name_mod_dir
 	excluded_file_extensions = [".csv.import"]
 
@@ -56,7 +56,7 @@ func load_store():
 	var dir = Directory.new()
 	if not dir.file_exists(PATH_SAVE_FILE):
 		return
-	
+
 	var file = File.new()
 	file.open(PATH_SAVE_FILE, File.READ)
 	var content = file.get_as_text()

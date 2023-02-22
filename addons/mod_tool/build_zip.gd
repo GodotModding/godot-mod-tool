@@ -32,7 +32,7 @@ func build_zip(store: ModToolStore) -> void:
 		ModToolUtils.file_copy(path_mod_file, store.path_temp_dir + '/' + path_mod_file.trim_prefix("res://"))
 
 	# Zip that folder with 7zip
-	var path_addon_dir = ProjectSettings.globalize_path(store.path_project_dir + "addons/godot-mod-export/")
+	var path_addon_dir = ProjectSettings.globalize_path(store.path_project_dir + "addons/mod_tool/")
 	var path_seven_zip = path_addon_dir + "vendor/7zip/win/zip.exe"
 	var path_final_zip = path_addon_dir + "zips/" + store.name_mod_dir + ".zip"
 	var path_global_temp_dir = ProjectSettings.globalize_path(store.path_temp_dir)

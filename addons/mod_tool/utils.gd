@@ -35,23 +35,6 @@ static func get_regex_results(string, regex_exp: String):
 	return results
 
 
-# Get the path to a local folder. Primarily used to get the  (packed) mods
-# folder, ie "res://mods" or the OS's equivalent, as well as the configs path
-static func get_local_folder_dir(subfolder: String = "") -> String:
-	var game_install_directory := OS.get_executable_path().get_base_dir()
-
-	if OS.get_name() == "OSX":
-		game_install_directory = game_install_directory.get_base_dir().get_base_dir()
-
-	# Fix for running the game through the Godot editor (as the EXE path would be
-	# the editor's own EXE, which won't have any mod ZIPs)
-	# if OS.is_debug_build():
-	if OS.has_feature("editor"):
-		game_install_directory = "res://"
-
-	return game_install_directory.plus_file(subfolder)
-
-
 static func file_copy(src: String, dst: String) -> void:
 	var file := File.new()
 	var dir := Directory.new()
@@ -95,7 +78,9 @@ static func remove_recursive(path):
 		print("Error removing " + path)
 
 
+# Slightly modified version of:
 # https://gist.github.com/willnationsdev/00d97aa8339138fd7ef0d6bd42748f6e
+# Removed .import from the extension filter.
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
