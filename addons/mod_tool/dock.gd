@@ -19,8 +19,11 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-#	_load_manifest()
-#	_is_manifest_valid()
+	store.label_output = label_output
+
+	_load_manifest()
+	_is_manifest_valid()
+	_update_ui()
 
 	get_log_nodes()
 
@@ -81,10 +84,6 @@ func discard_last_console_error() -> void:
 	# Setting to null will crash the editor occasionally, this does not
 	if log_output_dock_button:
 		log_output_dock_button.icon = StreamTexture.new()
-
-	_load_manifest()
-	_is_manifest_valid()
-	_update_ui()
 
 
 func _save_manifest() -> void:
