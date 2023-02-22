@@ -131,7 +131,7 @@ func _is_mod_dir_valid() -> bool:
 
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
-		var zipper = ModToolZipBuilder.new()
+		var zipper := ModToolZipBuilder.new()
 		zipper.build_zip(store)
 
 

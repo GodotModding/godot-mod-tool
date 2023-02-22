@@ -2,7 +2,9 @@ extends Node
 class_name ModToolStore
 
 
-const PATH_SAVE_FILE = "user://mod-tool-plugin-save.json"
+# Global store for all Data the ModTool requires.
+
+const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
@@ -15,11 +17,11 @@ var path_mod_files : Array = []
 var label_output : RichTextLabel
 
 
-func set_name_mod_dir(new_name_mod_dir):
+func set_name_mod_dir(new_name_mod_dir: String) -> void:
 	update_paths(new_name_mod_dir)
 
 
-func init(store: Dictionary):
+func init(store: Dictionary) -> void:
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
 	path_export_dir = "res://zips"
@@ -28,14 +30,14 @@ func init(store: Dictionary):
 	excluded_file_extensions = [".csv.import"]
 
 
-func update_paths(new_name_mod_dir):
+func update_paths(new_name_mod_dir: String) -> void:
 	name_mod_dir = new_name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + new_name_mod_dir
 	path_temp_dir = "user://temp/" + new_name_mod_dir
 
 
-func save_store():
-	var save_data = {
+func save_store() -> void:
+	var save_data := {
 		"name_mod_dir": name_mod_dir,
 		"path_mod_dir": path_mod_dir,
 		"path_export_dir": path_export_dir,
@@ -44,21 +46,21 @@ func save_store():
 		"excluded_file_extensions": excluded_file_extensions
 	}
 
-	var file = File.new()
-	var error = file.open(PATH_SAVE_FILE, File.WRITE)
+	var file := File.new()
+	var error := file.open(PATH_SAVE_FILE, File.WRITE)
 	if error != OK:
 		print(error)
 	file.store_string(JSON.print(save_data))
 	file.close()
 
 
-func load_store():
-	var dir = Directory.new()
+func load_store() -> void:
+	var dir := Directory.new()
 	if not dir.file_exists(PATH_SAVE_FILE):
 		return
 
-	var file = File.new()
+	var file := File.new()
 	file.open(PATH_SAVE_FILE, File.READ)
-	var content = file.get_as_text()
+	var content := file.get_as_text()
 
 	init(JSON.parse(content).result)
