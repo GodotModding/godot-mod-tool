@@ -96,7 +96,7 @@ func _load_manifest() -> void:
 
 func _is_manifest_valid() -> bool:
 	var mod_manifest: Script
-	if File.new().file_exists("res://addons/mod_loader/mod_manifest.gd"):
+	if ModLoaderUtils.file_exists("res://addons/mod_loader/mod_manifest.gd"):
 		mod_manifest = load("res://addons/mod_loader/mod_manifest.gd")
 
 	var is_valid: bool
