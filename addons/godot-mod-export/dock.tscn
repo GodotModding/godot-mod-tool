@@ -58,36 +58,36 @@ margin_bottom = -4.0
 [node name="HSplit" type="HSplitContainer" parent="TabContainer/Export"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 1029.0
-margin_bottom = 557.0
+margin_right = 1925.0
+margin_bottom = 1037.0
 
 [node name="Console" type="VBoxContainer" parent="TabContainer/Export/HSplit"]
-margin_right = 675.0
-margin_bottom = 550.0
+margin_right = 1272.0
+margin_bottom = 1030.0
 rect_pivot_offset = Vector2( -230, -400 )
 size_flags_horizontal = 3
 
 [node name="HBox" type="HBoxContainer" parent="TabContainer/Export/HSplit/Console"]
-margin_right = 675.0
+margin_right = 1272.0
 margin_bottom = 20.0
 
 [node name="Label" type="Label" parent="TabContainer/Export/HSplit/Console/HBox"]
 margin_top = 3.0
-margin_right = 580.0
+margin_right = 1177.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Output:"
 
 [node name="CopyOutput" type="Button" parent="TabContainer/Export/HSplit/Console/HBox"]
-margin_left = 584.0
-margin_right = 627.0
+margin_left = 1181.0
+margin_right = 1224.0
 margin_bottom = 20.0
 shortcut = SubResource( 12 )
 text = "Copy"
 
 [node name="ClearOutput" type="Button" parent="TabContainer/Export/HSplit/Console/HBox"]
-margin_left = 631.0
-margin_right = 675.0
+margin_left = 1228.0
+margin_right = 1272.0
 margin_bottom = 20.0
 shortcut = SubResource( 13 )
 text = "Clear"
@@ -95,8 +95,8 @@ text = "Clear"
 [node name="Output" type="RichTextLabel" parent="TabContainer/Export/HSplit/Console"]
 unique_name_in_owner = true
 margin_top = 24.0
-margin_right = 675.0
-margin_bottom = 550.0
+margin_right = 1272.0
+margin_bottom = 1030.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
@@ -104,36 +104,36 @@ scroll_following = true
 selection_enabled = true
 
 [node name="Settings" type="VBoxContainer" parent="TabContainer/Export/HSplit"]
-margin_left = 687.0
-margin_right = 1022.0
-margin_bottom = 550.0
+margin_left = 1284.0
+margin_right = 1918.0
+margin_bottom = 1030.0
 rect_min_size = Vector2( 300, 0 )
 rect_pivot_offset = Vector2( -1685, 180 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
 [node name="Label" type="Label" parent="TabContainer/Export/HSplit/Settings"]
-margin_right = 335.0
+margin_right = 634.0
 margin_bottom = 14.0
 text = "Export Settings"
 align = 1
 
 [node name="Scroll" type="ScrollContainer" parent="TabContainer/Export/HSplit/Settings"]
 margin_top = 18.0
-margin_right = 335.0
-margin_bottom = 488.0
+margin_right = 634.0
+margin_bottom = 968.0
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="VBox" type="VBoxContainer" parent="TabContainer/Export/HSplit/Settings/Scroll"]
-margin_right = 335.0
+margin_right = 634.0
 margin_bottom = 80.0
 size_flags_horizontal = 3
 
 [node name="ModId" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox" instance=ExtResource( 3 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_right = 335.0
+margin_right = 634.0
 hint_tooltip = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
@@ -149,7 +149,7 @@ Format: Namespace-ModName
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 28.0
-margin_right = 335.0
+margin_right = 634.0
 margin_bottom = 52.0
 hint_tooltip = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -164,14 +164,14 @@ Format: Namespace-ModName
 
 [node name="HBox" type="HBoxContainer" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox"]
 margin_top = 56.0
-margin_right = 335.0
+margin_right = 634.0
 margin_bottom = 80.0
 hint_tooltip = "Modify the zip before compressing 
 to follow Thunderstore specifications"
 
 [node name="Label" type="Label" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox/HBox"]
 margin_top = 5.0
-margin_right = 165.0
+margin_right = 315.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Thunderstore Export"
@@ -179,31 +179,31 @@ clip_text = true
 
 [node name="ThunderstoreExport" type="CheckBox" parent="TabContainer/Export/HSplit/Settings/Scroll/VBox/HBox"]
 unique_name_in_owner = true
-margin_left = 169.0
-margin_right = 335.0
+margin_left = 319.0
+margin_right = 634.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "On"
 
 [node name="Buttons" type="PanelContainer" parent="TabContainer/Export/HSplit/Settings"]
-margin_top = 492.0
-margin_right = 335.0
-margin_bottom = 550.0
+margin_top = 972.0
+margin_right = 634.0
+margin_bottom = 1030.0
 
 [node name="VBox" type="VBoxContainer" parent="TabContainer/Export/HSplit/Settings/Buttons"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 328.0
+margin_right = 627.0
 margin_bottom = 51.0
 
 [node name="Export" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
-margin_right = 321.0
+margin_right = 620.0
 margin_bottom = 20.0
 text = "Export Mod"
 
 [node name="ModSkeleton" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
 margin_top = 24.0
-margin_right = 321.0
+margin_right = 620.0
 margin_bottom = 44.0
 text = "Generate Mod Skeleton"
 
@@ -511,5 +511,6 @@ one_shot = true
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/ModSkeleton" to="." method="_on_mod_skeleton_pressed"]
 [connection signal="pressed" from="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_save_manifest_pressed"]
 [connection signal="pressed" from="TabContainer/Default Configuration/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
+[connection signal="cursor_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_cursor_changed"]
 [connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]
 [connection signal="timeout" from="TabContainer/Default Configuration/VBox/ConfigEditor/ValidationDelay" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
