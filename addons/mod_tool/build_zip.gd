@@ -27,23 +27,20 @@ func build_zip(store: ModToolStore) -> void:
 	# Generate temp folder that get's zipped later
 	for i in store.path_mod_files.size():
 		var path_mod_file := store.path_mod_files[i] as String
+		var path_zip_file := store.path_temp_dir + '/' + path_mod_file.trim_prefix("res://")
 
-		# Copy mod_file to path_zip_file
-		ModToolUtils.file_copy(path_mod_file, store.path_temp_dir + '/' + path_mod_file.trim_prefix("res://"))
+		# Copy mod_file to temp folder
+		ModToolUtils.file_copy(path_mod_file, path_zip_file)
 
 	# Zip that folder with 7zip
-	var path_addon_dir := ProjectSettings.globalize_path(store.path_project_dir + "addons/mod_tool/")
-	var path_seven_zip := path_addon_dir + "vendor/7zip/win/zip.exe"
-	var path_final_zip := path_addon_dir + "zips/" + store.name_mod_dir + ".zip"
-	var path_global_temp_dir := ProjectSettings.globalize_path(store.path_temp_dir)
-	var path_global_temp_dir_with_wildcard := path_global_temp_dir + "/*"
+	var path_global_temp_dir_with_wildcard: String = store.path_global_temp_dir + "/*"
 
 	var output := []
-	var _exit_code := OS.execute(path_seven_zip, ["a", path_final_zip, path_global_temp_dir_with_wildcard], true, output)
+	var _exit_code := OS.execute(store.path_global_seven_zip, ["a", store.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
 	store.label_output.add_text(JSON.print(output, '   '))
 
 	# Delete the temp folder
-	ModToolUtils.remove_recursive(path_global_temp_dir)
+	ModToolUtils.remove_recursive(store.path_global_temp_dir)
 
 
 func _get_imported_file_path(store: ModToolStore, import_file_path: String) -> String:
@@ -51,7 +48,6 @@ func _get_imported_file_path(store: ModToolStore, import_file_path: String) -> S
 
 	# Open file
 	var error := config.load(import_file_path)
-
 	if error != OK:
 		ModToolUtils.output_error(store, "Failed to load import file -> " + str(error))
 
