@@ -88,8 +88,6 @@ func _on_text_changed() -> void:
 	$ValidationDelay.stop()
 	$ValidationDelay.start()
 
-	if cursor_get_column() < 1:
-		return
 	if get_setting_bool("text_editor/completion/auto_brace_complete"):
 		autobrace()
 
@@ -98,13 +96,17 @@ func _on_text_changed() -> void:
 
 func autobrace() -> void:
 	var line := get_line(cursor_get_line())
-	var char_before_cursor := line[cursor_get_column()-1]
+
+	var char_before_cursor := ""
+	if cursor_get_column() > 0:
+		char_before_cursor = line[cursor_get_column()-1]
+
 	var char_after_cursor := ""
 	if cursor_get_column() < line.length():
 		char_after_cursor = line[cursor_get_column()]
 
 	# When deleting, also delete the autobraced character
-	if Input.is_key_pressed(KEY_BACKSPACE) and not char_after_cursor == null:
+	if Input.is_key_pressed(KEY_BACKSPACE):
 		if char_after_cursor in autobrace_pairs.values():
 			var deleted_character := first_different_character(text, last_text)
 			if autobrace_pairs.has(deleted_character) and autobrace_pairs[deleted_character] == char_after_cursor:
@@ -125,7 +127,6 @@ func autobrace() -> void:
 			cursor_set_column(last_cursor_column)
 			return
 
-#		printt(last_cursor_column, last_selection)
 		# If there is a selection, surround that with the bracing characters
 		# Pressing the alt key moves the selection left by one character
 		if Input.is_key_pressed(KEY_ALT):
@@ -135,12 +136,18 @@ func autobrace() -> void:
 					last_selection.from_line, last_selection.from_col +1,
 					last_selection.to_line, last_selection.to_col +1
 				)
-			elif last_cursor_column == last_selection.to_col +1:
-				# there is another issue selecting left to right
-				pass # todo
-
-		insert_text_at_cursor(last_selection.enclosed_text + closing_char)
-		cursor_set_column(last_selection.to_col +1)
+				insert_text_at_cursor(last_selection.enclosed_text + closing_char)
+				cursor_set_column(last_selection.to_col +1)
+			else:
+				# If selected left to right, something else goes wrong as well,
+				# but it can be fixed by inserting the whole selection with braces
+				# and removing the leftover trailing brace behind it afterwards
+				insert_text_at_cursor(char_before_cursor + last_selection.enclosed_text + closing_char)
+				delete_character_after_cursor()
+				cursor_set_column(last_selection.to_col +1)
+		else:
+			insert_text_at_cursor(last_selection.enclosed_text + closing_char)
+			cursor_set_column(last_selection.to_col +1)
 		last_selection = null
 
 
