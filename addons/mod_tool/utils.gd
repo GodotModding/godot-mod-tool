@@ -61,6 +61,11 @@ static func file_copy(src: String, dst: String) -> void:
 	file.close()
 
 
+# Log error message to the output richtext label.
+static func output_error(store: ModToolStore, message: String) -> void:
+	store.label_output.append_bbcode("\n [color=%s]ERROR: %s[/color]" % [store.ERROR_COLOR, message])
+
+
 # Takes a directory path to get removed.
 # https://www.davidepesce.com/2019/11/04/essential-guide-to-godot-filesystem-api/
 static func remove_recursive(path: String) -> void:
