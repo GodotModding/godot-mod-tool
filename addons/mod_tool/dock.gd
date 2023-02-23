@@ -6,6 +6,7 @@ extends Control
 var editor_interface: EditorInterface setget set_editor_interface
 var base_theme: Theme
 var store: ModToolStore = ModToolStore.new()
+
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_output_dock_button: ToolButton

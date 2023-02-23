@@ -5,8 +5,9 @@ signal discard_last_console_error
 
 var base_theme: Theme setget set_base_theme
 var editor_settings: EditorSettings setget set_editor_settings
-var log_richtext_label: RichTextLabel
-var last_text: String
+
+var last_text := ""
+var last_selection: TextSelection
 
 var highlight_settings: PoolStringArray = [
 	"string_color", "background_color", "line_number_color",
@@ -47,7 +48,6 @@ func set_editor_settings(p_editor_settings: EditorSettings) -> void:
 
 	$ValidationDelay.wait_time = editor_settings.get_setting("text_editor/completion/idle_parse_delay")
 
-	# highlights
 	add_color_region('"', '"', get_highlight_color("string_color"))
 	for highlight in highlight_settings:
 		add_color_override(highlight, get_highlight_color(highlight))
@@ -77,12 +77,17 @@ func validate() -> void:
 	$"%ErrorLabel".text = "JSON is valid"
 
 
+func _on_cursor_changed() -> void:
+	if get_selection_text().length() > 0:
+		last_selection = TextSelection.from_text_edit(self)
+	else:
+		last_selection = null
+
+
 func _on_text_changed() -> void:
 	$ValidationDelay.stop()
 	$ValidationDelay.start()
 
-	if cursor_get_column() < 1:
-		return
 	if get_setting_bool("text_editor/completion/auto_brace_complete"):
 		autobrace()
 
@@ -91,40 +96,70 @@ func _on_text_changed() -> void:
 
 func autobrace() -> void:
 	var line := get_line(cursor_get_line())
-	var char_before_cursor := line[cursor_get_column()-1]
-	var char_after_cursor: String
+
+	var char_before_cursor := ""
+	if cursor_get_column() > 0:
+		char_before_cursor = line[cursor_get_column()-1]
+
+	var char_after_cursor := ""
 	if cursor_get_column() < line.length():
 		char_after_cursor = line[cursor_get_column()]
 
-	# when deleting, also delete the autobraced character
-	if Input.is_key_pressed(KEY_BACKSPACE) and not char_after_cursor == null:
+	# When deleting, also delete the autobraced character
+	if Input.is_key_pressed(KEY_BACKSPACE):
 		if char_after_cursor in autobrace_pairs.values():
 			var deleted_character := first_different_character(text, last_text)
 			if autobrace_pairs.has(deleted_character) and autobrace_pairs[deleted_character] == char_after_cursor:
 				delete_character_after_cursor()
 
-	# if we encounter a closing brace, "skip" over it
-	# since the character is written already, just delete the next one
-	elif is_closing_brace(char_before_cursor, char_after_cursor):
+	# If we encounter a closing brace, "skip" over it
+	# Since the character is written already, just delete the next one
+	elif is_matching_closing_brace(char_before_cursor, char_after_cursor):
 		delete_character_after_cursor()
 
-	# if a character is in the autoclose dict, close it
+	# If a character is in the autoclose dict, close it
 	elif char_before_cursor in autobrace_pairs.keys():
 		var closing_char: String = autobrace_pairs[char_before_cursor]
-		var prev_column := cursor_get_column()
-		insert_text_at_cursor(closing_char)
-		cursor_set_column(prev_column)
+		var last_cursor_column := cursor_get_column()
+
+		if not last_selection:
+			insert_text_at_cursor(closing_char)
+			cursor_set_column(last_cursor_column)
+			return
+
+		# If there is a selection, surround that with the bracing characters
+		# Pressing the alt key moves the selection left by one character
+		if Input.is_key_pressed(KEY_ALT):
+			if last_cursor_column == last_selection.from_col +1:
+				# If selected right to left, it can be fixed by offsetting it right
+				select(
+					last_selection.from_line, last_selection.from_col +1,
+					last_selection.to_line, last_selection.to_col +1
+				)
+				insert_text_at_cursor(last_selection.enclosed_text + closing_char)
+				cursor_set_column(last_selection.to_col +1)
+			else:
+				# If selected left to right, something else goes wrong as well,
+				# but it can be fixed by inserting the whole selection with braces
+				# and removing the leftover trailing brace behind it afterwards
+				insert_text_at_cursor(char_before_cursor + last_selection.enclosed_text + closing_char)
+				delete_character_after_cursor()
+				cursor_set_column(last_selection.to_col +1)
+		else:
+			insert_text_at_cursor(last_selection.enclosed_text + closing_char)
+			cursor_set_column(last_selection.to_col +1)
+		last_selection = null
 
 
-func is_closing_brace(new_character: String, char_after_cursor: String) -> bool:
+func is_matching_closing_brace(new_character: String, char_after_cursor: String) -> bool:
 	if not new_character == char_after_cursor:
 		return false
 
-	# case where opening and closing brace are the same -> ""
+	# Opening and closing brace are the same -> ""
 	if char_after_cursor in autobrace_pairs.keys():
 		return true
 
-	# case where opening and closing brace are the different -> ()
+	# Opening and closing brace are different -> ()
 	if new_character in autobrace_pairs.values():
 		return true
 
@@ -144,9 +179,14 @@ func delete_character_after_cursor() -> void:
 
 
 func first_different_character(str1: String, str2: String) -> String:
-	var diff: String = ""
-	var len1: int = str1.length()
-	var len2: int = str2.length()
+	var len1 := str1.length()
+	var len2 := str2.length()
+
+	if len1 == 0:
+		return str2[0]
+	if len2 == 0:
+		return str1[0]
+
 	for i in min(len1, len2):
 		if not str1[i] == str2[i]:
 			return str2[i]
@@ -155,4 +195,32 @@ func first_different_character(str1: String, str2: String) -> String:
 
 func _on_ValidationDelay_timeout() -> void:
 	validate()
+
+
+class TextSelection:
+	var enclosed_text: String
+	var from_line: int
+	var from_col: int
+	var to_line: int
+	var to_col: int
+
+	func _init(p_enclosed_text: String, p_from_line: int, p_from_col: int, p_to_line: int, p_to_col: int) -> void:
+		enclosed_text = p_enclosed_text
+		from_line = p_from_line
+		from_col = p_from_col
+		to_line = p_to_line
+		to_col = p_to_col
+
+
+	static func from_text_edit(text_edit: TextEdit) -> TextSelection:
+		return TextSelection.new(
+			text_edit.get_selection_text(),
+			text_edit.get_selection_from_line(), text_edit.get_selection_from_column(),
+			text_edit.get_selection_to_line(), text_edit.get_selection_to_column()
+		)
+
+
+	func _to_string() -> String:
+		return "%s %s %s" % [ Vector2(from_line, from_col), enclosed_text, Vector2(to_line, to_col) ]
+
 
