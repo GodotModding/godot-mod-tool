@@ -5,6 +5,7 @@ class_name ModToolStore
 # Global store for all Data the ModTool requires.
 
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
+const ERROR_COLOR = "#ff9090"
 
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""

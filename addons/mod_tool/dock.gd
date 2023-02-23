@@ -2,8 +2,6 @@ tool
 extends Control
 
 
-const ERROR_COLOR = "#ff9090"
-
 # passed from the EditorPlugin
 var editor_interface: EditorInterface setget set_editor_interface
 var base_theme: Theme
@@ -118,12 +116,12 @@ func _update_ui():
 func _is_mod_dir_valid() -> bool:
 	# Check if Mod ID is given
 	if store.name_mod_dir == '':
-		label_output.append_bbcode("\n [color=%s]ERROR: Please provide a Mod ID[/color]" % ERROR_COLOR)
+		ModToolUtils.output_error(store, "Please provide a Mod ID")
 		return false
 
 	# Check if mod dir exists
 	if not ModLoaderUtils.dir_exists(store.path_mod_dir):
-		label_output.append_bbcode("\n [color=%s]ERROR: Mod folder %s does not exist[/color]" % [ERROR_COLOR, store.path_mod_dir])
+		ModToolUtils.output_error(store, "Mod folder %s does not exist" % store.path_mod_dir)
 		return false
 
 	return true
