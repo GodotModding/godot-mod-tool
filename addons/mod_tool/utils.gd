@@ -29,17 +29,6 @@ static func file_get_as_text(path: String) -> String:
 	return content
 
 
-# Returns the result of the regex on the given string.
-static func get_regex_results(string: String, regex_exp: String) -> Array:
-	var regex := RegEx.new()
-	var results := []
-
-	regex.compile(regex_exp)
-	for result in regex.search_all(string):
-		results.push_back(result.get_string())
-	return results
-
-
 # Copies a file from a given src to the specified dst path.
 # src = path/to/file.extension
 # dst = other/path/to/file.extension
@@ -59,6 +48,11 @@ static func file_copy(src: String, dst: String) -> void:
 	file.open(dst, File.WRITE)
 	file.store_buffer(file_content)
 	file.close()
+
+
+# Log error message to the output richtext label.
+static func output_error(store: ModToolStore, message: String) -> void:
+	store.label_output.append_bbcode("\n [color=%s]ERROR: %s[/color]" % [store.error_color, message])
 
 
 # Takes a directory path to get removed.

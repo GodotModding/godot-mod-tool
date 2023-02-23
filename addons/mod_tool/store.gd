@@ -6,15 +6,22 @@ class_name ModToolStore
 
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 
+var error_color := ''
+
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
 var path_export_dir := ""
-var path_project_dir := ""
 var path_temp_dir := ""
-var excluded_file_extensions : PoolStringArray = [".csv.import"]
-var path_mod_files : Array = []
+var path_global_export_dir := ""
+var path_global_project_dir := ""
+var path_global_temp_dir := ""
+var path_global_addon_dir := ""
+var path_global_seven_zip := ""
+var path_global_final_zip := ""
+var excluded_file_extensions: PoolStringArray = [".csv.import"]
+var path_mod_files: Array = []
 
-var label_output : RichTextLabel
+var label_output: RichTextLabel
 
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:
@@ -24,9 +31,14 @@ func set_name_mod_dir(new_name_mod_dir: String) -> void:
 func init(store: Dictionary) -> void:
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
-	path_export_dir = "res://zips"
-	path_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
+	path_export_dir = "res://zips/"
+	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
+	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_temp_dir = "user://temp/" + store.name_mod_dir
+	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
+	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
+	path_global_seven_zip = path_global_addon_dir + "vendor/7zip/win/zip.exe"
+	path_global_final_zip = path_global_export_dir + store.name_mod_dir + ".zip"
 	excluded_file_extensions = [".csv.import"]
 
 
@@ -41,7 +53,7 @@ func save_store() -> void:
 		"name_mod_dir": name_mod_dir,
 		"path_mod_dir": path_mod_dir,
 		"path_export_dir": path_export_dir,
-		"path_project_dir": path_project_dir,
+		"path_global_project_dir": path_global_project_dir,
 		"path_temp_dir": path_temp_dir,
 		"excluded_file_extensions": excluded_file_extensions
 	}
