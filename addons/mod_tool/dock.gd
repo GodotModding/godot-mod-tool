@@ -2,8 +2,6 @@ tool
 extends Control
 
 
-const ERROR_COLOR = "#ff9090"
-
 # passed from the EditorPlugin
 var editor_interface: EditorInterface setget set_editor_interface
 var base_theme: Theme
@@ -20,8 +18,11 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
+	store.label_output = label_output
+
 	_load_manifest()
 	_is_manifest_valid()
+	_update_ui()
 
 	get_log_nodes()
 
@@ -29,6 +30,7 @@ func _ready() -> void:
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
 	base_theme = editor_interface.get_base_control().theme
+	store.error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
 
 	$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
@@ -83,10 +85,6 @@ func discard_last_console_error() -> void:
 	if log_output_dock_button:
 		log_output_dock_button.icon = StreamTexture.new()
 
-	_load_manifest()
-	_is_manifest_valid()
-	_update_ui()
-
 
 func _save_manifest() -> void:
 	pass # todo
@@ -98,7 +96,7 @@ func _load_manifest() -> void:
 
 func _is_manifest_valid() -> bool:
 	var mod_manifest: Script
-	if File.new().file_exists("res://addons/mod_loader/mod_manifest.gd"):
+	if ModLoaderUtils.file_exists("res://addons/mod_loader/mod_manifest.gd"):
 		mod_manifest = load("res://addons/mod_loader/mod_manifest.gd")
 
 	var is_valid: bool
@@ -120,12 +118,12 @@ func _update_ui():
 func _is_mod_dir_valid() -> bool:
 	# Check if Mod ID is given
 	if store.name_mod_dir == '':
-		label_output.append_bbcode("\n [color=%s]ERROR: Please provide a Mod ID[/color]" % ERROR_COLOR)
+		ModToolUtils.output_error(store, "Please provide a Mod ID")
 		return false
 
 	# Check if mod dir exists
 	if not ModLoaderUtils.dir_exists(store.path_mod_dir):
-		label_output.append_bbcode("\n [color=%s]ERROR: Mod folder %s does not exist[/color]" % [ERROR_COLOR, store.path_mod_dir])
+		ModToolUtils.output_error(store, "Mod folder %s does not exist" % store.path_mod_dir)
 		return false
 
 	return true
@@ -133,7 +131,7 @@ func _is_mod_dir_valid() -> bool:
 
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
-		var zipper = ModToolZipBuilder.new()
+		var zipper := ModToolZipBuilder.new()
 		zipper.build_zip(store)
 
 
