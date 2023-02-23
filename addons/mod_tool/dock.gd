@@ -29,6 +29,7 @@ func _ready() -> void:
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
 	base_theme = editor_interface.get_base_control().theme
+	store.error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
 
 	$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
