@@ -58,6 +58,10 @@ func _get_imported_file_path(store: ModToolStore, import_file_path: String) -> S
 	# Get the path to the imported file
 	# Imported file example path:
 	# res://.import/ImportedPNG.png-eddc81c8e2d2fc90950be5862656c2b5.stex
-	var imported_file_path := config.get_value('remap', 'path') as String
+	var imported_file_path := config.get_value('remap', 'path', '') as String
+
+	if imported_file_path == '':
+		ModToolUtils.output_error(store, "No remap path found in import file -> " + import_file_path)
+		return ''
 
 	return imported_file_path
