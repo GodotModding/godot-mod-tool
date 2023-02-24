@@ -4,7 +4,6 @@ extends Control
 
 # passed from the EditorPlugin
 var editor_interface: EditorInterface setget set_editor_interface
-var base_theme: Theme
 var store: ModToolStore = ModToolStore.new()
 
 var tab_parent_bottom_panel: PanelContainer
@@ -29,20 +28,19 @@ func _ready() -> void:
 
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
-	base_theme = editor_interface.get_base_control().theme
-	store.error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
+	store.base_theme = editor_interface.get_base_control().theme
 
-	$TabContainer.add_stylebox_override("panel", base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
+	$TabContainer.add_stylebox_override("panel", store.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
 	# set up warning icons to show if a field is invalid
 	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
 		if node.has_method("set_error_icon"):
-			node.set_error_icon(base_theme.get_icon("NodeWarning", "EditorIcons"))
+			node.set_error_icon(store.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
 	store.label_output = label_output
 
 	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
-	$"%ConfigEditor".base_theme = base_theme
+	$"%ConfigEditor".base_theme = store.base_theme
 
 
 func get_log_nodes() -> void:
@@ -162,14 +160,14 @@ func _on_mod_skeleton_pressed() -> void:
 # this is to offset the 10px content margins that are still present in the
 # BottomPanelDebuggerOverride stylebox for some reason. It's how Godot does it.
 func _on_mod_tools_dock_visibility_changed() -> void:
-	if not visible or not base_theme or not tab_parent_bottom_panel:
+	if not visible or not store.base_theme or not tab_parent_bottom_panel:
 		return
 
 	# the panel style is overridden by godot after this method is called
 	# make sure our override-override is applied after that
 	yield(get_tree(), "idle_frame")
 
-	var panel_box: StyleBoxFlat = base_theme.get_stylebox("BottomPanelDebuggerOverride", "EditorStyles")
+	var panel_box: StyleBoxFlat = store.base_theme.get_stylebox("BottomPanelDebuggerOverride", "EditorStyles")
 	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
