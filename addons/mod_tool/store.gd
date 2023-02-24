@@ -6,6 +6,7 @@ class_name ModToolStore
 
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 
+var base_theme: Theme setget set_base_theme
 var error_color := ''
 
 var name_mod_dir := "" setget set_name_mod_dir
@@ -22,6 +23,11 @@ var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files: Array = []
 
 var label_output: RichTextLabel
+
+
+func set_base_theme(new_base_theme: Theme) -> void:
+	base_theme = new_base_theme
+	error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
 
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:
