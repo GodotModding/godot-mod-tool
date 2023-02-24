@@ -89,6 +89,24 @@ func discard_last_console_error() -> void:
 		log_output_dock_button.icon = StreamTexture.new()
 
 
+func _handle_mod_creation() -> void:
+	# Validate mod-id
+	if not ModManifest.is_name_or_namespace_valid(store.name_mod_dir):
+		ModToolUtils.output_error(store, 'Invalid name or namespace: "%s". You may only use letters, numbers, underscores and at least 3 characters for each.' % store.name_mod_dir)
+
+	# Add mod folder to mods-unpacked
+		# Check if mods-unpacked dir exists
+		# If not create it
+
+		# Check if mod dir exists
+			# If not - create it
+			# If so - show error and ask if user wants to connect with the mod instead
+
+	# Create mod_main.gd
+
+	# Create manifest.json
+
+
 func _save_manifest() -> void:
 	pass # todo
 
@@ -179,3 +197,7 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 # Update the mod name in the ModToolStore
 func _on_ModId_Input_text_changed(new_text):
 	ModToolStore.name_mod_dir = new_text
+
+
+func _on_CreateMod_pressed():
+	_handle_mod_creation()
