@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://addons/mod_tool/dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/mod_tool/json_editor.gd" type="Script" id=2]
 [ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/mod_tool/input_string_multiline.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/mod_tool/popup.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/mod_tool/create_mod.tscn" type="PackedScene" id=6]
 
 [sub_resource type="InputEventKey" id=1]
 control = true
@@ -49,7 +50,6 @@ margin_right = 10.0
 tab_align = 0
 
 [node name="Export" type="PanelContainer" parent="TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -210,6 +210,7 @@ margin_bottom = 44.0
 text = "Export Mod"
 
 [node name="Mod Manifest" type="PanelContainer" parent="TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
@@ -227,7 +228,7 @@ follow_focus = true
 scroll_horizontal_enabled = false
 
 [node name="VBox" type="VBoxContainer" parent="TabContainer/Mod Manifest/ScrollContainer"]
-margin_right = 1010.0
+margin_right = 1022.0
 margin_bottom = 572.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -506,7 +507,6 @@ one_shot = true
 
 [node name="Popup" parent="." instance=ExtResource( 5 )]
 unique_name_in_owner = true
-visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -517,99 +517,53 @@ margin_right = 200.0
 margin_bottom = 50.0
 window_title = "Create new mod"
 
-[node name="MarginContainer" type="MarginContainer" parent="Popup"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/margin_right = 10
-custom_constants/margin_top = 25
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+[node name="CreateMod" parent="Popup" instance=ExtResource( 6 )]
+unique_name_in_owner = true
 
-[node name="Settings" type="VBoxContainer" parent="Popup/MarginContainer"]
-margin_left = 10.0
-margin_top = 25.0
+[node name="Settings" parent="Popup/CreateMod" index="0"]
 margin_right = 390.0
 margin_bottom = 140.0
-rect_min_size = Vector2( 300, 0 )
-rect_pivot_offset = Vector2( -1685, 180 )
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.5
 
-[node name="Scroll" type="ScrollContainer" parent="Popup/MarginContainer/Settings"]
+[node name="Scroll" parent="Popup/CreateMod/Settings" index="0"]
 margin_right = 380.0
 margin_bottom = 77.0
-size_flags_vertical = 3
-scroll_horizontal_enabled = false
 
-[node name="VBox" type="VBoxContainer" parent="Popup/MarginContainer/Settings/Scroll"]
+[node name="VBox" parent="Popup/CreateMod/Settings/Scroll" index="0"]
 margin_right = 380.0
-margin_bottom = 52.0
-size_flags_horizontal = 3
 
-[node name="ModId" parent="Popup/MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 3 )]
-anchor_right = 0.0
+[node name="ModId" parent="Popup/CreateMod/Settings/Scroll/VBox" index="0"]
 margin_right = 380.0
-hint_tooltip = "ID of the mod to be exported.
-Format: Namespace-ModName
-(Often Author-ModName)"
-mouse_default_cursor_shape = 16
-is_required = true
-label_text = "Mod ID"
-input_placeholder = "Author-ModName"
-hint_text = "ID of the mod to be exported.
-Format: Namespace-ModName
-(Often Author-ModName)"
 
-[node name="HBox" type="HBoxContainer" parent="Popup/MarginContainer/Settings/Scroll/VBox"]
-margin_top = 28.0
+[node name="HBox" parent="Popup/CreateMod/Settings/Scroll/VBox" index="1"]
 margin_right = 380.0
-margin_bottom = 52.0
-hint_tooltip = "Modify the zip before compressing
-to follow Thunderstore specifications"
 
-[node name="Label" type="Label" parent="Popup/MarginContainer/Settings/Scroll/VBox/HBox"]
-margin_top = 5.0
+[node name="Label" parent="Popup/CreateMod/Settings/Scroll/VBox/HBox" index="0"]
 margin_right = 188.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Thunderstore Export"
-clip_text = true
 
-[node name="ThunderstoreExport" type="CheckBox" parent="Popup/MarginContainer/Settings/Scroll/VBox/HBox"]
+[node name="ThunderstoreExport" parent="Popup/CreateMod/Settings/Scroll/VBox/HBox" index="1"]
 margin_left = 192.0
 margin_right = 380.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "On"
 
-[node name="Buttons" type="PanelContainer" parent="Popup/MarginContainer/Settings"]
+[node name="Buttons" parent="Popup/CreateMod/Settings" index="1"]
 margin_top = 81.0
 margin_right = 380.0
 margin_bottom = 115.0
 
-[node name="VBox" type="VBoxContainer" parent="Popup/MarginContainer/Settings/Buttons"]
-margin_left = 7.0
-margin_top = 7.0
+[node name="VBox" parent="Popup/CreateMod/Settings/Buttons" index="0"]
 margin_right = 373.0
-margin_bottom = 27.0
-
-[node name="CreateMod" type="Button" parent="Popup/MarginContainer/Settings/Buttons/VBox"]
-margin_right = 366.0
-margin_bottom = 20.0
-text = "Create"
 
 [connection signal="visibility_changed" from="." to="." method="_on_mod_tools_dock_visibility_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
 [connection signal="input_text_changed" from="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
-[connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/CreateMod" to="." method="_on_mod_skeleton_pressed"]
+[connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_save_manifest_pressed"]
 [connection signal="pressed" from="TabContainer/Default Configuration/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
 [connection signal="cursor_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_cursor_changed"]
 [connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]
 [connection signal="timeout" from="TabContainer/Default Configuration/VBox/ConfigEditor/ValidationDelay" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
-[connection signal="input_text_changed" from="Popup/MarginContainer/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
-[connection signal="pressed" from="Popup/MarginContainer/Settings/Buttons/VBox/CreateMod" to="." method="_on_CreateMod_pressed"]
+[connection signal="input_text_changed" from="Popup/CreateMod/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
 
 [editable path="Popup"]
+[editable path="Popup/CreateMod"]

@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/mod_tool/create_mod.gd" type="Script" id=1]
+[ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=2]
+
+[node name="CreateMod" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 25
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+script = ExtResource( 1 )
+
+[node name="Settings" type="VBoxContainer" parent="."]
+margin_left = 10.0
+margin_top = 25.0
+margin_right = 1014.0
+margin_bottom = 590.0
+rect_min_size = Vector2( 300, 0 )
+rect_pivot_offset = Vector2( -1685, 180 )
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Scroll" type="ScrollContainer" parent="Settings"]
+margin_right = 1004.0
+margin_bottom = 527.0
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="VBox" type="VBoxContainer" parent="Settings/Scroll"]
+margin_right = 1004.0
+margin_bottom = 52.0
+size_flags_horizontal = 3
+
+[node name="ModId" parent="Settings/Scroll/VBox" instance=ExtResource( 2 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_right = 1004.0
+hint_tooltip = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+mouse_default_cursor_shape = 16
+is_required = true
+label_text = "Mod ID"
+input_placeholder = "Author-ModName"
+hint_text = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+
+[node name="HBox" type="HBoxContainer" parent="Settings/Scroll/VBox"]
+margin_top = 28.0
+margin_right = 1004.0
+margin_bottom = 52.0
+hint_tooltip = "Modify the zip before compressing
+to follow Thunderstore specifications"
+
+[node name="Label" type="Label" parent="Settings/Scroll/VBox/HBox"]
+margin_top = 5.0
+margin_right = 500.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Thunderstore Export"
+clip_text = true
+
+[node name="ThunderstoreExport" type="CheckBox" parent="Settings/Scroll/VBox/HBox"]
+margin_left = 504.0
+margin_right = 1004.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "On"
+
+[node name="Buttons" type="PanelContainer" parent="Settings"]
+margin_top = 531.0
+margin_right = 1004.0
+margin_bottom = 565.0
+
+[node name="VBox" type="VBoxContainer" parent="Settings/Buttons"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 997.0
+margin_bottom = 27.0
+
+[node name="btn_create_mod" type="Button" parent="Settings/Buttons/VBox"]
+margin_right = 990.0
+margin_bottom = 20.0
+text = "Create"
+
+[connection signal="pressed" from="Settings/Buttons/VBox/btn_create_mod" to="." method="_on_btn_create_mod_pressed"]
