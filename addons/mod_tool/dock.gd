@@ -9,6 +9,7 @@ var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_output_dock_button: ToolButton
 
+onready var popup := $"%Popup"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 
@@ -155,7 +156,7 @@ func _on_save_config_pressed() -> void:
 
 
 func _on_mod_skeleton_pressed() -> void:
-	pass # todo
+	popup.popup_centered()
 
 
 # replicates the behaviour for the debugger tab styles
