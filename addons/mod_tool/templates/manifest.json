@@ -1,7 +1,7 @@
 {
 	"name": "ModName",
 	"namespace": "AuthorName",
-	"version_number": "x.x.x",
+	"version_number": "0.0.1",
 	"description": "Description of your mod...",
 	"website_url": "https://github.com/exampleauthor/examplemod",
 	"dependencies": [],
@@ -10,7 +10,7 @@
 			"incompatibilities": [],
 			"authors": ["AuthorName"],
 			"compatible_mod_loader_version": "5.0.1",
-			"compatible_game_version": ["x.x.x.x"],
+			"compatible_game_version": ["0.0.1"],
 			"config_defaults": {}
 		}
 	}
