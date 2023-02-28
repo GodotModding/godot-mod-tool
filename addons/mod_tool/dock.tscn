@@ -1,10 +1,9 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://addons/mod_tool/dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/mod_tool/json_editor.gd" type="Script" id=2]
 [ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=3]
 [ext_resource path="res://addons/mod_tool/input_string_multiline.tscn" type="PackedScene" id=4]
-[ext_resource path="res://addons/mod_tool/popup.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/mod_tool/create_mod.tscn" type="PackedScene" id=6]
 
 [sub_resource type="InputEventKey" id=1]
@@ -142,7 +141,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
-input_text = "Test-Test"
+input_text = "test-test"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -506,16 +505,17 @@ script = ExtResource( 2 )
 [node name="ValidationDelay" type="Timer" parent="TabContainer/Default Configuration/VBox/ConfigEditor"]
 one_shot = true
 
-[node name="Popup" parent="." instance=ExtResource( 5 )]
+[node name="Popup" type="WindowDialog" parent="."]
 unique_name_in_owner = true
+visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -200.0
-margin_top = -100.0
+margin_top = -75.0
 margin_right = 200.0
-margin_bottom = 50.0
+margin_bottom = 75.0
 window_title = "Create new mod"
 
 [node name="CreateMod" parent="Popup" instance=ExtResource( 6 )]
@@ -553,6 +553,9 @@ margin_bottom = 115.0
 [node name="VBox" parent="Popup/CreateMod/Settings/Buttons" index="0"]
 margin_right = 373.0
 
+[node name="btn_create_mod" parent="Popup/CreateMod/Settings/Buttons/VBox" index="0"]
+margin_right = 366.0
+
 [connection signal="visibility_changed" from="." to="." method="_on_mod_tools_dock_visibility_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
@@ -567,5 +570,4 @@ margin_right = 373.0
 [connection signal="mod_dir_created" from="Popup/CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="input_text_changed" from="Popup/CreateMod/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
 
-[editable path="Popup"]
 [editable path="Popup/CreateMod"]
