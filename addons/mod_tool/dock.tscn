@@ -142,6 +142,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
+input_text = "Test-Test"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -563,6 +564,7 @@ margin_right = 373.0
 [connection signal="cursor_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_cursor_changed"]
 [connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]
 [connection signal="timeout" from="TabContainer/Default Configuration/VBox/ConfigEditor/ValidationDelay" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
+[connection signal="mod_dir_created" from="Popup/CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="input_text_changed" from="Popup/CreateMod/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
 
 [editable path="Popup"]

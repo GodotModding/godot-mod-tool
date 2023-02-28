@@ -10,19 +10,15 @@ var log_richtext_label: RichTextLabel
 var log_output_dock_button: ToolButton
 
 onready var popup := $"%Popup"
+onready var create_mod = $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var create_mod = $"%CreateMod"
-
 
 
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	ModToolStore.load_store()
 	ModToolStore.label_output = label_output
-
-	create_mod.store = store
 
 	_load_manifest()
 	_is_manifest_valid()
@@ -31,13 +27,10 @@ func _ready() -> void:
 	get_log_nodes()
 
 
-func _exit_tree():
-	ModToolStore.save_store()
-
-
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
 	ModToolStore.base_theme = editor_interface.get_base_control().theme
+	ModToolStore.editor_file_system = editor_interface.get_resource_filesystem()
 
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
@@ -161,6 +154,7 @@ func _on_save_config_pressed() -> void:
 
 func _on_export_settings_create_new_mod_pressed() -> void:
 	popup.popup_centered()
+	create_mod.clear_mod_id_input()
 
 
 # replicates the behaviour for the debugger tab styles
@@ -182,5 +176,10 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 
 # Update the mod name in the ModToolStore
 func _on_ModId_input_text_changed(new_text, input_node):
-	store.name_mod_dir = new_text
+	ModToolStore.name_mod_dir = new_text
 	input_node.show_error_if_not(ModToolUtils.validate_mod_dir_name(new_text))
+
+
+func _on_CreateMod_mod_dir_created():
+	popup.hide()
+	_update_ui()

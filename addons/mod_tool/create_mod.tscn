@@ -34,7 +34,6 @@ margin_bottom = 52.0
 size_flags_horizontal = 3
 
 [node name="ModId" parent="Settings/Scroll/VBox" instance=ExtResource( 2 )]
-unique_name_in_owner = true
 anchor_right = 0.0
 margin_right = 1004.0
 hint_tooltip = "ID of the mod to be exported.
