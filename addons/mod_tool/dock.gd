@@ -4,7 +4,6 @@ extends Control
 
 # passed from the EditorPlugin
 var editor_interface: EditorInterface setget set_editor_interface
-var store: ModToolStore = ModToolStore.new()
 
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
@@ -17,7 +16,8 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	store.label_output = label_output
+	ModToolStore.load_store()
+	ModToolStore.label_output = label_output
 
 	_load_manifest()
 	_is_manifest_valid()
@@ -26,21 +26,25 @@ func _ready() -> void:
 	get_log_nodes()
 
 
+func _exit_tree():
+	ModToolStore.save_store()
+
+
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
-	store.base_theme = editor_interface.get_base_control().theme
+	ModToolStore.base_theme = editor_interface.get_base_control().theme
 
-	$TabContainer.add_stylebox_override("panel", store.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
+	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
 	# set up warning icons to show if a field is invalid
 	for node in $"TabContainer/Mod Manifest/ScrollContainer/VBox".get_children():
 		if node.has_method("set_error_icon"):
-			node.set_error_icon(store.base_theme.get_icon("NodeWarning", "EditorIcons"))
+			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
-	store.label_output = label_output
+	ModToolStore.label_output = label_output
 
 	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
-	$"%ConfigEditor".base_theme = store.base_theme
+	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
 
 func get_log_nodes() -> void:
@@ -110,18 +114,18 @@ func _is_manifest_valid() -> bool:
 
 
 func _update_ui():
-	mod_id.input_text = store.name_mod_dir
+	mod_id.input_text = ModToolStore.name_mod_dir
 
 
 func _is_mod_dir_valid() -> bool:
 	# Check if Mod ID is given
-	if store.name_mod_dir == '':
-		ModToolUtils.output_error(store, "Please provide a Mod ID")
+	if ModToolStore.name_mod_dir == '':
+		ModToolUtils.output_error("Please provide a Mod ID")
 		return false
 
 	# Check if mod dir exists
-	if not ModLoaderUtils.dir_exists(store.path_mod_dir):
-		ModToolUtils.output_error(store, "Mod folder %s does not exist" % store.path_mod_dir)
+	if not ModLoaderUtils.dir_exists(ModToolStore.path_mod_dir):
+		ModToolUtils.output_error("Mod folder %s does not exist" % ModToolStore.path_mod_dir)
 		return false
 
 	return true
@@ -130,7 +134,7 @@ func _is_mod_dir_valid() -> bool:
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		var zipper := ModToolZipBuilder.new()
-		zipper.build_zip(store)
+		zipper.build_zip()
 
 
 func _on_clear_output_pressed() -> void:
@@ -160,17 +164,17 @@ func _on_mod_skeleton_pressed() -> void:
 # this is to offset the 10px content margins that are still present in the
 # BottomPanelDebuggerOverride stylebox for some reason. It's how Godot does it.
 func _on_mod_tools_dock_visibility_changed() -> void:
-	if not visible or not store.base_theme or not tab_parent_bottom_panel:
+	if not visible or not ModToolStore.base_theme or not tab_parent_bottom_panel:
 		return
 
 	# the panel style is overridden by godot after this method is called
 	# make sure our override-override is applied after that
 	yield(get_tree(), "idle_frame")
 
-	var panel_box: StyleBoxFlat = store.base_theme.get_stylebox("BottomPanelDebuggerOverride", "EditorStyles")
+	var panel_box: StyleBoxFlat = ModToolStore.base_theme.get_stylebox("BottomPanelDebuggerOverride", "EditorStyles")
 	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
 # Update the mod name in the ModToolStore
 func _on_ModId_Input_text_changed(new_text):
-	store.name_mod_dir = new_text
+	ModToolStore.name_mod_dir = new_text

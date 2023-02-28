@@ -1,5 +1,5 @@
+tool
 extends Node
-class_name ModToolStore
 
 
 # Global store for all Data the ModTool requires.
@@ -52,6 +52,7 @@ func update_paths(new_name_mod_dir: String) -> void:
 	name_mod_dir = new_name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + new_name_mod_dir
 	path_temp_dir = "user://temp/" + new_name_mod_dir
+	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 
 
 func save_store() -> void:
