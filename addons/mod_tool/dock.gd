@@ -27,6 +27,10 @@ func _ready() -> void:
 	get_log_nodes()
 
 
+func _exit_tree():
+	ModToolStore.save_store()
+
+
 func set_editor_interface(interface: EditorInterface) -> void:
 	editor_interface = interface
 	ModToolStore.base_theme = editor_interface.get_base_control().theme

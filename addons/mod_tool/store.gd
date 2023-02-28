@@ -27,6 +27,14 @@ var path_mod_files: Array = []
 var label_output: RichTextLabel
 
 
+func _ready() -> void:
+	load_store()
+
+
+func _exit_tree() -> void:
+	save_store()
+
+
 func set_base_theme(new_base_theme: Theme) -> void:
 	base_theme = new_base_theme
 	error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
