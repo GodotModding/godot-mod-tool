@@ -25,11 +25,11 @@ var path_mod_files: Array = []
 var label_output: RichTextLabel
 
 
-func _ready():
+func _ready() -> void:
 	load_store()
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	save_store()
 
 
