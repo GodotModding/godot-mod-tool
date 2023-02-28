@@ -1,3 +1,4 @@
+tool
 extends Node
 class_name ModToolUtils
 
@@ -55,6 +56,10 @@ static func output_error(message: String) -> void:
 	ModToolStore.label_output.append_bbcode("\n [color=%s]ERROR: %s[/color]" % [ModToolStore.error_color, message])
 
 
+static func output_info(message: String) -> void:
+	ModToolStore.label_output.append_bbcode("\n" + message)
+
+
 # Validates the mod directory name based on the rules defined in the ModLoader ModManifest Class.
 static func validate_mod_dir_name(dir_name: String) -> bool:
 	var delimiter_exists := false
@@ -72,6 +77,15 @@ static func validate_mod_dir_name(dir_name: String) -> bool:
 	else:
 		# Only validate namespace
 		return ModManifest.is_name_or_namespace_valid(dir_name, true)
+
+
+static func make_dir_recursive(dst_dir) -> bool:
+	var dir := Directory.new()
+	var error := dir.make_dir_recursive(dst_dir)
+	if error != OK:
+		output_error("Failed creating directory at %s with error code %s" % [dst_dir, error])
+		return false
+	return true
 
 
 # Takes a directory path to get removed.
