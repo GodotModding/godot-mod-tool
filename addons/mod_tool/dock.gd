@@ -10,7 +10,7 @@ var log_richtext_label: RichTextLabel
 var log_output_dock_button: ToolButton
 
 onready var popup := $"%Popup"
-onready var create_mod = $"%CreateMod"
+onready var create_mod := $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 
@@ -179,11 +179,11 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 
 
 # Update the mod name in the ModToolStore
-func _on_ModId_input_text_changed(new_text, input_node):
+func _on_ModId_input_text_changed(new_text, input_node) -> void:
 	ModToolStore.name_mod_dir = new_text
 	input_node.show_error_if_not(ModToolUtils.validate_mod_dir_name(new_text))
 
 
-func _on_CreateMod_mod_dir_created():
+func _on_CreateMod_mod_dir_created() -> void:
 	popup.hide()
 	_update_ui()

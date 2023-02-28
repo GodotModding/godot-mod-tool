@@ -4,10 +4,10 @@ extends MarginContainer
 
 signal mod_dir_created
 
-onready var mod_id = $Settings/Scroll/VBox/ModId
+onready var mod_id := $Settings/Scroll/VBox/ModId
 
 
-func _ready():
+func _ready() -> void:
 	mod_id.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 	mod_id.show_error_if_not(false)
 
@@ -50,11 +50,11 @@ func add_mod() -> void:
 		return
 
 
-func clear_mod_id_input():
+func clear_mod_id_input() -> void:
 	mod_id.input_text = ""
 
 
-func _on_btn_create_mod_pressed():
+func _on_btn_create_mod_pressed() -> void:
 	add_mod()
 	emit_signal("mod_dir_created")
 

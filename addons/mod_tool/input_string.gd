@@ -53,5 +53,5 @@ func show_error_if_not(condition: bool) -> bool:
 	return condition
 
 
-func _on_Input_text_changed(new_text):
+func _on_Input_text_changed(new_text) -> void:
 	emit_signal("input_text_changed", new_text, self)

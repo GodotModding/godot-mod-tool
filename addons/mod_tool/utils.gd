@@ -71,7 +71,7 @@ static func validate_mod_dir_name(dir_name: String) -> bool:
 		return false
 
 	if delimiter_exists:
-		var dir_name_split = dir_name.split('-')
+		var dir_name_split := dir_name.split('-')
 		# Validate namespace and mod name
 		return ModManifest.is_name_or_namespace_valid(dir_name_split[0], true) && ModManifest.is_name_or_namespace_valid(dir_name_split[1], true)
 	else:
