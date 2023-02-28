@@ -16,7 +16,6 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	ModToolStore.load_store()
 	ModToolStore.label_output = label_output
 
 	_load_manifest()
