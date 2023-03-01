@@ -143,7 +143,6 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
-input_text = "Test3-Test3"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -517,8 +516,8 @@ anchor_bottom = 0.5
 margin_left = -200.0
 margin_top = -75.0
 margin_right = 200.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 350, 125 )
+margin_bottom = 45.0
+rect_min_size = Vector2( 350, 120 )
 window_title = "Create new mod"
 resizable = true
 
@@ -527,11 +526,11 @@ unique_name_in_owner = true
 
 [node name="Settings" parent="Popup/CreateMod" index="0"]
 margin_right = 390.0
-margin_bottom = 115.0
+margin_bottom = 110.0
 
 [node name="Scroll" parent="Popup/CreateMod/Settings" index="0"]
 margin_right = 380.0
-margin_bottom = 52.0
+margin_bottom = 47.0
 
 [node name="VBox" parent="Popup/CreateMod/Settings/Scroll" index="0"]
 margin_right = 380.0
@@ -539,20 +538,10 @@ margin_right = 380.0
 [node name="ModId" parent="Popup/CreateMod/Settings/Scroll/VBox" index="0"]
 margin_right = 380.0
 
-[node name="HBox" parent="Popup/CreateMod/Settings/Scroll/VBox" index="1"]
-margin_right = 380.0
-
-[node name="Label" parent="Popup/CreateMod/Settings/Scroll/VBox/HBox" index="0"]
-margin_right = 188.0
-
-[node name="ThunderstoreExport" parent="Popup/CreateMod/Settings/Scroll/VBox/HBox" index="1"]
-margin_left = 192.0
-margin_right = 380.0
-
 [node name="Buttons" parent="Popup/CreateMod/Settings" index="1"]
-margin_top = 56.0
+margin_top = 51.0
 margin_right = 380.0
-margin_bottom = 90.0
+margin_bottom = 85.0
 
 [node name="VBox" parent="Popup/CreateMod/Settings/Buttons" index="0"]
 margin_right = 373.0

@@ -47,29 +47,6 @@ hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
 
-[node name="HBox" type="HBoxContainer" parent="Settings/Scroll/VBox"]
-visible = false
-margin_top = 28.0
-margin_right = 1004.0
-margin_bottom = 52.0
-hint_tooltip = "Modify the zip before compressing
-to follow Thunderstore specifications"
-
-[node name="Label" type="Label" parent="Settings/Scroll/VBox/HBox"]
-margin_top = 5.0
-margin_right = 500.0
-margin_bottom = 19.0
-size_flags_horizontal = 3
-text = "Thunderstore Export"
-clip_text = true
-
-[node name="ThunderstoreExport" type="CheckBox" parent="Settings/Scroll/VBox/HBox"]
-margin_left = 504.0
-margin_right = 1004.0
-margin_bottom = 24.0
-size_flags_horizontal = 3
-text = "On"
-
 [node name="Buttons" type="PanelContainer" parent="Settings"]
 margin_top = 531.0
 margin_right = 1004.0
