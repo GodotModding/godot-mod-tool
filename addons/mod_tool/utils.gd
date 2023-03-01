@@ -60,25 +60,6 @@ static func output_info(message: String) -> void:
 	ModToolStore.label_output.append_bbcode("\n" + message)
 
 
-# Validates the mod directory name based on the rules defined in the ModLoader ModManifest Class.
-static func validate_mod_dir_name(dir_name: String) -> bool:
-	var delimiter_exists := false
-
-	# Check for delimiter
-	if '-' in dir_name:
-		delimiter_exists =  true
-	else:
-		return false
-
-	if delimiter_exists:
-		var dir_name_split := dir_name.split('-')
-		# Validate namespace and mod name
-		return ModManifest.is_name_or_namespace_valid(dir_name_split[0], true) && ModManifest.is_name_or_namespace_valid(dir_name_split[1], true)
-	else:
-		# Only validate namespace
-		return ModManifest.is_name_or_namespace_valid(dir_name, true)
-
-
 static func make_dir_recursive(dst_dir) -> bool:
 	var dir := Directory.new()
 	var error := dir.make_dir_recursive(dst_dir)

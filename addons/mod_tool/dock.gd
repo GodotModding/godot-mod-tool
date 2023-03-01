@@ -177,7 +177,7 @@ func _on_mod_tools_dock_visibility_changed() -> void:
 # Update the mod name in the ModToolStore
 func _on_ModId_input_text_changed(new_text, input_node) -> void:
 	ModToolStore.name_mod_dir = new_text
-	input_node.show_error_if_not(ModToolUtils.validate_mod_dir_name(new_text))
+	input_node.show_error_if_not(ModManifest.is_mod_id_valid(new_text, new_text, '', true))
 
 
 func _on_CreateMod_mod_dir_created() -> void:

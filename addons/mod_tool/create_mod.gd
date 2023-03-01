@@ -14,7 +14,7 @@ func _ready() -> void:
 
 func add_mod() -> void:
 	# Validate mod-id
-	if not ModToolUtils.validate_mod_dir_name(ModToolStore.name_mod_dir):
+	if not ModManifest.is_mod_id_valid(ModToolStore.name_mod_dir, ModToolStore.name_mod_dir, "", true):
 		ModToolUtils.output_error('Invalid name or namespace: "%s". You may only use letters, numbers, underscores and at least 3 characters for each.' % ModToolStore.name_mod_dir)
 		return
 
