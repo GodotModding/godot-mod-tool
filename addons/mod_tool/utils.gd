@@ -1,3 +1,4 @@
+tool
 extends Node
 class_name ModToolUtils
 
@@ -53,6 +54,19 @@ static func file_copy(src: String, dst: String) -> void:
 # Log error message to the output richtext label.
 static func output_error(message: String) -> void:
 	ModToolStore.label_output.append_bbcode("\n [color=%s]ERROR: %s[/color]" % [ModToolStore.error_color, message])
+
+
+static func output_info(message: String) -> void:
+	ModToolStore.label_output.append_bbcode("\n" + message)
+
+
+static func make_dir_recursive(dst_dir) -> bool:
+	var dir := Directory.new()
+	var error := dir.make_dir_recursive(dst_dir)
+	if error != OK:
+		output_error("Failed creating directory at %s with error code %s" % [dst_dir, error])
+		return false
+	return true
 
 
 # Takes a directory path to get removed.

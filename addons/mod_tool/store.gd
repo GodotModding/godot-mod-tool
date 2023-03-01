@@ -5,8 +5,10 @@ extends Node
 # Global store for all Data the ModTool requires.
 
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
+const PATH_TEMPLATES_DIR := "res://addons/mod_tool/templates/"
 
 var base_theme: Theme setget set_base_theme
+var editor_file_system: EditorFileSystem
 var error_color := ''
 
 var name_mod_dir := "" setget set_name_mod_dir

@@ -2,7 +2,7 @@ tool
 extends HBoxContainer
 
 
-signal input_text_changed(new_text)
+signal input_text_changed(new_text, node)
 
 export var is_required: bool setget set_is_required
 export var label_text: String setget set_label_text
@@ -53,5 +53,5 @@ func show_error_if_not(condition: bool) -> bool:
 	return condition
 
 
-func _on_Input_text_changed(new_text):
-	emit_signal("input_text_changed", new_text)
+func _on_Input_text_changed(new_text) -> void:
+	emit_signal("input_text_changed", new_text, self)
