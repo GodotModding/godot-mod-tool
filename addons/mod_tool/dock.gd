@@ -3,11 +3,12 @@ extends Control
 
 
 # passed from the EditorPlugin
-var editor_interface: EditorInterface setget set_editor_interface
+var editor_plugin: EditorPlugin setget set_editor_plugin
+var context_actions: FileSystemContextActions
 
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
-var log_output_dock_button: ToolButton
+var log_dock_button: ToolButton
 
 onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
@@ -18,8 +19,6 @@ onready var mod_id := $"%ModId"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	ModToolStore.label_output = label_output
-
 	_load_manifest()
 	_is_manifest_valid()
 	_update_ui()
@@ -27,10 +26,17 @@ func _ready() -> void:
 	get_log_nodes()
 
 
-func set_editor_interface(interface: EditorInterface) -> void:
-	editor_interface = interface
-	ModToolStore.base_theme = editor_interface.get_base_control().theme
-	ModToolStore.editor_file_system = editor_interface.get_resource_filesystem()
+func set_editor_plugin(plugin: EditorPlugin) -> void:
+	editor_plugin = plugin
+
+	ModToolStore.editor_plugin = plugin
+	ModToolStore.base_theme = plugin.get_editor_interface().get_base_control().theme
+	ModToolStore.editor_file_system = plugin.get_editor_interface().get_resource_filesystem()
+
+	context_actions = FileSystemContextActions.new(
+		plugin.get_editor_interface().get_file_system_dock(),
+		plugin.get_editor_interface().get_base_control().theme
+	)
 
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
@@ -39,23 +45,21 @@ func set_editor_interface(interface: EditorInterface) -> void:
 		if node.has_method("set_error_icon"):
 			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
-	ModToolStore.label_output = label_output
-
-	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
+	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
 
 func get_log_nodes() -> void:
 	var editor_log := get_parent().get_child(0)
-	log_richtext_label = editor_log.get_child(1)
+	log_richtext_label = editor_log.get_child(1) as RichTextLabel
+	if not log_richtext_label:
+		# on project load it can happen that these nodes don't exist yet, wait for parent
+		yield(get_parent(), "ready")
+		log_richtext_label = editor_log.get_child(1) as RichTextLabel
 
 	# The button hbox should be last, but here it is second from last for some reason
 	var dock_tool_button_bar: HBoxContainer = get_parent().get_child(get_parent().get_child_count() -2)
-	if not dock_tool_button_bar:
-		# on project load it can happen that these nodes don't exist yet, wait for parent
-		yield(get_parent(), "ready")
-		dock_tool_button_bar = get_parent().get_child(get_parent().get_child_count() -2)
-	log_output_dock_button = dock_tool_button_bar.get_child(0).get_child(0)
+	log_dock_button = dock_tool_button_bar.get_child(0).get_child(0)
 
 	$"%ConfigEditor".connect("discard_last_console_error", self, "discard_last_console_error")
 
@@ -82,8 +86,12 @@ func discard_last_console_error() -> void:
 
 	# If there were no other error lines, remove the icon
 	# Setting to null will crash the editor occasionally, this does not
-	if log_output_dock_button:
-		log_output_dock_button.icon = StreamTexture.new()
+	if log_dock_button:
+		log_dock_button.icon = StreamTexture.new()
+
+
+func show_output() -> void:
+	$TabContainer.current_tab = 0
 
 
 func _save_manifest() -> void:

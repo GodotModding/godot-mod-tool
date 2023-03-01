@@ -7,9 +7,10 @@ extends Node
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 const PATH_TEMPLATES_DIR := "res://addons/mod_tool/templates/"
 
+var editor_plugin: EditorPlugin
 var base_theme: Theme setget set_base_theme
 var editor_file_system: EditorFileSystem
-var error_color := ''
+var error_color := ""
 
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
@@ -22,7 +23,7 @@ var path_global_addon_dir := ""
 var path_global_seven_zip := ""
 var path_global_final_zip := ""
 var excluded_file_extensions: PoolStringArray = [".csv.import"]
-var path_mod_files: Array = []
+var path_mod_files := []
 
 var label_output: RichTextLabel
 
