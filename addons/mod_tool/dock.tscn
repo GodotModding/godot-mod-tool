@@ -101,6 +101,8 @@ margin_bottom = 550.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
+text = "
+Added base mod files to res://mods-unpacked/Test22-Test22"
 scroll_following = true
 selection_enabled = true
 
@@ -141,7 +143,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
-input_text = "Test2-Test2"
+input_text = "Test3-Test3"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -515,8 +517,8 @@ anchor_bottom = 0.5
 margin_left = -200.0
 margin_top = -75.0
 margin_right = 200.0
-margin_bottom = 75.0
-rect_min_size = Vector2( 350, 150 )
+margin_bottom = 25.0
+rect_min_size = Vector2( 350, 125 )
 window_title = "Create new mod"
 resizable = true
 
@@ -525,11 +527,11 @@ unique_name_in_owner = true
 
 [node name="Settings" parent="Popup/CreateMod" index="0"]
 margin_right = 390.0
-margin_bottom = 140.0
+margin_bottom = 115.0
 
 [node name="Scroll" parent="Popup/CreateMod/Settings" index="0"]
 margin_right = 380.0
-margin_bottom = 77.0
+margin_bottom = 52.0
 
 [node name="VBox" parent="Popup/CreateMod/Settings/Scroll" index="0"]
 margin_right = 380.0
@@ -548,9 +550,9 @@ margin_left = 192.0
 margin_right = 380.0
 
 [node name="Buttons" parent="Popup/CreateMod/Settings" index="1"]
-margin_top = 81.0
+margin_top = 56.0
 margin_right = 380.0
-margin_bottom = 115.0
+margin_bottom = 90.0
 
 [node name="VBox" parent="Popup/CreateMod/Settings/Buttons" index="0"]
 margin_right = 373.0

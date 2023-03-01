@@ -30,7 +30,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBox" type="VBoxContainer" parent="Settings/Scroll"]
 margin_right = 1004.0
-margin_bottom = 52.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="ModId" parent="Settings/Scroll/VBox" instance=ExtResource( 2 )]
@@ -48,6 +48,7 @@ Format: Namespace-ModName
 (Often Author-ModName)"
 
 [node name="HBox" type="HBoxContainer" parent="Settings/Scroll/VBox"]
+visible = false
 margin_top = 28.0
 margin_right = 1004.0
 margin_bottom = 52.0
