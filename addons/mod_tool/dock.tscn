@@ -141,7 +141,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
-input_text = "test-test"
+input_text = "Test2-Test2"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -516,7 +516,9 @@ margin_left = -200.0
 margin_top = -75.0
 margin_right = 200.0
 margin_bottom = 75.0
+rect_min_size = Vector2( 350, 150 )
 window_title = "Create new mod"
+resizable = true
 
 [node name="CreateMod" parent="Popup" instance=ExtResource( 6 )]
 unique_name_in_owner = true
