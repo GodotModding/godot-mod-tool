@@ -20,8 +20,8 @@ onready var manifest_input_vbox = $"TabContainer/Mod Manifest/ScrollContainer/VB
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	_load_manifest()
-	_is_manifest_valid()
+	ModToolStore.label_output = label_output
+
 	_update_ui()
 
 	get_log_nodes()
@@ -95,31 +95,6 @@ func show_output() -> void:
 	$TabContainer.current_tab = 0
 
 
-func _save_manifest() -> void:
-	pass # todo
-
-
-func _load_manifest() -> void:
-	pass # todo
-
-
-func _is_manifest_valid() -> bool:
-	var mod_manifest: Script
-	if ModLoaderUtils.file_exists("res://addons/mod_loader/mod_manifest.gd"):
-		mod_manifest = load("res://addons/mod_loader/mod_manifest.gd")
-
-	var is_valid: bool
-	if not mod_manifest:
-		return false
-
-	var mod_name: String = $"%ModName".get_value()
-	is_valid = $"%ModName".show_error_if_not(mod_manifest.is_name_or_namespace_valid(mod_name))
-
-	# todo
-
-	return is_valid
-
-
 func _update_ui():
 	mod_id.input_text = ModToolStore.name_mod_dir
 
@@ -153,8 +128,8 @@ func _on_copy_output_pressed() -> void:
 
 
 func _on_save_manifest_pressed() -> void:
-	if _is_manifest_valid():
-		_save_manifest()
+	if mod_manifest_editor.is_manifest_valid():
+		mod_manifest_editor.save_manifest()
 
 
 func _on_save_config_pressed() -> void:
