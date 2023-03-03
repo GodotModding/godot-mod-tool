@@ -53,4 +53,9 @@ func update_ui() -> void:
 
 	for input in input_fields:
 		if manifest_data_dict.has(input.key):
-			input.input_text = str(manifest_data_dict[input.key])
+			var value = manifest_data_dict[input.key]
+
+			if value is PoolStringArray:
+				input.input_text = ", ".join(value)
+			else:
+				input.input_text = str(value)

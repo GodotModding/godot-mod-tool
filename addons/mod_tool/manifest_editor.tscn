@@ -211,6 +211,7 @@ margin_right = 1010.0
 margin_bottom = 544.0
 hint_tooltip = "Comma-separated list of ModLoader versions."
 mouse_default_cursor_shape = 16
+is_required = true
 key = "compatible_mod_loader_version"
 label_text = "Compatible Mod Loader Versions"
 input_placeholder = "5.0.0, 4.1.0"
