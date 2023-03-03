@@ -43,7 +43,7 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 
 	ModToolStore.label_output = label_output
 
-	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
+	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
 
