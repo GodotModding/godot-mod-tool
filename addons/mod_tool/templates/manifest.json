@@ -9,7 +9,7 @@
 		"godot": {
 			"incompatibilities": [],
 			"authors": ["AuthorName"],
-			"compatible_mod_loader_version": "5.0.1",
+			"compatible_mod_loader_version": ["6.0.0"],
 			"compatible_game_version": ["0.0.1"],
 			"config_defaults": {}
 		}
