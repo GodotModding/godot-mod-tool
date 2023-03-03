@@ -14,7 +14,7 @@ onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var manifest_input_vbox = $"TabContainer/Mod Manifest/ScrollContainer/VBox"
+onready var manifest_editor = $"%ManifestEditor"
 
 
 func _ready() -> void:
@@ -41,12 +41,9 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
-	# set up warning icons to show if a field is invalid
-	for node in manifest_input_vbox.get_children():
-		if node is InputString:
-			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
+	ModToolStore.label_output = label_output
 
-	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
+	$"%ConfigEditor".editor_settings = editor_interface.get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
 
@@ -128,8 +125,8 @@ func _on_copy_output_pressed() -> void:
 
 
 func _on_save_manifest_pressed() -> void:
-	if mod_manifest_editor.is_manifest_valid():
-		mod_manifest_editor.save_manifest()
+	if manifest_editor.is_manifest_valid():
+		manifest_editor.save_manifest()
 
 
 func _on_save_config_pressed() -> void:
@@ -167,3 +164,5 @@ func _on_ModId_input_text_changed(new_text, input_node) -> void:
 func _on_CreateMod_mod_dir_created() -> void:
 	popup.hide()
 	_update_ui()
+	manifest_editor.load_manifest()
+	manifest_editor.update_ui()

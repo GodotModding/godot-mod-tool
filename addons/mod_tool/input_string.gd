@@ -6,6 +6,7 @@ extends HBoxContainer
 signal input_text_changed(new_text, node)
 
 export var is_required: bool setget set_is_required
+export var key: String
 export var label_text: String setget set_label_text
 export var input_text: String setget set_input_text
 export var input_placeholder: String setget set_input_placeholder
