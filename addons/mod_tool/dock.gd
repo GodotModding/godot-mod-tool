@@ -13,7 +13,7 @@ onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var v_box = $"TabContainer/Mod Manifest/ScrollContainer/VBox"
+onready var manifest_input_vbox = $"TabContainer/Mod Manifest/ScrollContainer/VBox"
 
 
 func _ready() -> void:
@@ -36,7 +36,7 @@ func set_editor_interface(interface: EditorInterface) -> void:
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
 
 	# set up warning icons to show if a field is invalid
-	for node in v_box.get_children():
+	for node in manifest_input_vbox.get_children():
 		if node is InputString:
 			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
