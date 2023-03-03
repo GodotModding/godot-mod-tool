@@ -105,33 +105,84 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PoolStringA
 func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 	var file_paths: PoolStringArray
 	var metadata = context_menu.get_item_metadata(id)
+
 	# Ensure that the metadata is actually set by the ModTool
 	# Since id and index of the item can always change
 	if metadata is Dictionary and metadata.has("mod_tool_script_paths"):
+		var file := File.new()
+
 		file_paths = metadata.mod_tool_script_paths
 		for file_path in file_paths:
-			create_script_override(file_path)
+			var extension_path := create_script_extension(file_path)
+			if extension_path:
+				add_script_extension_to_mod_main(file, extension_path)
+		file.close()
+		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 
 
-static func create_script_override(file_path: String) -> void:
+static func create_script_extension(file_path: String) -> String:
 	if not ModToolStore.name_mod_dir:
 		ModToolUtils.output_error("Select an existing mod or create a new one to create script overrides")
-		return
+		return ""
 
 	var file_directory := file_path.get_base_dir().trim_prefix("res://")
-	var override_directory: String = ModToolStore.path_mod_dir.plus_file(file_directory)
-	ModToolUtils.make_dir_recursive(override_directory)
+	var extension_directory: String = ModToolStore.path_mod_dir.plus_file("extensions").plus_file(file_directory)
+	ModToolUtils.make_dir_recursive(extension_directory)
 
 	var file := File.new()
-	var override_path := override_directory.plus_file(file_path.get_file())
-	if not file.file_exists(override_path):
-		file.open(override_path, File.WRITE)
+	var extension_path := extension_directory.plus_file(file_path.get_file())
+	if not file.file_exists(extension_path):
+		file.open(extension_path, File.WRITE)
 		file.store_line('extends "%s"' % file_path)
 		file.close()
+		ModToolUtils.output_info('Created script extension of "%s" at path %s' % [file_path.get_file(), extension_path])
 
 	ModToolStore.editor_file_system.scan()
-	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(override_path)
+	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
+
+	return extension_path
+
+
+static func add_script_extension_to_mod_main(file: File, extension_path: String):
+	var main_script_path := ModToolStore.path_mod_dir.plus_file("mod_main.gd")
+	if not mod_has_install_script_extensions_method(main_script_path):
+		return
+
+	file.open(main_script_path, File.READ_WRITE)
+	var file_content := file.get_as_text()
+
+	var index_find_from := file_content.find("func install_script_extensions")
+	var mod_extensions_dir_path_index := file_content.find("extensions_dir_path", index_find_from)
+
+	# Construct the line required to install the extension. If the standard way is used and a
+	# variable "extensions_dir_path" is found, use that variable in combination with plus_file
+	var extension_install_line := "\tmodLoader.install_script_extension(%s)\n"
+	if mod_extensions_dir_path_index == -1:
+		extension_install_line = extension_install_line % '"%s"' % extension_path
+	else:
+		extension_path = extension_path.trim_prefix(ModToolStore.path_mod_dir.plus_file("extensions/"))
+		extension_install_line = extension_install_line % 'extensions_dir_path.plus_file("%s")' % extension_path
+
+	var last_install_line_index := file_content.find_last("modLoader.install_script_extension")
+	# If there is no modLoader.install_script_extension yet, put it directly under install_script_extensions
+	if last_install_line_index == -1:
+		last_install_line_index = file_content.find_last("install_script_extensions")
+	var last_install_line_end_index := file_content.find("\n", last_install_line_index)
+
+	if not extension_install_line.strip_edges() in file_content:
+		file_content = file_content.insert(last_install_line_end_index +1, extension_install_line)
+		file.store_string(file_content)
+		ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
 
 
 
+static func mod_has_install_script_extensions_method(main_script_path: String) -> bool:
+	var main_script: Script = load(main_script_path)
+
+	for method in main_script.get_script_method_list():
+		if method.name == "install_script_extensions":
+			return true
+
+	ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
+	return false
 

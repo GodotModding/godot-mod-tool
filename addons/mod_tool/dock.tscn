@@ -101,8 +101,6 @@ margin_bottom = 1030.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "
-Added base mod files to res://mods-unpacked/Test22-Test22"
 scroll_following = true
 selection_enabled = true
 
@@ -143,6 +141,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
+input_text = "testey-test"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -508,7 +507,6 @@ one_shot = true
 
 [node name="Popup" type="WindowDialog" parent="."]
 unique_name_in_owner = true
-visible = true
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
