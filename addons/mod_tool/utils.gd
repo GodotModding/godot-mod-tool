@@ -53,11 +53,13 @@ static func file_copy(src: String, dst: String) -> void:
 
 # Log error message to the output richtext label.
 static func output_error(message: String) -> void:
-	ModToolStore.label_output.append_bbcode("\n [color=%s]ERROR: %s[/color]" % [ModToolStore.error_color, message])
+	ModToolStore.editor_plugin.make_bottom_panel_item_visible(ModToolStore.editor_plugin.dock)
+	ModToolStore.editor_plugin.dock.show_output()
+	ModToolStore.editor_plugin.dock.label_output.append_bbcode("[color=%s]ERROR: %s[/color]\n" % [ModToolStore.error_color, message])
 
 
 static func output_info(message: String) -> void:
-	ModToolStore.label_output.append_bbcode("\n" + message)
+	ModToolStore.editor_plugin.dock.label_output.append_bbcode(message + "\n")
 
 
 static func make_dir_recursive(dst_dir) -> bool:
