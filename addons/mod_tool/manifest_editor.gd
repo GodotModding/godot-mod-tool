@@ -21,9 +21,10 @@ func _ready():
 
 func load_manifest() -> void:
 	var manifest_path := ModToolStore.path_mod_dir + "/manifest.json"
+	var manifest_data_json := ModLoaderUtils.get_json_as_dict(manifest_path)
 
-	manifest_data_dict = ModLoaderUtils.get_json_as_dict(manifest_path)
-	manifest_data = ModManifest.new(manifest_data_dict)
+	manifest_data = ModManifest.new(manifest_data_json)
+	manifest_data_dict = manifest_data.get_as_dict()
 
 
 func save_manifest() -> void:
@@ -49,8 +50,6 @@ func is_manifest_valid() -> bool:
 
 
 func update_ui() -> void:
-	var manifest_data_dict := manifest_data.get_as_dict()
-
 	for input in input_fields:
 		if manifest_data_dict.has(input.key):
 			var value = manifest_data_dict[input.key]
