@@ -58,3 +58,38 @@ func update_ui() -> void:
 				input.input_text = ", ".join(value)
 			else:
 				input.input_text = str(value)
+
+
+func _handle_validation(input_node: InputString, condition: bool) -> void:
+	# Check if input is optional and the field is empty
+	if not input_node.is_required and input_node.get_value() == '':
+		return
+
+	var _condition := input_node.show_error_if_not(condition)
+
+
+func _on_ModName_input_text_changed(new_text: String, node: Node) -> void:
+	_handle_validation(node, ModManifest.is_name_or_namespace_valid(new_text, true))
+
+
+func _on_Namespace_input_text_changed(new_text: String, node: Node) -> void:
+	_handle_validation(node, ModManifest.is_name_or_namespace_valid(new_text, true))
+
+
+func _on_Version_input_text_changed(new_text: String, node: Node) -> void:
+	_handle_validation(node, ModManifest.is_semver_valid(new_text, true))
+
+
+func _on_Dependencies_input_text_changed(new_text: String, node: Node) -> void:
+	var dependencies := ModToolUtils.get_array_from_comma_separated_string(new_text)
+	_handle_validation(node, ModManifest.validate_dependencies(ModToolStore.name_mod_dir, dependencies, true))
+
+
+func _on_Incompatibilities_input_text_changed(new_text: String, node: Node) -> void:
+	var incompatibilities := ModToolUtils.get_array_from_comma_separated_string(new_text)
+	_handle_validation(node, ModManifest.validate_incompatibilities(ModToolStore.name_mod_dir, incompatibilities, true))
+
+
+func _on_CompatibleModLoaderVersions_input_text_changed(new_text: String, node: Node) -> void:
+	var compatible_modloader_versions := ModToolUtils.get_array_from_comma_separated_string(new_text)
+	_handle_validation(node, ModManifest.is_semver_version_array_valid(compatible_modloader_versions, true))
