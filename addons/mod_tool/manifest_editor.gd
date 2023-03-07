@@ -18,6 +18,10 @@ func _ready():
 			# Set up warning icons to show if a field is invalid
 			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
+	# Load manifest.json file
+	load_manifest()
+	update_ui()
+
 
 func load_manifest() -> void:
 	var manifest_path := ModToolStore.path_mod_dir + "/manifest.json"
