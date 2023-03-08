@@ -27,6 +27,9 @@ func _ready() -> void:
 
 	get_log_nodes()
 
+	# Connect signals
+	ModToolStore.connect("store_loaded", self, "_on_store_loaded")
+
 
 func set_editor_plugin(plugin: EditorPlugin) -> void:
 	editor_plugin = plugin
@@ -126,8 +129,7 @@ func _on_copy_output_pressed() -> void:
 
 
 func _on_save_manifest_pressed() -> void:
-	if manifest_editor.is_manifest_valid():
-		manifest_editor.save_manifest()
+	manifest_editor.save_manifest()
 
 
 func _on_save_config_pressed() -> void:
@@ -169,3 +171,10 @@ func _on_CreateMod_mod_dir_created() -> void:
 	_update_ui()
 	manifest_editor.load_manifest()
 	manifest_editor.update_ui()
+
+
+func _on_store_loaded() -> void:
+	# Load manifest.json file
+	if ModLoaderUtils.file_exists(ModToolStore.path_manifest):
+		manifest_editor.load_manifest()
+		manifest_editor.update_ui()
