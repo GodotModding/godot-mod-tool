@@ -68,3 +68,7 @@ func show_error_if_not(condition: bool) -> bool:
 
 func _on_Input_text_changed(new_text) -> void:
 	emit_signal("input_text_changed", new_text, self)
+
+
+func _on_InputMultiline_text_changed():
+	emit_signal("input_text_changed",  get_value(), self)

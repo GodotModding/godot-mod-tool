@@ -15,6 +15,7 @@ onready var create_mod := $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor = $"%ManifestEditor"
+onready var config_editor = $"%ConfigEditor"
 
 
 func _ready() -> void:
@@ -130,7 +131,9 @@ func _on_save_manifest_pressed() -> void:
 
 
 func _on_save_config_pressed() -> void:
-	pass # todo
+	var config_defaults_json := config_editor.text as String
+	ModToolStore.manifest_data.config_defaults = JSON.parse(config_defaults_json).result
+	var _is_success := ModToolUtils.save_to_manifest_json()
 
 
 func _on_export_settings_create_new_mod_pressed() -> void:

@@ -16,6 +16,7 @@ var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
 var path_export_dir := ""
 var path_temp_dir := ""
+var path_manifest := ""
 var path_global_export_dir := ""
 var path_global_project_dir := ""
 var path_global_temp_dir := ""
@@ -24,6 +25,13 @@ var path_global_seven_zip := ""
 var path_global_final_zip := ""
 var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files := []
+
+# ModManifest instance
+var manifest_data : ModManifest
+# Dictionary retrieved from ModManifest
+var manifest_dict : Dictionary
+# Pure json data from manifest.json
+var manifest_dict_json : Dictionary
 
 var label_output: RichTextLabel
 
@@ -52,6 +60,7 @@ func init(store: Dictionary) -> void:
 	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
 	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_temp_dir = "user://temp/" + store.name_mod_dir
+	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
 	path_global_seven_zip = path_global_addon_dir + "vendor/7zip/win/zip.exe"
@@ -63,6 +72,7 @@ func update_paths(new_name_mod_dir: String) -> void:
 	name_mod_dir = new_name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + new_name_mod_dir
 	path_temp_dir = "user://temp/" + new_name_mod_dir
+	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 
 

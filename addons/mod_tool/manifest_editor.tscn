@@ -249,9 +249,15 @@ input_placeholder = "Tag1, Tag2"
 editor_icon_name = "NodeWarning"
 hint_text = "Compatible ModLoader Versions"
 
+[connection signal="pressed" from="ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_SaveManifest_pressed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/ModName" to="." method="_on_ModName_input_text_changed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/Namespace" to="." method="_on_Namespace_input_text_changed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/Version" to="." method="_on_Version_input_text_changed"]
+[connection signal="input_text_changed" from="ScrollContainer/VBox/WebsiteUrl" to="." method="_on_WebsiteUrl_input_text_changed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/Dependencies" to="." method="_on_Dependencies_input_text_changed"]
+[connection signal="input_text_changed" from="ScrollContainer/VBox/Description" to="." method="_on_Description_input_text_changed"]
+[connection signal="input_text_changed" from="ScrollContainer/VBox/Authors" to="." method="_on_Authors_input_text_changed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/Incompatibilities" to="." method="_on_Incompatibilities_input_text_changed"]
+[connection signal="input_text_changed" from="ScrollContainer/VBox/CompatibleGameVersions" to="." method="_on_CompatibleGameVersions_input_text_changed"]
 [connection signal="input_text_changed" from="ScrollContainer/VBox/CompatibleModLoaderVersions" to="." method="_on_CompatibleModLoaderVersions_input_text_changed"]
+[connection signal="input_text_changed" from="ScrollContainer/VBox/Tags" to="." method="_on_Tags_input_text_changed"]
