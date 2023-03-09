@@ -13,6 +13,8 @@ export var input_placeholder: String setget set_input_placeholder
 export var editor_icon_name: String
 export(String, MULTILINE) var hint_text setget set_hint_text
 
+var is_valid := true
+
 
 func _ready() -> void:
 	set_editor_icon()
@@ -58,12 +60,36 @@ func get_value() -> String:
 	return $"%Input".text.strip_edges()
 
 
+# Gets the values of a comma separated string as an Array,
+# strips any white space contained in this values.
+func get_array_from_comma_separated_string() -> Array:
+	var string_split := get_value().split(',')
+	var array := []
+
+	for string in string_split:
+		array.append(string.strip_edges())
+
+	return array
+
+
 func show_error_if_not(condition: bool) -> bool:
 	if not condition:
 		$ErrorIcon.show()
 	else:
 		$ErrorIcon.hide()
 	return condition
+
+
+func validate(condition: bool) -> bool:
+	# Check if input is optional and the field is empty
+	if not is_required and get_value() == '':
+		return true
+
+	# Update the validation state
+	is_valid = condition
+
+	# Show the warning icon if not valid and return the condition
+	return show_error_if_not(condition)
 
 
 func _on_Input_text_changed(new_text) -> void:

@@ -74,19 +74,6 @@ static func save_to_manifest_json() -> bool:
 	return is_success
 
 
-# Gets the values of a comma separated string as an Array,
-# strips any white space contained in this values.
-static func get_array_from_comma_separated_string(string: String) -> Array:
-	var string_split := string.split(',')
-	var array := []
-
-	# Remove any white space
-	for mod_id in string_split:
-		array.append(mod_id.strip_edges())
-
-	return array
-
-
 static func make_dir_recursive(dst_dir) -> bool:
 	var dir := Directory.new()
 	var error := dir.make_dir_recursive(dst_dir)

@@ -43,13 +43,12 @@ func update_ui() -> void:
 				input.input_text = str(value)
 
 
-func _handle_validation(input_node: InputString, condition: bool) -> bool:
-	# Check if input is optional and the field is empty
-	if not input_node.is_required and input_node.get_value() == '':
-		return true
+func is_valid():
+	for input in input_fields:
+		if not input.is_valid:
+			return false
 
-	# Just returns the condition
-	return input_node.show_error_if_not(condition)
+	return true
 
 
 func _update_manifest_value(input: InputString, new_value) -> void:
@@ -59,59 +58,60 @@ func _update_manifest_value(input: InputString, new_value) -> void:
 # Validated StringInputs
 # =============================================================================
 func _on_ModName_input_text_changed(new_text: String, node: Node) -> void:
-	if _handle_validation(node, ModManifest.is_name_or_namespace_valid(new_text, true)):
+	if node.validate(ModManifest.is_name_or_namespace_valid(new_text, true)):
 		_update_manifest_value(node, new_text)
 
 
-func _on_Namespace_input_text_changed(new_text: String, node: Node) -> void:
-	if _handle_validation(node, ModManifest.is_name_or_namespace_valid(new_text, true)):
-		_update_manifest_value(node, new_text)
-
-func _on_Version_input_text_changed(new_text: String, node: Node) -> void:
-	if _handle_validation(node, ModManifest.is_semver_valid(new_text, true)):
+func _on_Namespace_input_text_changed(new_text: String, node: InputString) -> void:
+	if node.validate(ModManifest.is_name_or_namespace_valid(new_text, true)):
 		_update_manifest_value(node, new_text)
 
 
-func _on_Dependencies_input_text_changed(new_text: String, node: Node) -> void:
-	var dependencies := ModToolUtils.get_array_from_comma_separated_string(new_text)
-	if _handle_validation(node, ModManifest.validate_dependencies(ModToolStore.name_mod_dir, dependencies, true)):
+func _on_Version_input_text_changed(new_text: String, node: InputString) -> void:
+	if node.validate(ModManifest.is_semver_valid(new_text, true)):
+		_update_manifest_value(node, new_text)
+
+
+func _on_Dependencies_input_text_changed(new_text: String, node: InputString) -> void:
+	var dependencies := node.get_array_from_comma_separated_string()
+	if node.validate(ModManifest.validate_dependencies(ModToolStore.name_mod_dir, dependencies, true)):
 		_update_manifest_value(node, dependencies)
 
 
-func _on_Incompatibilities_input_text_changed(new_text: String, node: Node) -> void:
-	var incompatibilities := ModToolUtils.get_array_from_comma_separated_string(new_text)
-	if _handle_validation(node, ModManifest.validate_incompatibilities(ModToolStore.name_mod_dir, incompatibilities, true)):
+func _on_Incompatibilities_input_text_changed(new_text: String, node: InputString) -> void:
+	var incompatibilities := node.get_array_from_comma_separated_string()
+	if node.validate(ModManifest.validate_incompatibilities(ModToolStore.name_mod_dir, incompatibilities, true)):
 		_update_manifest_value(node, incompatibilities)
 
 
-func _on_CompatibleModLoaderVersions_input_text_changed(new_text: String, node: Node) -> void:
-	var compatible_modloader_versions := ModToolUtils.get_array_from_comma_separated_string(new_text)
-	if _handle_validation(node, ModManifest.is_semver_version_array_valid(compatible_modloader_versions, true)):
+func _on_CompatibleModLoaderVersions_input_text_changed(new_text: String, node: InputString) -> void:
+	var compatible_modloader_versions := node.get_array_from_comma_separated_string()
+	if node.validate(ModManifest.is_semver_version_array_valid(compatible_modloader_versions, true)):
 		_update_manifest_value(node, compatible_modloader_versions)
 
 
 # Non Validated StringInputs
 # =============================================================================
-func _on_WebsiteUrl_input_text_changed(new_text: String, node: Node):
+func _on_WebsiteUrl_input_text_changed(new_text: String, node: InputString):
 	_update_manifest_value(node, new_text)
 
 
-func _on_Description_input_text_changed(new_text: String, node: Node):
+func _on_Description_input_text_changed(new_text: String, node: InputString):
 	_update_manifest_value(node, new_text)
 
 
-func _on_Authors_input_text_changed(new_text: String, node: Node):
-	var authors := ModToolUtils.get_array_from_comma_separated_string(new_text)
+func _on_Authors_input_text_changed(new_text: String, node: InputString):
+	var authors := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, authors)
 
 
-func _on_CompatibleGameVersions_input_text_changed(new_text: String, node: Node):
-	var compatible_game_versions := ModToolUtils.get_array_from_comma_separated_string(new_text)
+func _on_CompatibleGameVersions_input_text_changed(new_text: String, node: InputString):
+	var compatible_game_versions := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, compatible_game_versions)
 
 
-func _on_Tags_input_text_changed(new_text: String, node: Node):
-	var tags := ModToolUtils.get_array_from_comma_separated_string(new_text)
+func _on_Tags_input_text_changed(new_text: String, node: InputString):
+	var tags := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, tags)
 
 
