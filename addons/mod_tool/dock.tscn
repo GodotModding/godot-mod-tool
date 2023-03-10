@@ -101,9 +101,6 @@ margin_bottom = 1030.0
 focus_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "
-Added base mod files to res://mods-unpacked/Test22-Test22
-Added base mod files to res://mods-unpacked/Test3-Test3"
 scroll_following = true
 selection_enabled = true
 
