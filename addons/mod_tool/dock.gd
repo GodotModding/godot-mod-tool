@@ -21,8 +21,6 @@ onready var config_editor = $"%ConfigEditor"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	ModToolStore.label_output = label_output
-
 	_update_ui()
 
 	get_log_nodes()
@@ -44,8 +42,6 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	)
 
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
-
-	ModToolStore.label_output = label_output
 
 	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme

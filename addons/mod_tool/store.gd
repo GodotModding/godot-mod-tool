@@ -35,8 +35,6 @@ var manifest_dict : Dictionary
 # Pure json data from manifest.json
 var manifest_dict_json : Dictionary
 
-var label_output: RichTextLabel
-
 
 func _ready() -> void:
 	load_store()
