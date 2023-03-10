@@ -4,13 +4,13 @@ extends PanelContainer
 
 var input_fields := []
 
-onready var v_box := $ScrollContainer/VBox
+onready var manifest_input_vbox := $ScrollContainer/VBox
 onready var input_name := $"%ModName"
 
 
 func _ready():
 	# Setup input fields
-	for node in v_box.get_children():
+	for node in manifest_input_vbox.get_children():
 		if node is InputString:
 			input_fields.append(node)
 			# Set up warning icons to show if a field is invalid
