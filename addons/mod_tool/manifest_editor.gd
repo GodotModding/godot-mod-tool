@@ -5,7 +5,6 @@ extends PanelContainer
 var input_fields := []
 
 onready var manifest_input_vbox := $ScrollContainer/VBox
-onready var input_name := $"%ModName"
 
 
 func _ready():
