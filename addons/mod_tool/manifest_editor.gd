@@ -7,7 +7,7 @@ var input_fields := []
 onready var manifest_input_vbox := $ScrollContainer/VBox
 
 
-func _ready():
+func _ready() -> void:
 	# Setup input fields
 	for node in manifest_input_vbox.get_children():
 		if node is InputString:
@@ -91,28 +91,28 @@ func _on_CompatibleModLoaderVersions_input_text_changed(new_text: String, node: 
 
 # Non Validated StringInputs
 # =============================================================================
-func _on_WebsiteUrl_input_text_changed(new_text: String, node: InputString):
+func _on_WebsiteUrl_input_text_changed(new_text: String, node: InputString) -> void:
 	_update_manifest_value(node, new_text)
 
 
-func _on_Description_input_text_changed(new_text: String, node: InputString):
+func _on_Description_input_text_changed(new_text: String, node: InputString) -> void:
 	_update_manifest_value(node, new_text)
 
 
-func _on_Authors_input_text_changed(new_text: String, node: InputString):
+func _on_Authors_input_text_changed(new_text: String, node: InputString) -> void:
 	var authors := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, authors)
 
 
-func _on_CompatibleGameVersions_input_text_changed(new_text: String, node: InputString):
+func _on_CompatibleGameVersions_input_text_changed(new_text: String, node: InputString) -> void:
 	var compatible_game_versions := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, compatible_game_versions)
 
 
-func _on_Tags_input_text_changed(new_text: String, node: InputString):
+func _on_Tags_input_text_changed(new_text: String, node: InputString) -> void:
 	var tags := node.get_array_from_comma_separated_string()
 	_update_manifest_value(node, tags)
 
 
-func _on_SaveManifest_pressed():
+func _on_SaveManifest_pressed() -> void:
 	save_manifest()
