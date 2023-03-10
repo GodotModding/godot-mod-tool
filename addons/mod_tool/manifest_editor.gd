@@ -24,7 +24,12 @@ func load_manifest() -> void:
 
 
 func save_manifest() -> void:
-	var _is_success := ModToolUtils.save_to_manifest_json()
+	var invalid_inputs := get_invalid()
+
+	if invalid_inputs.size() == 0:
+		var _is_success := ModToolUtils.save_to_manifest_json()
+	else:
+		ModToolUtils.output_error('Invalid Manifest - Manifest not saved! Please check your inputs in the following fields -> ' + ", ".join(invalid_inputs))
 
 
 func update_ui() -> void:
@@ -42,12 +47,15 @@ func update_ui() -> void:
 				input.input_text = str(value)
 
 
-func is_valid():
+# Returns an array of invalid fields
+func get_invalid() -> Array:
+	var invalid_fields := []
+
 	for input in input_fields:
 		if not input.is_valid:
-			return false
+			invalid_fields.append(input.label_text)
 
-	return true
+	return invalid_fields
 
 
 func _update_manifest_value(input: InputString, new_value) -> void:
