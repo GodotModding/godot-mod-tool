@@ -63,7 +63,7 @@ func get_value() -> String:
 # Gets the values of a comma separated string as an Array,
 # strips any white space contained in this values.
 func get_array_from_comma_separated_string() -> Array:
-	var string_split := get_value().split(',')
+	var string_split := get_value().split(',', false)
 	var array := []
 
 	for string in string_split:
