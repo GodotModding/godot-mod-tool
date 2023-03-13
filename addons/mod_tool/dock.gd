@@ -14,17 +14,19 @@ onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var manifest_input_vbox = $"TabContainer/Mod Manifest/ScrollContainer/VBox"
+onready var manifest_editor = $"%ManifestEditor"
+onready var config_editor = $"%ConfigEditor"
 
 
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	_load_manifest()
-	_is_manifest_valid()
 	_update_ui()
 
 	get_log_nodes()
+
+	# Connect signals
+	ModToolStore.connect("store_loaded", self, "_on_store_loaded")
 
 
 func set_editor_plugin(plugin: EditorPlugin) -> void:
@@ -40,11 +42,6 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	)
 
 	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
-
-	# set up warning icons to show if a field is invalid
-	for node in manifest_input_vbox.get_children():
-		if node is InputString:
-			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
 	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
@@ -95,31 +92,6 @@ func show_output() -> void:
 	$TabContainer.current_tab = 0
 
 
-func _save_manifest() -> void:
-	pass # todo
-
-
-func _load_manifest() -> void:
-	pass # todo
-
-
-func _is_manifest_valid() -> bool:
-	var mod_manifest: Script
-	if ModLoaderUtils.file_exists("res://addons/mod_loader/mod_manifest.gd"):
-		mod_manifest = load("res://addons/mod_loader/mod_manifest.gd")
-
-	var is_valid: bool
-	if not mod_manifest:
-		return false
-
-	var mod_name: String = $"%ModName".get_value()
-	is_valid = $"%ModName".show_error_if_not(mod_manifest.is_name_or_namespace_valid(mod_name))
-
-	# todo
-
-	return is_valid
-
-
 func _update_ui():
 	mod_id.input_text = ModToolStore.name_mod_dir
 
@@ -153,12 +125,13 @@ func _on_copy_output_pressed() -> void:
 
 
 func _on_save_manifest_pressed() -> void:
-	if _is_manifest_valid():
-		_save_manifest()
+	manifest_editor.save_manifest()
 
 
 func _on_save_config_pressed() -> void:
-	pass # todo
+	var config_defaults_json := config_editor.text as String
+	ModToolStore.manifest_data.config_defaults = JSON.parse(config_defaults_json).result
+	var _is_success := ModToolUtils.save_to_manifest_json()
 
 
 func _on_export_settings_create_new_mod_pressed() -> void:
@@ -192,3 +165,12 @@ func _on_ModId_input_text_changed(new_text, input_node) -> void:
 func _on_CreateMod_mod_dir_created() -> void:
 	popup.hide()
 	_update_ui()
+	manifest_editor.load_manifest()
+	manifest_editor.update_ui()
+
+
+func _on_store_loaded() -> void:
+	# Load manifest.json file
+	if ModLoaderUtils.file_exists(ModToolStore.path_manifest):
+		manifest_editor.load_manifest()
+		manifest_editor.update_ui()

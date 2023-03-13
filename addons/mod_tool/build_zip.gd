@@ -5,7 +5,7 @@ class_name ModToolZipBuilder
 func build_zip() -> void:
 	# Get all file paths inside the mod folder
 	ModToolStore.path_mod_files = ModToolUtils.get_flat_view_dict(ModToolStore.path_mod_dir)
-	ModToolStore.label_output.add_text(JSON.print(ModToolStore.path_mod_files, '   '))
+	ModToolUtils.output_info(JSON.print(ModToolStore.path_mod_files, '\t'))
 
 	# Loop over each file path
 	print(JSON.print(ModToolStore.path_mod_files, '\t'))
@@ -39,7 +39,7 @@ func build_zip() -> void:
 
 	var output := []
 	var _exit_code := OS.execute(ModToolStore.path_global_seven_zip, ["a", ModToolStore.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
-	ModToolStore.label_output.add_text(JSON.print(output, '   '))
+	ModToolUtils.output_info(JSON.print(output, '\t'))
 
 	# Delete the temp folder
 	ModToolUtils.remove_recursive(ModToolStore.path_global_temp_dir)

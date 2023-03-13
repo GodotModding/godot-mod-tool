@@ -3,7 +3,7 @@
 [ext_resource path="res://addons/mod_tool/dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/mod_tool/json_editor.gd" type="Script" id=2]
 [ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=3]
-[ext_resource path="res://addons/mod_tool/input_string_multiline.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/mod_tool/manifest_editor.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/mod_tool/create_mod.tscn" type="PackedScene" id=6]
 
 [sub_resource type="InputEventKey" id=1]
@@ -141,7 +141,6 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_required = true
 label_text = "Mod ID"
-input_text = "testey-test"
 input_placeholder = "Author-ModName"
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -209,227 +208,7 @@ margin_right = 620.0
 margin_bottom = 44.0
 text = "Export Mod"
 
-[node name="Mod Manifest" type="PanelContainer" parent="TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-
-[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Mod Manifest"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1029.0
-margin_bottom = 557.0
-size_flags_vertical = 3
-follow_focus = true
-scroll_horizontal_enabled = false
-
-[node name="VBox" type="VBoxContainer" parent="TabContainer/Mod Manifest/ScrollContainer"]
-margin_right = 1022.0
-margin_bottom = 572.0
-size_flags_horizontal = 3
-__meta__ = {
-"_editor_description_": ""
-}
-
-[node name="Category" type="LineEdit" parent="TabContainer/Mod Manifest/ScrollContainer/VBox"]
-margin_right = 1010.0
-margin_bottom = 24.0
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-text = "Manifest"
-align = 1
-editable = false
-context_menu_enabled = false
-virtual_keyboard_enabled = false
-shortcut_keys_enabled = false
-middle_mouse_paste_enabled = false
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Mod Manifest/ScrollContainer/VBox"]
-margin_top = 28.0
-margin_right = 1010.0
-margin_bottom = 48.0
-
-[node name="Control" type="Control" parent="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer"]
-margin_right = 857.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-
-[node name="SaveManifest" type="Button" parent="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer"]
-margin_left = 861.0
-margin_right = 1010.0
-margin_bottom = 20.0
-text = "Save to manifest.json"
-
-[node name="ModName" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 52.0
-margin_right = 1010.0
-margin_bottom = 76.0
-hint_tooltip = "Name of the Mod.
-Only letters, numbers and underscores allowed."
-mouse_default_cursor_shape = 16
-is_required = true
-label_text = "Mod Name"
-hint_text = "Name of the Mod.
-Only letters, numbers and underscores allowed."
-
-[node name="Namespace" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 80.0
-margin_right = 1010.0
-margin_bottom = 104.0
-hint_tooltip = "Namespace of the Mod.
-Often just the main author or team name.
-Only letters, numbers and underscores allowed."
-mouse_default_cursor_shape = 16
-is_required = true
-label_text = "Namespace"
-hint_text = "Namespace of the Mod.
-Often just the main author or team name.
-Only letters, numbers and underscores allowed."
-
-[node name="Version" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 108.0
-margin_right = 1010.0
-margin_bottom = 132.0
-hint_tooltip = "Semantic version string.
-Only integers and periods allowed.
-Format: {major}.{minor}.{patch}
-For reference, see https://semver.org"
-mouse_default_cursor_shape = 16
-is_required = true
-label_text = "Version"
-input_text = "0.0.1"
-hint_text = "Semantic version string.
-Only integers and periods allowed.
-Format: {major}.{minor}.{patch}
-For reference, see https://semver.org"
-
-[node name="WebsiteUrl" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 136.0
-margin_right = 1010.0
-margin_bottom = 160.0
-hint_tooltip = "URL for your website or repository."
-mouse_default_cursor_shape = 16
-label_text = "Mod website URL"
-input_placeholder = "https://example.com"
-hint_text = "URL for your website or repository."
-
-[node name="Dependencies" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 164.0
-margin_right = 1010.0
-margin_bottom = 188.0
-hint_tooltip = "Comma-separated list of mod IDs.
-Only letters, numbers and underscores allowed.
-A single dash in the middle is required.
-Format: {namespace}-{name}"
-mouse_default_cursor_shape = 16
-label_text = "Dependencies"
-input_placeholder = "Namespace-ModName, Author-Name"
-hint_text = "Comma-separated list of mod IDs.
-Only letters, numbers and underscores allowed.
-A single dash in the middle is required.
-Format: {namespace}-{name}"
-
-[node name="Description" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 4 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 192.0
-margin_right = 1010.0
-margin_bottom = 404.0
-label_text = "Description"
-
-[node name="Category2" type="LineEdit" parent="TabContainer/Mod Manifest/ScrollContainer/VBox"]
-margin_top = 408.0
-margin_right = 1010.0
-margin_bottom = 432.0
-mouse_filter = 2
-mouse_default_cursor_shape = 0
-text = "Godot Extra"
-align = 1
-editable = false
-context_menu_enabled = false
-virtual_keyboard_enabled = false
-shortcut_keys_enabled = false
-middle_mouse_paste_enabled = false
-
-[node name="Authors" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 436.0
-margin_right = 1010.0
-margin_bottom = 460.0
-hint_tooltip = "Comma-separated list of Authors"
-mouse_default_cursor_shape = 16
-label_text = "Authors"
-input_placeholder = "Author1, Autor2"
-hint_text = "Comma-separated list of Authors"
-
-[node name="Incompatibilities" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 464.0
-margin_right = 1010.0
-margin_bottom = 488.0
-hint_tooltip = "Comma-separated list of mod IDs.
-Only letters, numbers and underscores allowed.
-A single dash in the middle is required.
-Format: {namespace}-{name}"
-mouse_default_cursor_shape = 16
-label_text = "Incompatible Mods"
-input_placeholder = "Namespace-ModName, Author-Name"
-hint_text = "Comma-separated list of mod IDs.
-Only letters, numbers and underscores allowed.
-A single dash in the middle is required.
-Format: {namespace}-{name}"
-
-[node name="ComptatibleGameVersions" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 492.0
-margin_right = 1010.0
-margin_bottom = 516.0
-hint_tooltip = "Comma-separated list of valid game versions."
-mouse_default_cursor_shape = 16
-label_text = "Compatible Game Versions"
-input_placeholder = "1.0.0, 1.2.0"
-hint_text = "Comma-separated list of valid game versions."
-
-[node name="ComptatibleModLoaderVersions" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 520.0
-margin_right = 1010.0
-margin_bottom = 544.0
-hint_tooltip = "Comma-separated list of ModLoader versions."
-mouse_default_cursor_shape = 16
-label_text = "Compatible Mod Loader Versions"
-input_placeholder = "5.0.0, 4.1.0"
-hint_text = "Comma-separated list of ModLoader versions."
-
-[node name="Tags" parent="TabContainer/Mod Manifest/ScrollContainer/VBox" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-anchor_right = 0.0
-margin_top = 548.0
-margin_right = 1010.0
-margin_bottom = 572.0
-hint_tooltip = "Compatible ModLoader Versions"
-mouse_default_cursor_shape = 16
-label_text = "Tags"
-input_placeholder = "Tag1, Tag2"
-hint_text = "Compatible ModLoader Versions"
+[node name="ManifestEditor" parent="TabContainer" instance=ExtResource( 4 )]
 
 [node name="Default Configuration" type="PanelContainer" parent="TabContainer"]
 visible = false
@@ -555,7 +334,6 @@ margin_right = 366.0
 [connection signal="input_text_changed" from="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/Export" to="." method="_on_export_pressed"]
-[connection signal="pressed" from="TabContainer/Mod Manifest/ScrollContainer/VBox/HBoxContainer/SaveManifest" to="." method="_on_save_manifest_pressed"]
 [connection signal="pressed" from="TabContainer/Default Configuration/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
 [connection signal="cursor_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_cursor_changed"]
 [connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]

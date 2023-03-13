@@ -62,6 +62,18 @@ static func output_info(message: String) -> void:
 	ModToolStore.editor_plugin.dock.label_output.append_bbcode(message + "\n")
 
 
+static func save_to_manifest_json() -> bool:
+	var is_success := ModLoaderUtils.save_string_to_file(
+		ModToolStore.manifest_data.to_json(),
+		ModToolStore.path_manifest
+	)
+
+	if is_success:
+		output_info("Successfully saved manifest.json file!")
+
+	return is_success
+
+
 static func make_dir_recursive(dst_dir) -> bool:
 	var dir := Directory.new()
 	var error := dir.make_dir_recursive(dst_dir)
