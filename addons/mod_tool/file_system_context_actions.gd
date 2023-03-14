@@ -148,8 +148,9 @@ static func add_script_extension_to_mod_main(file: File, extension_path: String)
 	if not mod_has_install_script_extensions_method(main_script_path):
 		return
 
-	file.open(main_script_path, File.READ_WRITE)
+	file.open(main_script_path, File.READ)
 	var file_content := file.get_as_text()
+	file.close()
 
 	var index_find_from := file_content.find("func install_script_extensions")
 	var mod_extensions_dir_path_index := file_content.find("extensions_dir_path", index_find_from)
@@ -158,22 +159,60 @@ static func add_script_extension_to_mod_main(file: File, extension_path: String)
 	# variable "extensions_dir_path" is found, use that variable in combination with plus_file
 	var extension_install_line := "\tmodLoader.install_script_extension(%s)\n"
 	if mod_extensions_dir_path_index == -1:
-		extension_install_line = extension_install_line % '"%s"' % extension_path
+		extension_install_line = extension_install_line % quote_string(extension_path)
 	else:
 		extension_path = extension_path.trim_prefix(ModToolStore.path_mod_dir.plus_file("extensions/"))
-		extension_install_line = extension_install_line % 'extensions_dir_path.plus_file("%s")' % extension_path
+		extension_install_line = extension_install_line % "extensions_dir_path.plus_file(%s)" % quote_string(extension_path)
+
+	# Check if that file was already used as script extension
+	if extension_install_line.strip_edges() in file_content:
+		return
 
 	var last_install_line_index := file_content.find_last("modLoader.install_script_extension")
-	# If there is no modLoader.install_script_extension yet, put it directly under install_script_extensions
 	if last_install_line_index == -1:
-		last_install_line_index = file_content.find_last("install_script_extensions")
-	var last_install_line_end_index := file_content.find("\n", last_install_line_index)
-
-	if not extension_install_line.strip_edges() in file_content:
+		# If there is no modLoader.install_script_extension yet, put it at the end of install_script_extensions
+		var insertion_index := get_index_at_method_end("install_script_extensions", file_content)
+		file_content = file_content.insert(insertion_index, "\n" + extension_install_line)
+	else:
+		var last_install_line_end_index := file_content.find("\n", last_install_line_index)
 		file_content = file_content.insert(last_install_line_end_index +1, extension_install_line)
-		file.store_string(file_content)
-		ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
 
+	file.open(main_script_path, File.WRITE)
+	file.store_string(file_content)
+	file.close()
+	ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
+
+
+static func get_index_at_method_end(method_name: String, text: String) -> int:
+	var starting_index := text.find_last(method_name)
+
+	# Find the end of the method
+	var next_method_line_index := text.find("func ", starting_index)
+	var method_end := -1
+
+	if next_method_line_index == -1:
+		# Backtrack empty lines from the end of the file
+		method_end = text.length() -1
+	else:
+		# Get the line before the next function line
+		method_end = text.rfind("\n", next_method_line_index)
+
+	# Backtrack to the last non-empty line
+	var last_non_empty_line_index := method_end
+	while last_non_empty_line_index > starting_index:
+		last_non_empty_line_index -= 1
+		# Remove spaces, tabs and newlines (whitespace) to check if the line really is empty
+		if text[last_non_empty_line_index].rstrip("\t\n "):
+			break # encountered a filled line
+
+	return last_non_empty_line_index +1
+
+
+static func quote_string(string: String) -> String:
+	var settings := ModToolStore.editor_plugin.get_editor_interface().get_editor_settings()
+	if settings.get_setting("text_editor/completion/use_single_quotes"):
+		return "'%s'" % string
+	return "\"%s\"" % string
 
 
 static func mod_has_install_script_extensions_method(main_script_path: String) -> bool:
