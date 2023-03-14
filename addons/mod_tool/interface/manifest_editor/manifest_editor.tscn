@@ -1,8 +1,9 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/mod_tool/input_string_multiline.tscn" type="PackedScene" id=1]
-[ext_resource path="res://addons/mod_tool/input_string.tscn" type="PackedScene" id=2]
-[ext_resource path="res://addons/mod_tool/manifest_editor.gd" type="Script" id=4]
+[ext_resource path="res://addons/mod_tool/interface/global/input_string_multiline.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.gd" type="Script" id=4]
+
 
 [node name="ModManifest" type="PanelContainer"]
 unique_name_in_owner = true
