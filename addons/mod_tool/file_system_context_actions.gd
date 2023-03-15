@@ -77,6 +77,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PoolStringA
 		return
 
 	var script_paths := []
+	var asset_override_paths := []
 	for file_path in file_paths:
 		if dir.dir_exists(file_path):
 			continue
@@ -84,11 +85,17 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PoolStringA
 		if dir.file_exists(file_path):
 			if file_path.ends_with(".gd"):
 				script_paths.append(file_path)
+				continue
+			if file_path.ends_with(".tscn") or file_path.ends_with(".tres"):
+				continue
+			asset_override_paths.append(file_path)
 
-	if script_paths.size()	> 0:
+	if script_paths.size() > 0 or asset_override_paths.size() > 0:
 		context_menu.add_separator()
+
+	if script_paths.size() > 0:
 		context_menu.add_icon_item(
-			base_theme.get_icon("Override", "EditorIcons"),
+			base_theme.get_icon("ScriptExtend", "EditorIcons"),
 			"ModTool: Create Script Extension" + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
 		)
 		context_menu.set_item_metadata(
@@ -97,8 +104,23 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PoolStringA
 		)
 		context_menu.set_item_tooltip(
 			context_menu.get_item_count() -1,
-			"Will add overrides for: \n%s" %
+			"Will add extensions for: \n%s" %
 			str(script_paths).trim_prefix("[").trim_suffix("]").replace(", ", "\n")
+		)
+
+	if asset_override_paths.size() > 0:
+		context_menu.add_icon_item(
+			base_theme.get_icon("Override", "EditorIcons"),
+			"ModTool: Create Asset Overwrite" + ("s (%s)" % asset_override_paths.size() if asset_override_paths.size() > 1 else "")
+		)
+		context_menu.set_item_metadata(
+			context_menu.get_item_count() -1,
+			{ "mod_tool_override_paths": asset_override_paths }
+		)
+		context_menu.set_item_tooltip(
+			context_menu.get_item_count() -1,
+			"Will overwrite assets: \n%s" %
+			str(asset_override_paths).trim_prefix("[").trim_suffix("]").replace(", ", "\n")
 		)
 
 
@@ -109,14 +131,19 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 	# Ensure that the metadata is actually set by the ModTool
 	# Since id and index of the item can always change
 	if metadata is Dictionary and metadata.has("mod_tool_script_paths"):
-		var file := File.new()
-
 		file_paths = metadata.mod_tool_script_paths
 		for file_path in file_paths:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
-				add_script_extension_to_mod_main(file, extension_path)
-		file.close()
+				add_script_extension_to_mod_main(extension_path)
+		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+
+	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
+		file_paths = metadata.mod_tool_override_paths
+		for file_path in file_paths:
+			var asset_path := create_overwrite_asset(file_path)
+			if asset_path:
+				add_asset_overwrite_to_overwrites(file_path, asset_path)
 		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 
 
@@ -143,9 +170,11 @@ static func create_script_extension(file_path: String) -> String:
 	return extension_path
 
 
-static func add_script_extension_to_mod_main(file: File, extension_path: String):
+static func add_script_extension_to_mod_main(extension_path: String) -> void:
+	var file := File.new()
 	var main_script_path := ModToolStore.path_mod_dir.plus_file("mod_main.gd")
-	if not mod_has_install_script_extensions_method(main_script_path):
+	if not script_has_method(main_script_path, "install_script_extensions"):
+		ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
 		return
 
 	file.open(main_script_path, File.READ)
@@ -183,6 +212,62 @@ static func add_script_extension_to_mod_main(file: File, extension_path: String)
 	ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
 
 
+func create_overwrite_asset(file_path: String) -> String:
+	if not ModToolStore.name_mod_dir:
+		ModToolUtils.output_error("Select an existing mod or create a new one to overwrite assets")
+		return ""
+
+	var file_directory := file_path.get_base_dir().trim_prefix("res://")
+	var overwrite_directory: String = ModToolStore.path_mod_dir.plus_file("overwrites").plus_file(file_directory)
+	ModToolUtils.make_dir_recursive(overwrite_directory)
+
+	var dir := Directory.new()
+	var overwrite_path := overwrite_directory.plus_file(file_path.get_file())
+	if not dir.file_exists(overwrite_path):
+		dir.copy(file_path, overwrite_path)
+		ModToolUtils.output_info('Copied asset "%s" as overwrite to path %s' % [file_path.get_file(), overwrite_path])
+
+	ModToolStore.editor_file_system.scan()
+	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(overwrite_path)
+
+	return overwrite_path
+
+
+static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
+	var file := File.new()
+	var overwrites_script_path := ModToolStore.path_mod_dir.plus_file("overwrites.gd")
+	if not file.file_exists(overwrites_script_path):
+		file.open(overwrites_script_path, File.WRITE)
+		file.store_line("extends Node\n\n")
+		file.store_line("func _init() -> void:\npass")
+		file.close()
+
+	if not script_has_method(overwrites_script_path, "_init"):
+		file.open(overwrites_script_path, File.READ_WRITE)
+		file.store_string(file.get_as_text() + "\nfunc _init() -> void:\n")
+		file.close()
+
+	file.open(overwrites_script_path, File.READ)
+	var file_content := file.get_as_text()
+	file.close()
+
+	# Construct the line required to preload the asset and take over the path
+	var asset_overwrite_line := "\tpreload(%s).take_over_path(%s)\n" % [quote_string(asset_path), quote_string(vanilla_asset_path)]
+
+	# Check if that asset is already being overwritten
+	if asset_overwrite_line.strip_edges() in file_content:
+		return
+
+	# If there is no modLoader.install_script_extension yet, put it at the end of install_script_extensions
+	var insertion_index := get_index_at_method_end("_init", file_content)
+	file_content = file_content.insert(insertion_index, "\n" + asset_overwrite_line)
+
+	file.open(overwrites_script_path, File.WRITE)
+	file.store_string(file_content)
+	file.close()
+	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
+
+
 static func get_index_at_method_end(method_name: String, text: String) -> int:
 	var starting_index := text.find_last(method_name)
 
@@ -215,13 +300,16 @@ static func quote_string(string: String) -> String:
 	return "\"%s\"" % string
 
 
-static func mod_has_install_script_extensions_method(main_script_path: String) -> bool:
-	var main_script: Script = load(main_script_path)
+static func script_has_method(script_path: String, method: String) -> bool:
+	var script: Script = load(script_path)
 
-	for method in main_script.get_script_method_list():
-		if method.name == "install_script_extensions":
+	for script_method in script.get_script_method_list():
+		if script_method.name == method:
 			return true
 
-	ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
+	if method in script.source_code:
+		ModToolUtils.output_info("Script contains the method, but might also have an error")
+		return true
+
 	return false
 
