@@ -239,7 +239,7 @@ static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_
 	if not file.file_exists(overwrites_script_path):
 		file.open(overwrites_script_path, File.WRITE)
 		file.store_line("extends Node\n\n")
-		file.store_line("func _init() -> void:\npass")
+		file.store_line("func _init() -> void:")
 		file.close()
 
 	if not script_has_method(overwrites_script_path, "_init"):
@@ -308,7 +308,6 @@ static func script_has_method(script_path: String, method: String) -> bool:
 			return true
 
 	if method in script.source_code:
-		ModToolUtils.output_info("Script contains the method, but might also have an error")
 		return true
 
 	return false
