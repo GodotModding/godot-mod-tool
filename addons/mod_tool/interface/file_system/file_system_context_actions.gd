@@ -271,7 +271,7 @@ static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_
 	if not file.file_exists(overwrites_script_path):
 		file.open(overwrites_script_path, File.WRITE)
 		file.store_line("extends Node\n\n")
-		file.store_line("func _init() -> void:")
+		file.store_line("func _init() -> void:\n")
 		file.close()
 
 	if not script_has_method(overwrites_script_path, "_init"):
@@ -297,38 +297,6 @@ static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_
 	file.store_string(file_content)
 	file.close()
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
-
-
-static func get_index_at_method_end(method_name: String, text: String) -> int:
-	var starting_index := text.find_last(method_name)
-
-	# Find the end of the method
-	var next_method_line_index := text.find("func ", starting_index)
-	var method_end := -1
-
-	if next_method_line_index == -1:
-		# Backtrack empty lines from the end of the file
-		method_end = text.length() -1
-	else:
-		# Get the line before the next function line
-		method_end = text.rfind("\n", next_method_line_index)
-
-	# Backtrack to the last non-empty line
-	var last_non_empty_line_index := method_end
-	while last_non_empty_line_index > starting_index:
-		last_non_empty_line_index -= 1
-		# Remove spaces, tabs and newlines (whitespace) to check if the line really is empty
-		if text[last_non_empty_line_index].rstrip("\t\n "):
-			break # encountered a filled line
-
-	return last_non_empty_line_index +1
-
-
-static func quote_string(string: String) -> String:
-	var settings := ModToolStore.editor_plugin.get_editor_interface().get_editor_settings()
-	if settings.get_setting("text_editor/completion/use_single_quotes"):
-		return "'%s'" % string
-	return "\"%s\"" % string
 
 
 static func script_has_method(script_path: String, method: String) -> bool:
