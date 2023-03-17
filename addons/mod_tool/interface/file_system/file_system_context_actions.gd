@@ -258,7 +258,6 @@ static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_
 	if asset_overwrite_line.strip_edges() in file_content:
 		return
 
-	# If there is no modLoader.install_script_extension yet, put it at the end of install_script_extensions
 	var insertion_index := get_index_at_method_end("_init", file_content)
 	file_content = file_content.insert(insertion_index, "\n" + asset_overwrite_line)
 
