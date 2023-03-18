@@ -208,6 +208,12 @@ margin_right = 321.0
 margin_bottom = 44.0
 text = "Export Mod"
 
+[node name="SelectTemplate" type="Button" parent="TabContainer/Export/HSplit/Settings/Buttons/VBox"]
+margin_top = 48.0
+margin_right = 321.0
+margin_bottom = 68.0
+text = "Select Template"
+
 [node name="ManifestEditor" parent="TabContainer" instance=ExtResource( 2 )]
 visible = false
 
@@ -328,17 +334,33 @@ margin_right = 373.0
 [node name="btn_create_mod" parent="Popup/CreateMod/Settings/Buttons/VBox" index="0"]
 margin_right = 366.0
 
+[node name="FileDialog" type="FileDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -350.0
+margin_top = -200.0
+margin_right = 350.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 500, 300 )
+window_title = "Open a Directory"
+resizable = true
+mode = 2
+
 [connection signal="visibility_changed" from="." to="." method="_on_mod_tools_dock_visibility_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
 [connection signal="input_text_changed" from="TabContainer/Export/HSplit/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/Export" to="." method="_on_export_pressed"]
+[connection signal="pressed" from="TabContainer/Export/HSplit/Settings/Buttons/VBox/SelectTemplate" to="." method="_on_SelectTemplate_pressed"]
 [connection signal="pressed" from="TabContainer/Default Configuration/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
 [connection signal="cursor_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_cursor_changed"]
 [connection signal="text_changed" from="TabContainer/Default Configuration/VBox/ConfigEditor" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_text_changed"]
 [connection signal="timeout" from="TabContainer/Default Configuration/VBox/ConfigEditor/ValidationDelay" to="TabContainer/Default Configuration/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
 [connection signal="mod_dir_created" from="Popup/CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="input_text_changed" from="Popup/CreateMod/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_input_text_changed"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
 
 [editable path="Popup/CreateMod"]

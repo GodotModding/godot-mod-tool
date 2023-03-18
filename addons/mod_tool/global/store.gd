@@ -16,12 +16,14 @@ var error_color := ""
 
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
+var path_current_template_dir := ""
 var path_export_dir := ""
 var path_temp_dir := ""
 var path_manifest := ""
 var path_global_export_dir := ""
 var path_global_project_dir := ""
 var path_global_temp_dir := ""
+var path_addon_dir := "res://addons/mod_tool/"
 var path_global_addon_dir := ""
 var path_global_seven_zip := ""
 var path_global_final_zip := ""
@@ -56,6 +58,7 @@ func set_name_mod_dir(new_name_mod_dir: String) -> void:
 func init(store: Dictionary) -> void:
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
+	path_current_template_dir = store.path_current_template_dir
 	path_export_dir = "res://zips/"
 	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
 	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
@@ -80,6 +83,7 @@ func save_store() -> void:
 	var save_data := {
 		"name_mod_dir": name_mod_dir,
 		"path_mod_dir": path_mod_dir,
+		"path_current_template_dir": path_current_template_dir,
 		"path_export_dir": path_export_dir,
 		"path_global_project_dir": path_global_project_dir,
 		"path_temp_dir": path_temp_dir,

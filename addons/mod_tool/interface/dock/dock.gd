@@ -12,6 +12,7 @@ var log_dock_button: ToolButton
 
 onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
+onready var file_dialog = $FileDialog
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor = $"%ManifestEditor"
@@ -174,3 +175,12 @@ func _on_store_loaded() -> void:
 	if ModLoaderUtils.file_exists(ModToolStore.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
+
+
+func _on_SelectTemplate_pressed():
+	file_dialog.show()
+	file_dialog.current_dir = ModToolStore.path_addon_dir.plus_file("templates")
+
+
+func _on_FileDialog_dir_selected(dir):
+	ModToolStore.path_current_template_dir = dir
