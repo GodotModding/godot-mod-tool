@@ -16,7 +16,7 @@ var error_color := ""
 
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
-var path_current_template_dir := ""
+var path_current_template_dir := "res://addons/mod_tool/templates/default/"
 var path_export_dir := ""
 var path_temp_dir := ""
 var path_manifest := ""

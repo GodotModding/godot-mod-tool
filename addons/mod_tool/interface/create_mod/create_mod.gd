@@ -18,13 +18,6 @@ func add_mod() -> void:
 		ModToolUtils.output_error('Invalid name or namespace: "%s". You may only use letters, numbers, underscores and at least 3 characters for each.' % ModToolStore.name_mod_dir)
 		return
 
-	# Check if mods-unpacked dir exists
-	if not ModLoaderUtils.dir_exists("res://mods-unpacked"):
-		# If not create it
-		var success := ModToolUtils.make_dir_recursive("res://mods-unpacked")
-		if not success:
-			return
-
 	# Check if mod dir exists
 	if not ModLoaderUtils.dir_exists(ModToolStore.path_mod_dir):
 		# If not - create it
@@ -32,17 +25,35 @@ func add_mod() -> void:
 		if not success:
 			return
 
-		# Create mod_main.gd
-		ModToolUtils.file_copy(ModToolStore.PATH_TEMPLATES_DIR + "mod_main.gd", ModToolStore.path_mod_dir + "/mod_main.gd")
+		# Get Template files
+		var template_paths := ModToolUtils.get_flat_view_dict(ModToolStore.path_current_template_dir, "", false, true)
 
-		# Create manifest.json
-		ModToolUtils.file_copy(ModToolStore.PATH_TEMPLATES_DIR + "manifest.json", ModToolStore.path_mod_dir + "/manifest.json")
+		# Copy current selected template dir files and folders to res://mods-unpacked
+		for path in template_paths:
+			var template_local_path := path.trim_prefix(ModToolStore.path_current_template_dir) as String
+			if ModLoaderUtils.file_exists(path):
+				ModToolUtils.file_copy(path, ModToolStore.path_mod_dir.plus_file(template_local_path))
+			else:
+				ModToolUtils.make_dir_recursive(ModToolStore.path_mod_dir.plus_file(template_local_path))
 
 		# Update FileSystem
 		ModToolStore.editor_file_system.scan()
 
 		# Output info
 		ModToolUtils.output_info("Added base mod files to " + ModToolStore.path_mod_dir)
+
+		# Open mod_main.gd in the code editor
+
+		# Open manifest editor
+
+		# Load the manifest
+
+		# Update the mod name in the manifest
+
+		# Update the namespace in the manifest
+
+		# Save the manifest
+
 	else:
 		# If so - show error and ask if user wants to connect with the mod instead
 		ModToolUtils.output_error("Mod directory at %s already exists." % ModToolStore.path_mod_dir)
