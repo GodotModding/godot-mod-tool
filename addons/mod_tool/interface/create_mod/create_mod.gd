@@ -52,15 +52,23 @@ func add_mod() -> void:
 		ModToolStore.editor_plugin.get_editor_interface().edit_script(mod_main_script)
 		ModToolStore.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
-		# Open manifest editor
-
-		# Load the manifest
-
 		# Update the mod name in the manifest
+		ModToolStore.manifest_data.name = ModToolStore.mod_name
 
 		# Update the namespace in the manifest
+		ModToolStore.manifest_data.namespace = ModToolStore.mod_namespace
+
+		# Update manifest_dict
+		ModToolStore.manifest_dict = ModToolStore.manifest_data.get_as_dict()
+
+		# Update manifest editor ui
+		ModToolStore.editor_plugin.dock.manifest_editor.update_ui()
+
+		# Open manifest editor
+		ModToolStore.editor_plugin.dock.show_manifest_editor()
 
 		# Save the manifest
+		ModToolStore.editor_plugin.dock.manifest_editor.save_manifest()
 
 	else:
 		# If so - show error and ask if user wants to connect with the mod instead

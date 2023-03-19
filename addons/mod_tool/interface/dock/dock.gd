@@ -10,6 +10,7 @@ var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
 
+onready var tab_container = $TabContainer
 onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var file_dialog = $FileDialog
@@ -90,7 +91,11 @@ func discard_last_console_error() -> void:
 
 
 func show_output() -> void:
-	$TabContainer.current_tab = 0
+	tab_container.current_tab = 0
+
+
+func show_manifest_editor() -> void:
+	tab_container.current_tab = 1
 
 
 func _update_ui():
