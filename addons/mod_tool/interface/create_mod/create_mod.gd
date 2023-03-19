@@ -38,11 +38,19 @@ func add_mod() -> void:
 
 		# Update FileSystem
 		ModToolStore.editor_file_system.scan()
+		# Wait for the scan to finish
+		yield(ModToolStore.editor_file_system, "filesystem_changed")
+
+		# Navigate to the new mod dir in the FileSystem pannel
+		ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(ModToolStore.path_mod_dir.plus_file("mod_main.gd"))
 
 		# Output info
 		ModToolUtils.output_info("Added base mod files to " + ModToolStore.path_mod_dir)
 
 		# Open mod_main.gd in the code editor
+		var mod_main_script := load(ModToolStore.path_mod_dir.plus_file("mod_main.gd"))
+		ModToolStore.editor_plugin.get_editor_interface().edit_script(mod_main_script)
+		ModToolStore.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
 		# Open manifest editor
 
