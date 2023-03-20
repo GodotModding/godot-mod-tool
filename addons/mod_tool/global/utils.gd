@@ -113,7 +113,7 @@ static func remove_recursive(path: String) -> void:
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
-static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false) -> PoolStringArray:
+static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, include_empty_dirs := false) -> PoolStringArray:
 	var data: PoolStringArray = []
 	var regex: RegEx
 
@@ -133,6 +133,8 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 		if dir.open(dir_name) == OK:
 			var _dirlist_error: int = dir.list_dir_begin()
 			var file_name := dir.get_next()
+			if include_empty_dirs and not dir_name == p_dir:
+				data.append(dir_name)
 			while file_name != "":
 				if not dir_name == "res://":
 					first = false
