@@ -32,10 +32,6 @@ var path_mod_files := []
 
 # ModManifest instance
 var manifest_data : ModManifest
-# Dictionary retrieved from ModManifest
-var manifest_dict : Dictionary
-# Pure json data from manifest.json
-var manifest_dict_json : Dictionary
 
 
 func _ready() -> void:

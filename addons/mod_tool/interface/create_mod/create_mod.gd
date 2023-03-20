@@ -61,9 +61,6 @@ func add_mod() -> void:
 		# Update the mod name in the manifest
 		ModToolStore.manifest_data.name = name_mod_dir_split[1]
 
-		# Update manifest_dict
-		ModToolStore.manifest_dict = ModToolStore.manifest_data.get_as_dict()
-
 		# Update manifest editor ui
 		ModToolStore.editor_plugin.dock.manifest_editor.update_ui()
 

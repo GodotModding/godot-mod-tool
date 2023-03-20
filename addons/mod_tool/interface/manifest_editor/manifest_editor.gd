@@ -17,9 +17,8 @@ func _ready() -> void:
 
 
 func load_manifest() -> void:
-	ModToolStore.manifest_dict_json = ModLoaderUtils.get_json_as_dict(ModToolStore.path_manifest)
-	ModToolStore.manifest_data = ModManifest.new(ModToolStore.manifest_dict_json)
-	ModToolStore.manifest_dict = ModToolStore.manifest_data.get_as_dict()
+	var manifest_dict_json := ModLoaderUtils.get_json_as_dict(ModToolStore.path_manifest)
+	ModToolStore.manifest_data = ModManifest.new(manifest_dict_json)
 	ModToolUtils.output_info("Loaded manifest from " + ModToolStore.path_manifest)
 
 
@@ -36,8 +35,8 @@ func update_ui() -> void:
 	# For each input field
 	for input in input_fields:
 		# Check if the key used in the InputString instance is in the data_dict.
-		if ModToolStore.manifest_dict.has(input.key):
-			var value = ModToolStore.manifest_dict[input.key]
+		if ModToolStore.manifest_data.get(input.key):
+			var value = ModToolStore.manifest_data.get(input.key)
 
 			# If the value is an Array create a comma separated list
 			if value is PoolStringArray:
