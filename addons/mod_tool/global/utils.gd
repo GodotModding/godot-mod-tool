@@ -34,21 +34,13 @@ static func file_get_as_text(path: String) -> String:
 # src = path/to/file.extension
 # dst = other/path/to/file.extension
 static func file_copy(src: String, dst: String) -> void:
-	var file := File.new()
 	var dir := Directory.new()
 	var dst_dir := dst.get_base_dir()
-
-	file.open(src, File.READ)
-	var file_length := file.get_len()
-	var file_content := file.get_buffer(file_length)
-	file.close()
 
 	if not dir.dir_exists(dst_dir):
 		dir.make_dir_recursive(dst_dir)
 
-	file.open(dst, File.WRITE)
-	file.store_buffer(file_content)
-	file.close()
+	dir.copy(src, dst)
 
 
 # Log error message to the output richtext label.
