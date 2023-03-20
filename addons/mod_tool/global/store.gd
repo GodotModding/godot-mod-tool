@@ -15,8 +15,6 @@ var editor_file_system: EditorFileSystem
 var error_color := ""
 
 var name_mod_dir := "" setget set_name_mod_dir
-var mod_name := ""
-var mod_namespace := ""
 var path_mod_dir := ""
 var path_current_template_dir := "res://addons/mod_tool/templates/default/"
 var path_export_dir := ""
@@ -56,10 +54,6 @@ func set_base_theme(new_base_theme: Theme) -> void:
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:
 	update_paths(new_name_mod_dir)
-	var new_name_mod_dir_split = new_name_mod_dir.split("-")
-	mod_namespace = new_name_mod_dir_split[0]
-	if new_name_mod_dir_split.size() == 2:
-		mod_name = new_name_mod_dir_split[1]
 
 
 func init(store: Dictionary) -> void:

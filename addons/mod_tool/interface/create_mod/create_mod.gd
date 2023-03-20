@@ -52,11 +52,14 @@ func add_mod() -> void:
 		ModToolStore.editor_plugin.get_editor_interface().edit_script(mod_main_script)
 		ModToolStore.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
-		# Update the mod name in the manifest
-		ModToolStore.manifest_data.name = ModToolStore.mod_name
+		# Split the new mod id
+		var name_mod_dir_split := ModToolStore.name_mod_dir.split("-")
 
 		# Update the namespace in the manifest
-		ModToolStore.manifest_data.namespace = ModToolStore.mod_namespace
+		ModToolStore.manifest_data.namespace = name_mod_dir_split[0]
+
+		# Update the mod name in the manifest
+		ModToolStore.manifest_data.name = name_mod_dir_split[1]
 
 		# Update manifest_dict
 		ModToolStore.manifest_dict = ModToolStore.manifest_data.get_as_dict()
