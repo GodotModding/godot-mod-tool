@@ -53,17 +53,30 @@ func set_name_mod_dir(new_name_mod_dir: String) -> void:
 
 
 func init(store: Dictionary) -> void:
+	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
+	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
+	if OS.has_feature("Windows"):
+		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/windows/7zz.exe"
+	elif OS.has_feature("OSX"):
+		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/mac/7zz"
+	elif OS.has_feature("X11"):
+		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/linux/7zz"
+	else:
+		printerr("OS currently not supported to export zips via mod tool. Please open an issue on GitHub")
+
+	if not File.new().file_exists(path_global_seven_zip):
+		printerr("7zip installation not found at path %s. Please install if at that location." % path_global_seven_zip)
+		printerr("Download: https://7-zip.org/download.html")
+
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
 	path_current_template_dir = store.path_current_template_dir
 	path_export_dir = "res://zips/"
 	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
-	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_temp_dir = "user://temp/" + store.name_mod_dir
 	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
-	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
-	path_global_seven_zip = path_global_addon_dir + "vendor/7zip/win/zip.exe"
+
 	path_global_final_zip = path_global_export_dir + store.name_mod_dir + ".zip"
 	excluded_file_extensions = [".csv.import"]
 
@@ -72,8 +85,8 @@ func update_paths(new_name_mod_dir: String) -> void:
 	name_mod_dir = new_name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + new_name_mod_dir
 	path_temp_dir = "user://temp/" + new_name_mod_dir
-	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
+	path_manifest = path_mod_dir + "/manifest.json"
 
 
 func save_store() -> void:
