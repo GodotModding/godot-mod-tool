@@ -62,11 +62,11 @@ func init(store: Dictionary) -> void:
 	elif OS.has_feature("X11"):
 		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/linux/7zz"
 	else:
-		printerr("OS currently not supported to export zips via mod tool. Please open an issue on GitHub")
+		ModToolUtils.output_error("OS currently not supported to export zips via mod tool. Please open an issue on GitHub")
 
 	if not File.new().file_exists(path_global_seven_zip):
-		printerr("7zip installation not found at path %s. Please install if at that location." % path_global_seven_zip)
-		printerr("Download: https://7-zip.org/download.html")
+		ModToolUtils.output_error("7zip installation not found at path %s. Please install if at that location." % path_global_seven_zip)
+		ModToolUtils.output_error("Download: https://7-zip.org/download.html")
 
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
@@ -103,7 +103,7 @@ func save_store() -> void:
 	var file := File.new()
 	var error := file.open(PATH_SAVE_FILE, File.WRITE)
 	if error != OK:
-		print(error)
+		ModToolUtils.output_error(error)
 	file.store_string(JSON.print(save_data))
 	file.close()
 
