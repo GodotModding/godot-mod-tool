@@ -103,7 +103,7 @@ func save_store() -> void:
 	var file := File.new()
 	var error := file.open(PATH_SAVE_FILE, File.WRITE)
 	if error != OK:
-		ModToolUtils.output_error(error)
+		ModToolUtils.output_error(str(error))
 	file.store_string(JSON.print(save_data))
 	file.close()
 
