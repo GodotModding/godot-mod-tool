@@ -43,10 +43,6 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 		plugin.get_editor_interface().get_base_control().theme
 	)
 
-	$Panel.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("panel", "TabContainer"))
-#	$"%TabContainer".add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("bg", "ItemList"))
-#	$Panel/VSplit/Export/HSplit.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("bg", "ItemList"))
-
 	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
@@ -92,11 +88,11 @@ func discard_last_console_error() -> void:
 		log_dock_button.icon = StreamTexture.new()
 
 
-func show_output() -> void:
+func show_manifest_editor() -> void:
 	tab_container.current_tab = 0
 
 
-func show_manifest_editor() -> void:
+func show_config_editor() -> void:
 	tab_container.current_tab = 1
 
 
