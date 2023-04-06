@@ -10,14 +10,15 @@ export var key: String
 export var label_text: String setget set_label_text
 export var input_text: String setget set_input_text
 export var input_placeholder: String setget set_input_placeholder
-export var editor_icon_name: String
+export var editor_icon_name: String = "NodeWarning"
 export(String, MULTILINE) var hint_text setget set_hint_text
 
 var is_valid := true
 
 
 func _ready() -> void:
-	set_editor_icon()
+	# Set up warning icons to show if a field is invalid
+	set_editor_icon(editor_icon_name)
 
 
 func set_is_required(required: bool) -> void:
@@ -47,9 +48,9 @@ func set_hint_text(new_text: String) -> void:
 	mouse_default_cursor_shape = CURSOR_ARROW if new_text == "" else CURSOR_HELP
 
 
-func set_editor_icon() -> void:
-	if editor_icon_name:
-		set_error_icon(ModToolStore.base_theme.get_icon(editor_icon_name, "EditorIcons"))
+func set_editor_icon(icon_name: String) -> void:
+	if icon_name:
+		set_error_icon(ModToolStore.base_theme.get_icon(icon_name, "EditorIcons"))
 
 
 func set_error_icon(icon: Texture) -> void:

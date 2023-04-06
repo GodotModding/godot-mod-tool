@@ -10,13 +10,13 @@ var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
 
-onready var tab_container = $TabContainer
+onready var tab_container := $"%TabContainer"
 onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var file_dialog = $FileDialog
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var manifest_editor = $"%ManifestEditor"
+onready var manifest_editor = $"%Manifest Editor"
 onready var config_editor = $"%ConfigEditor"
 
 
@@ -43,7 +43,9 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 		plugin.get_editor_interface().get_base_control().theme
 	)
 
-	$TabContainer.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("DebuggerPanel", "EditorStyles"))
+	$Panel.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("panel", "TabContainer"))
+#	$"%TabContainer".add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("bg", "ItemList"))
+#	$Panel/VSplit/Export/HSplit.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("bg", "ItemList"))
 
 	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
 	$"%ConfigEditor".base_theme = ModToolStore.base_theme
@@ -143,23 +145,6 @@ func _on_save_config_pressed() -> void:
 func _on_export_settings_create_new_mod_pressed() -> void:
 	popup.popup_centered()
 	create_mod.clear_mod_id_input()
-
-
-# replicates the behaviour for the debugger tab styles
-# for the full setup of this, the TabContainer needs to be the child of a
-# full rect Control and have a margin_left of -10 and a margin_right of 10
-# this is to offset the 10px content margins that are still present in the
-# BottomPanelDebuggerOverride stylebox for some reason. It's how Godot does it.
-func _on_mod_tools_dock_visibility_changed() -> void:
-	if not visible or not ModToolStore.base_theme or not tab_parent_bottom_panel:
-		return
-
-	# the panel style is overridden by godot after this method is called
-	# make sure our override-override is applied after that
-	yield(get_tree(), "idle_frame")
-
-	var panel_box: StyleBoxFlat = ModToolStore.base_theme.get_stylebox("BottomPanelDebuggerOverride", "EditorStyles")
-	tab_parent_bottom_panel.add_stylebox_override("panel", panel_box)
 
 
 # Update the mod name in the ModToolStore

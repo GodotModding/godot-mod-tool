@@ -4,16 +4,15 @@ extends PanelContainer
 
 var input_fields := []
 
-onready var manifest_input_vbox := $ScrollContainer/VBox
+onready var manifest_input_vbox := $"%InputVBox"
 
 
 func _ready() -> void:
+	$VBox/Panel.add_stylebox_override("panel", ModToolStore.base_theme.get_stylebox("bg", "ItemList"))
 	# Setup input fields
 	for node in manifest_input_vbox.get_children():
 		if node is InputString:
 			input_fields.append(node)
-			# Set up warning icons to show if a field is invalid
-			node.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
 
 
 func load_manifest() -> void:
@@ -74,7 +73,7 @@ func _on_Namespace_input_text_changed(new_text: String, node: InputString) -> vo
 
 
 func _on_Version_input_text_changed(new_text: String, node: InputString) -> void:
-	if node.validate(ModManifest.is_semver_valid(new_text, true)):
+	if node.validate(ModManifest.is_semver_valid("", new_text, "version", true)):
 		_update_manifest_value(node, new_text)
 
 
@@ -92,7 +91,7 @@ func _on_Incompatibilities_input_text_changed(new_text: String, node: InputStrin
 
 func _on_CompatibleModLoaderVersions_input_text_changed(new_text: String, node: InputString) -> void:
 	var compatible_modloader_versions := node.get_array_from_comma_separated_string()
-	if node.validate(ModManifest.is_semver_version_array_valid(compatible_modloader_versions, true)):
+	if node.validate(ModManifest.is_semver_version_array_valid("", compatible_modloader_versions, "CompatibleModLoaderVersions", true)):
 		_update_manifest_value(node, compatible_modloader_versions)
 
 
