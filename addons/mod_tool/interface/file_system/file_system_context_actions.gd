@@ -1,5 +1,5 @@
 class_name FileSystemContextActions
-extends Object
+extends Reference
 
 var base_theme: Theme
 
