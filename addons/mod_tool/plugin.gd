@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-var tools_panel: Control
+var tools_panel: ModToolsPanel
 
 
 func _enter_tree() -> void:
@@ -15,7 +15,6 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	if tools_panel:
-		tools_panel.context_actions.free()
 		tools_panel.free()
 
 	remove_autoload_singleton('ModToolStore')

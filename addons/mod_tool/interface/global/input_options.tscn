@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/mod_tool/interface/global/input_string.gd" type="Script" id=1]
+[ext_resource path="res://addons/mod_tool/interface/global/input_options.gd" type="Script" id=1]
 
 [sub_resource type="Image" id=3]
 data = {
@@ -17,10 +17,11 @@ flags = 0
 image = SubResource( 3 )
 size = Vector2( 32, 32 )
 
-[node name="InputString" type="HBoxContainer"]
+[node name="InputOptions" type="HBoxContainer"]
 anchor_right = 1.0
-margin_bottom = 24.0
+margin_bottom = 32.0
 script = ExtResource( 1 )
+input_options = PoolStringArray( "", "" )
 
 [node name="Label" type="Label" parent="."]
 margin_top = 9.0
@@ -41,12 +42,13 @@ texture = SubResource( 2 )
 expand = true
 stretch_mode = 6
 
-[node name="Input" type="LineEdit" parent="."]
+[node name="Input" type="OptionButton" parent="."]
 unique_name_in_owner = true
 margin_left = 980.0
 margin_right = 1920.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
-placeholder_alpha = 0.5
+items = [ "", null, false, 0, null, "", null, false, 1, null ]
+selected = 0
 
-[connection signal="text_changed" from="Input" to="." method="_on_Input_text_changed"]
+[connection signal="item_selected" from="Input" to="." method="_on_Input_option_changed"]

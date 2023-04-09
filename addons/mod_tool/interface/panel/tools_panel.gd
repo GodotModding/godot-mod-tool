@@ -1,4 +1,5 @@
 tool
+class_name ModToolsPanel
 extends Control
 
 
@@ -144,7 +145,7 @@ func _on_export_settings_create_new_mod_pressed() -> void:
 
 
 # Update the mod name in the ModToolStore
-func _on_ModId_input_text_changed(new_text, input_node) -> void:
+func _on_ModId_value_changed(new_text: String, input_node: ModToolInterfaceInput) -> void:
 	ModToolStore.name_mod_dir = new_text
 	input_node.show_error_if_not(ModManifest.is_mod_id_valid(new_text, new_text, '', true))
 
@@ -170,3 +171,4 @@ func _on_SelectTemplate_pressed():
 
 func _on_FileDialog_dir_selected(dir):
 	ModToolStore.path_current_template_dir = dir
+
