@@ -1,0 +1,392 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/mod_tool/interface/panel/tools_panel.gd" type="Script" id=3]
+[ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/mod_tool/interface/config_editor/json_editor.gd" type="Script" id=5]
+[ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=14]
+
+[sub_resource type="InputEventKey" id=1]
+control = true
+meta = true
+command = true
+scancode = 67
+unicode = 67
+
+[sub_resource type="ShortCut" id=12]
+resource_name = "Copy Selection"
+shortcut = SubResource( 1 )
+__meta__ = {
+"original": SubResource( 1 )
+}
+
+[sub_resource type="InputEventKey" id=3]
+shift = true
+control = true
+meta = true
+command = true
+scancode = 75
+unicode = 75
+
+[sub_resource type="ShortCut" id=13]
+resource_name = "Clear Output"
+shortcut = SubResource( 3 )
+__meta__ = {
+"original": SubResource( 3 )
+}
+
+[node name="ModToolsPanel" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 0, 400 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 3 )
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -4.0
+margin_top = -6.0
+margin_right = 4.0
+margin_bottom = 4.0
+
+[node name="VSplit" type="VSplitContainer" parent="Panel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1921.0
+margin_bottom = 1083.0
+
+[node name="TabContainer" type="TabContainer" parent="Panel/VSplit"]
+unique_name_in_owner = true
+margin_right = 1914.0
+margin_bottom = 894.0
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 14 )
+tab_align = 0
+
+[node name="Manifest Editor" parent="Panel/VSplit/TabContainer" instance=ExtResource( 2 )]
+margin_top = 24.0
+
+[node name="Mod Config Editor" type="PanelContainer" parent="Panel/VSplit/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VSplit/TabContainer/Mod Config Editor"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1907.0
+margin_bottom = 891.0
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox"]
+margin_right = 1900.0
+margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox"]
+margin_top = 13.0
+margin_right = 1533.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "Default json for user mod configuration"
+
+[node name="ErrorLabel" type="Label" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox"]
+unique_name_in_owner = true
+margin_left = 1537.0
+margin_top = 13.0
+margin_right = 1617.0
+margin_bottom = 27.0
+text = "JSON is valid"
+
+[node name="ShouldValidate" type="CheckButton" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox"]
+unique_name_in_owner = true
+margin_left = 1621.0
+margin_right = 1697.0
+margin_bottom = 40.0
+pressed = true
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox"]
+margin_left = 1701.0
+margin_right = 1705.0
+margin_bottom = 40.0
+
+[node name="SaveConfig" type="Button" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox"]
+margin_left = 1709.0
+margin_right = 1900.0
+margin_bottom = 40.0
+text = "Save config to manifest.json"
+
+[node name="ConfigEditor" type="TextEdit" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox"]
+unique_name_in_owner = true
+margin_top = 44.0
+margin_right = 1900.0
+margin_bottom = 884.0
+size_flags_vertical = 3
+text = "{
+
+}"
+highlight_current_line = true
+syntax_highlighting = true
+show_line_numbers = true
+fold_gutter = true
+highlight_all_occurrences = true
+smooth_scrolling = true
+hiding_enabled = true
+script = ExtResource( 5 )
+
+[node name="ValidationDelay" type="Timer" parent="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor"]
+one_shot = true
+
+[node name="Export" type="PanelContainer" parent="Panel/VSplit"]
+margin_top = 906.0
+margin_right = 1914.0
+margin_bottom = 1076.0
+
+[node name="HSplit" type="HSplitContainer" parent="Panel/VSplit/Export"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1907.0
+margin_bottom = 163.0
+
+[node name="Console" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
+visible = false
+margin_right = 1264.0
+margin_bottom = 1026.0
+rect_pivot_offset = Vector2( -230, -400 )
+size_flags_horizontal = 3
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Console"]
+margin_right = 1264.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="Panel/VSplit/Export/HSplit/Console/HBox"]
+margin_top = 3.0
+margin_right = 1169.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Output:"
+
+[node name="CopyOutput" type="Button" parent="Panel/VSplit/Export/HSplit/Console/HBox"]
+margin_left = 1173.0
+margin_right = 1216.0
+margin_bottom = 20.0
+shortcut = SubResource( 12 )
+text = "Copy"
+
+[node name="ClearOutput" type="Button" parent="Panel/VSplit/Export/HSplit/Console/HBox"]
+margin_left = 1220.0
+margin_right = 1264.0
+margin_bottom = 20.0
+shortcut = SubResource( 13 )
+text = "Clear"
+
+[node name="Output" type="RichTextLabel" parent="Panel/VSplit/Export/HSplit/Console"]
+unique_name_in_owner = true
+margin_top = 24.0
+margin_right = 1264.0
+margin_bottom = 1026.0
+focus_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+selection_enabled = true
+
+[node name="Settings" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit"]
+margin_right = 1588.0
+margin_bottom = 156.0
+rect_min_size = Vector2( 300, 0 )
+rect_pivot_offset = Vector2( -1685, 180 )
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings"]
+margin_right = 1588.0
+margin_bottom = 156.0
+size_flags_horizontal = 3
+
+[node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
+margin_right = 1588.0
+margin_bottom = 24.0
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+text = "Export"
+align = 1
+editable = false
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+
+[node name="ModId" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_top = 28.0
+margin_right = 1588.0
+margin_bottom = 60.0
+hint_tooltip = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+mouse_default_cursor_shape = 16
+is_required = true
+label_text = "Mod ID"
+editor_icon_name = ""
+hint_text = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+
+[node name="ExportPath" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 4 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_top = 64.0
+margin_right = 1588.0
+margin_bottom = 96.0
+hint_tooltip = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+mouse_default_cursor_shape = 16
+label_text = "Export Path"
+hint_text = "ID of the mod to be exported.
+Format: Namespace-ModName
+(Often Author-ModName)"
+
+[node name="ExportType" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 6 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_top = 100.0
+margin_right = 1588.0
+margin_bottom = 132.0
+is_required = true
+key = "export_type"
+label_text = "Export Type"
+input_options = PoolStringArray( "Steam Workshop", "Thunderstore" )
+
+[node name="Align" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
+margin_top = 136.0
+margin_right = 1588.0
+margin_bottom = 156.0
+alignment = 2
+
+[node name="ExportStatus" type="Label" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
+unique_name_in_owner = true
+margin_left = 1394.0
+margin_top = 3.0
+margin_right = 1500.0
+margin_bottom = 17.0
+text = "Export Status OK"
+
+[node name="Export" type="Button" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
+margin_left = 1504.0
+margin_right = 1588.0
+margin_bottom = 20.0
+text = "Export Mod"
+
+[node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
+margin_left = 1600.0
+margin_right = 1900.0
+margin_bottom = 156.0
+rect_min_size = Vector2( 300, 0 )
+
+[node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/VBox"]
+margin_right = 300.0
+margin_bottom = 24.0
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+text = "More Actions"
+align = 1
+editable = false
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+
+[node name="CreateMod" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
+margin_top = 28.0
+margin_right = 300.0
+margin_bottom = 48.0
+text = "Create new Mod"
+
+[node name="SelectTemplate" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
+margin_top = 52.0
+margin_right = 300.0
+margin_bottom = 72.0
+text = "Select Template"
+
+[node name="Popup" type="WindowDialog" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -200.0
+margin_top = -75.0
+margin_right = 200.0
+margin_bottom = 45.0
+rect_min_size = Vector2( 350, 120 )
+window_title = "Create new mod"
+resizable = true
+
+[node name="CreateMod" parent="Popup" instance=ExtResource( 1 )]
+unique_name_in_owner = true
+
+[node name="Settings" parent="Popup/CreateMod" index="0"]
+margin_right = 390.0
+margin_bottom = 110.0
+
+[node name="Scroll" parent="Popup/CreateMod/Settings" index="0"]
+margin_right = 380.0
+margin_bottom = 47.0
+
+[node name="VBox" parent="Popup/CreateMod/Settings/Scroll" index="0"]
+margin_right = 380.0
+margin_bottom = 32.0
+
+[node name="ModId" parent="Popup/CreateMod/Settings/Scroll/VBox" index="0"]
+margin_right = 380.0
+margin_bottom = 32.0
+editor_icon_name = ""
+input_placeholder = ""
+
+[node name="Buttons" parent="Popup/CreateMod/Settings" index="1"]
+margin_top = 51.0
+margin_right = 380.0
+margin_bottom = 85.0
+
+[node name="VBox" parent="Popup/CreateMod/Settings/Buttons" index="0"]
+margin_right = 373.0
+
+[node name="btn_create_mod" parent="Popup/CreateMod/Settings/Buttons/VBox" index="0"]
+margin_right = 366.0
+
+[node name="FileDialog" type="FileDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -350.0
+margin_top = -200.0
+margin_right = 350.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 500, 300 )
+window_title = "Open a Directory"
+resizable = true
+mode = 2
+
+[connection signal="pressed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
+[connection signal="cursor_changed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_cursor_changed"]
+[connection signal="text_changed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_text_changed"]
+[connection signal="timeout" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor/ValidationDelay" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
+[connection signal="value_changed" from="Panel/VSplit/Export/HSplit/Settings/VBox/ModId" to="." method="_on_ModId_value_changed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/SelectTemplate" to="." method="_on_SelectTemplate_pressed"]
+[connection signal="mod_dir_created" from="Popup/CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
+[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
+
+[editable path="Popup/CreateMod"]

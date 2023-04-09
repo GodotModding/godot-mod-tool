@@ -43,15 +43,13 @@ static func file_copy(src: String, dst: String) -> void:
 	dir.copy(src, dst)
 
 
-# Log error message to the output richtext label.
-static func output_error(message: String) -> void:
-	ModToolStore.editor_plugin.make_bottom_panel_item_visible(ModToolStore.editor_plugin.dock)
-	ModToolStore.editor_plugin.dock.show_output()
-	ModToolStore.editor_plugin.dock.label_output.append_bbcode("[color=%s]ERROR: %s[/color]\n" % [ModToolStore.error_color, message])
+# Log error messages
+static func output_error(message) -> void:
+	printerr("ModTool Error:" + str(message))
 
 
-static func output_info(message: String) -> void:
-	ModToolStore.editor_plugin.dock.label_output.append_bbcode(message + "\n")
+static func output_info(message) -> void:
+	print("ModTool: " + str(message))
 
 
 static func save_to_manifest_json() -> bool:

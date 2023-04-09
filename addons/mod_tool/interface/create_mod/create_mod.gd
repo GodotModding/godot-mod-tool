@@ -62,13 +62,13 @@ func add_mod() -> void:
 		ModToolStore.manifest_data.name = name_mod_dir_split[1]
 
 		# Update manifest editor ui
-		ModToolStore.editor_plugin.dock.manifest_editor.update_ui()
+		ModToolStore.editor_plugin.tools_panel.manifest_editor.update_ui()
 
 		# Open manifest editor
-		ModToolStore.editor_plugin.dock.show_manifest_editor()
+		ModToolStore.editor_plugin.tools_panel.show_manifest_editor()
 
 		# Save the manifest
-		ModToolStore.editor_plugin.dock.manifest_editor.save_manifest()
+		ModToolStore.editor_plugin.tools_panel.manifest_editor.save_manifest()
 
 	else:
 		# If so - show error and ask if user wants to connect with the mod instead
