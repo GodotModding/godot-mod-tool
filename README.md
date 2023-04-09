@@ -1,5 +1,5 @@
 # Godot Mod (Development) Tool
-The mod tool aims to improve the development experience when creating Godot ModLoader mods.
+The mod tool aims to improve the development experience when creating [Godot ModLoader](https://github.com/GodotModding/godot-mod-loader) mods.
 
 ## Features:
 - Simple mod zipping process with 7zip to ensure proper format for ModLoader
