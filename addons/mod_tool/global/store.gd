@@ -56,7 +56,7 @@ func init(store: Dictionary) -> void:
 	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
 	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
 	if OS.has_feature("Windows"):
-		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/windows/7zz.exe"
+		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/windows/7z.exe"
 	elif OS.has_feature("OSX"):
 		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/mac/7zz"
 	elif OS.has_feature("X11"):
