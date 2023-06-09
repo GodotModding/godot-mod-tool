@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func load_manifest() -> void:
-	var manifest_dict_json := ModLoaderUtils.get_json_as_dict(ModToolStore.path_manifest)
+	var manifest_dict_json := _ModLoaderFile.get_json_as_dict(ModToolStore.path_manifest)
 	ModToolStore.manifest_data = ModManifest.new(manifest_dict_json)
 	ModToolUtils.output_info("Loaded manifest from " + ModToolStore.path_manifest)
 

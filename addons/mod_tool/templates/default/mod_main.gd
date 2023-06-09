@@ -24,8 +24,8 @@ var translations_dir_path := ""
 # ! It will be available in any other places in your mod though, such as in
 # ! your _ready func.
 func _init(modLoader = ModLoader) -> void:
-	ModLoaderUtils.log_info("Init", MODNAME_LOG_NAME)
-	mod_dir_path = modLoader.UNPACKED_DIR.plus_file(MOD_DIR)
+	ModLoaderMod.info("Init", MODNAME_LOG_NAME)
+	mod_dir_path = ModLoaderMod.get_unpacked_dir().plus_file(MOD_DIR)
 
 	# Add extensions
 	install_script_extensions(modLoader)
@@ -61,10 +61,10 @@ func add_translations(modLoader) -> void:
 
 
 func _ready() -> void:
-	ModLoaderUtils.log_info("Ready", MODNAME_LOG_NAME)
+	ModLoaderMod.info("Ready", MODNAME_LOG_NAME)
 
 	# ! This uses Godot's native `tr` func, which translates a string. You'll
 	# ! find this particular string in the example CSV here: translations/modname.csv
-	ModLoaderUtils.log_info("Translation Demo: " + tr("MODNAME_READY_TEXT"), MODNAME_LOG_NAME)
+	ModLoaderMod.info("Translation Demo: " + tr("MODNAME_READY_TEXT"), MODNAME_LOG_NAME)
 
 
