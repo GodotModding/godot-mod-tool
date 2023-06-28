@@ -67,6 +67,8 @@ func _on_SaveManifest_pressed() -> void:
 
 # Validated StringInputs
 # =============================================================================
+
+
 func _on_ModName_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	if input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true)):
 		_update_manifest_value(input_node, new_text)
@@ -82,42 +84,43 @@ func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInp
 		_update_manifest_value(input_node, new_text)
 
 
-func _on_WebsiteUrl_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var dependencies := input_node.get_input_as_array_from_comma_separated_string()
 	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true)):
 		_update_manifest_value(input_node, dependencies)
 
 
-func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	var compatible_modloader_versions := input_node.get_input_as_array_from_comma_separated_string()
+	if input_node.validate(ModManifest.is_semver_version_array_valid(ModToolStore.name_mod_dir, compatible_modloader_versions, "Compatible ModLoader Versions", true)):
+		_update_manifest_value(input_node, compatible_modloader_versions)
+
+
+func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var incompatibilities := input_node.get_input_as_array_from_comma_separated_string()
 	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true)):
-		_update_manifest_value(input_node, incompatibilities)
-
-
-func _on_Description_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var compatible_modloader_versions := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.is_semver_version_array_valid("", compatible_modloader_versions, "CompatibleModLoaderVersions", true)):
-		_update_manifest_value(input_node, compatible_modloader_versions)
+		_update_manifest_value(input_node, new_text)
 
 
 # Non Validated StringInputs
 # =============================================================================
-func _on_Authors_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+
+
+func _on_WebsiteUrl_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
 
 
-func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+func _on_Description_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	_update_manifest_value(input_node, new_text)
+
+
+func _on_Authors_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
 
 
 func _on_CompatibleGameVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var authors := input_node.get_input_as_array_from_comma_separated_string()
 	_update_manifest_value(input_node, authors)
-
-
-func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var compatible_game_versions := input_node.get_input_as_array_from_comma_separated_string()
-	_update_manifest_value(input_node, compatible_game_versions)
 
 
 func _on_Tags_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
