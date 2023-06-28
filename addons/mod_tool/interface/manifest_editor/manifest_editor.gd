@@ -86,7 +86,17 @@ func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInp
 
 func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var dependencies := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true)):
+	if input_node.validate(
+		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			dependencies,
+			ModToolStore.manifest_data.incompatibilities,
+			["dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	):
 		_update_manifest_value(input_node, dependencies)
 
 
@@ -98,8 +108,67 @@ func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node:
 
 func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var incompatibilities := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true)):
-		_update_manifest_value(input_node, new_text)
+	if input_node.validate(
+		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			ModToolStore.manifest_data.dependencies,
+			incompatibilities,
+			["dependencies", "incompatibilities"],
+			"",
+			true
+		) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			ModToolStore.manifest_data.optional_dependencies,
+			incompatibilities,
+			["optional_dependencies", "incompatibilities"],
+			"",
+			true
+		)
+
+	):
+		_update_manifest_value(input_node, incompatibilities)
+
+
+func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	var optional_dependencies := input_node.get_input_as_array_from_comma_separated_string()
+	if input_node.validate(
+		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, optional_dependencies, "optional_dependencies", true) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			optional_dependencies,
+			ModToolStore.manifest_data.incompatibilities,
+			["optional_dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	):
+		_update_manifest_value(input_node, optional_dependencies)
+
+
+func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	var load_before := input_node.get_input_as_array_from_comma_separated_string()
+	if input_node.validate(
+		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, load_before, "load_before", true) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			load_before,
+			ModToolStore.manifest_data.dependencies,
+			["load_before", "dependencies"],
+			"\"load_before\" should be handled as optional dependency adding it to \"dependencies\" will cancel out the desired effect.",
+			true
+		) and
+		ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			load_before,
+			ModToolStore.manifest_data.optional_dependencies,
+			["load_before", "optional_dependencies"],
+			"\"load_before\" can be viewed as optional dependency, please remove the duplicate mod-id.",
+			true
+		)
+	):
+		_update_manifest_value(input_node, load_before)
 
 
 # Non Validated StringInputs
@@ -126,5 +195,3 @@ func _on_CompatibleGameVersions_value_changed(new_text: String, input_node: ModT
 func _on_Tags_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var tags := input_node.get_input_as_array_from_comma_separated_string()
 	_update_manifest_value(input_node, tags)
-
-

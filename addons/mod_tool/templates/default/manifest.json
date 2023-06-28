@@ -7,8 +7,10 @@
 	"dependencies": [],
 	"extra": {
 		"godot": {
-			"incompatibilities": [],
 			"authors": ["AuthorName"],
+			"optional_dependencies": [],
+			"load_before": [],
+			"incompatibilities": [],
 			"compatible_mod_loader_version": ["6.0.0"],
 			"compatible_game_version": ["0.0.1"],
 			"config_defaults": {}
