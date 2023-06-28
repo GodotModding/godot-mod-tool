@@ -84,13 +84,13 @@ func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInp
 
 func _on_WebsiteUrl_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var dependencies := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.validate_dependencies(ModToolStore.name_mod_dir, dependencies, true)):
+	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true)):
 		_update_manifest_value(input_node, dependencies)
 
 
 func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var incompatibilities := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.validate_incompatibilities(ModToolStore.name_mod_dir, incompatibilities, true)):
+	if input_node.validate(ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true)):
 		_update_manifest_value(input_node, incompatibilities)
 
 
