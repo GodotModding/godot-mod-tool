@@ -5,6 +5,9 @@ extends PanelContainer
 var input_fields := []
 
 onready var manifest_input_vbox := $"%InputVBox"
+onready var incompatibilities: ModToolInterfaceInputString = $"%Incompatibilities"
+onready var dependencies: ModToolInterfaceInputString = $"%Dependencies"
+onready var optional_dependencies: ModToolInterfaceInputString = $"%OptionalDependencies"
 
 
 func _ready() -> void:
@@ -86,9 +89,8 @@ func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInp
 
 func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var dependencies := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(
-		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true)
+	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
 			ModToolStore.name_mod_dir,
 			dependencies,
 			ModToolStore.manifest_data.incompatibilities,
@@ -96,8 +98,81 @@ func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfa
 			"",
 			true
 		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			dependencies,
+			ModToolStore.manifest_data.optional_dependencies,
+			["dependencies", "optional_dependencies"],
+			"",
+			true
+		)
+
+	if not is_distinct_mod_id_incompatibilities:
+		# Set incompatibilities and dependencies to invalid if distinct_mod_id validation fails
+		incompatibilities.validate(false)
+		input_node.validate(false)
+
+	if not is_distinct_mod_id_optional_dependencies:
+		# Set optional_dependencies and dependencies to invalid if distinct_mod_id validation fails
+		optional_dependencies.validate(false)
+		input_node.validate(false)
+
+	if input_node.validate(
+		is_id_array_valid and
+		is_distinct_mod_id_incompatibilities and
+		is_distinct_mod_id_optional_dependencies
 	):
+		# Re validate icompatibilities and optional_dependencies if validation passes
+		if not incompatibilities.is_valid:
+			incompatibilities.emit_value_changed()
+		if not optional_dependencies.is_valid:
+			optional_dependencies.emit_value_changed()
+
 		_update_manifest_value(input_node, dependencies)
+
+
+func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	var optional_dependencies := input_node.get_input_as_array_from_comma_separated_string()
+	var is_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, optional_dependencies, "optional_dependencies", true)
+	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			optional_dependencies,
+			ModToolStore.manifest_data.incompatibilities,
+			["optional_dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			optional_dependencies,
+			ModToolStore.manifest_data.dependencies,
+			["optional_dependencies", "dependencies"],
+			"",
+			true
+		)
+
+	if not is_distinct_mod_id_incompatibilities:
+		# Set incompatibilities and optional_dependencies to invalid if distinct_mod_id validation fails
+		incompatibilities.validate(false)
+		input_node.validate(false)
+
+	if not is_distinct_mod_id_dependencies:
+		# Set dependencies and optional_dependencies to invalid if distinct_mod_id validation fails
+		dependencies.validate(false)
+		input_node.validate(false)
+
+	if input_node.validate(
+		is_id_array_valid and
+		is_distinct_mod_id_incompatibilities and
+		is_distinct_mod_id_dependencies
+	):
+		# Re validate icompatibilities and dependencies if validation passes
+		if not incompatibilities.is_valid:
+			incompatibilities.emit_value_changed()
+		if not dependencies.is_valid:
+			dependencies.emit_value_changed()
+
+		_update_manifest_value(input_node, optional_dependencies)
 
 
 func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
@@ -108,17 +183,16 @@ func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node:
 
 func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var incompatibilities := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(
-		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
 			ModToolStore.name_mod_dir,
 			ModToolStore.manifest_data.dependencies,
 			incompatibilities,
 			["dependencies", "incompatibilities"],
 			"",
 			true
-		) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
+		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
 			ModToolStore.name_mod_dir,
 			ModToolStore.manifest_data.optional_dependencies,
 			incompatibilities,
@@ -127,39 +201,40 @@ func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolIn
 			true
 		)
 
-	):
-		_update_manifest_value(input_node, incompatibilities)
+	if not is_distinct_mod_id_dependencies:
+		dependencies.validate(false)
+		input_node.validate(false)
 
+	if not is_distinct_mod_id_optional_dependencies:
+		optional_dependencies.validate(false)
+		input_node.validate(false)
 
-func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var optional_dependencies := input_node.get_input_as_array_from_comma_separated_string()
 	if input_node.validate(
-		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, optional_dependencies, "optional_dependencies", true) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
-			ModToolStore.name_mod_dir,
-			optional_dependencies,
-			ModToolStore.manifest_data.incompatibilities,
-			["optional_dependencies", "incompatibilities"],
-			"",
-			true
-		)
+		is_mod_id_array_valid and
+		is_distinct_mod_id_dependencies and
+		is_distinct_mod_id_optional_dependencies
 	):
-		_update_manifest_value(input_node, optional_dependencies)
+		# Re validate dependencies and optional_dependencies if incompatibilities are valid
+		if not dependencies.is_valid:
+			dependencies.emit_value_changed()
+		if not optional_dependencies.is_valid:
+			optional_dependencies.emit_value_changed()
+
+		_update_manifest_value(input_node, incompatibilities)
 
 
 func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var load_before := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(
-		ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, load_before, "load_before", true) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, load_before, "load_before", true)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
 			ModToolStore.name_mod_dir,
 			load_before,
 			ModToolStore.manifest_data.dependencies,
 			["load_before", "dependencies"],
 			"\"load_before\" should be handled as optional dependency adding it to \"dependencies\" will cancel out the desired effect.",
 			true
-		) and
-		ModManifest.validate_distinct_mod_ids_in_arrays(
+		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
 			ModToolStore.name_mod_dir,
 			load_before,
 			ModToolStore.manifest_data.optional_dependencies,
@@ -167,7 +242,26 @@ func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterface
 			"\"load_before\" can be viewed as optional dependency, please remove the duplicate mod-id.",
 			true
 		)
+
+	if not is_distinct_mod_id_dependencies:
+		dependencies.validate(false)
+		input_node.validate(false)
+
+	if not is_distinct_mod_id_optional_dependencies:
+		optional_dependencies.validate(false)
+		input_node.validate(false)
+
+	if input_node.validate(
+		is_mod_id_array_valid and
+		is_distinct_mod_id_dependencies and
+		is_distinct_mod_id_optional_dependencies
 	):
+		# Re validate dependencies and optional_dependencies if validation passes
+		if not dependencies.is_valid:
+			dependencies.emit_value_changed()
+		if not optional_dependencies.is_valid:
+			optional_dependencies.emit_value_changed()
+
 		_update_manifest_value(input_node, load_before)
 
 
