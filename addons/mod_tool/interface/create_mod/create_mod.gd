@@ -1,5 +1,5 @@
 tool
-extends MarginContainer
+extends WindowDialog
 
 
 signal mod_dir_created
@@ -23,7 +23,7 @@ func add_mod() -> void:
 		return
 
 	# Check if mod dir exists
-	if not ModLoaderUtils.dir_exists(ModToolStore.path_mod_dir):
+	if not _ModLoaderFile.dir_exists(ModToolStore.path_mod_dir):
 		# If not - create it
 		var success := ModToolUtils.make_dir_recursive(ModToolStore.path_mod_dir)
 		if not success:
@@ -35,7 +35,7 @@ func add_mod() -> void:
 		# Copy current selected template dir files and folders to res://mods-unpacked
 		for path in template_paths:
 			var template_local_path := path.trim_prefix(ModToolStore.path_current_template_dir) as String
-			if ModLoaderUtils.file_exists(path):
+			if _ModLoaderFile.file_exists(path):
 				ModToolUtils.file_copy(path, ModToolStore.path_mod_dir.plus_file(template_local_path))
 			else:
 				ModToolUtils.make_dir_recursive(ModToolStore.path_mod_dir.plus_file(template_local_path))

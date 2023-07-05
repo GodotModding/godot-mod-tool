@@ -12,7 +12,6 @@ var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
 
 onready var tab_container := $"%TabContainer"
-onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
 onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
@@ -108,11 +107,24 @@ func _is_mod_dir_valid() -> bool:
 		return false
 
 	# Check if mod dir exists
-	if not ModLoaderUtils.dir_exists(ModToolStore.path_mod_dir):
+	if not _ModLoaderFile.dir_exists(ModToolStore.path_mod_dir):
 		ModToolUtils.output_error("Mod folder %s does not exist" % ModToolStore.path_mod_dir)
 		return false
 
 	return true
+
+
+func load_mod(name_mod_dir: String) -> void:
+	# Set the dir name
+	ModToolStore.name_mod_dir = name_mod_dir
+
+	# Load Manifest
+	manifest_editor.load_manifest()
+	manifest_editor.update_ui()
+
+	# TODO: Load Mod Config if existing
+
+	ModToolUtils.output_info("Mod \"%s\" loaded." % name_mod_dir)
 
 
 func _on_export_pressed() -> void:
@@ -140,12 +152,12 @@ func _on_save_config_pressed() -> void:
 
 
 func _on_export_settings_create_new_mod_pressed() -> void:
-	popup.popup_centered()
+	create_mod.popup_centered()
 	create_mod.clear_mod_id_input()
 
 
 func _on_CreateMod_mod_dir_created() -> void:
-	popup.hide()
+	create_mod.hide()
 	_update_ui()
 	manifest_editor.load_manifest()
 	manifest_editor.update_ui()
@@ -153,7 +165,7 @@ func _on_CreateMod_mod_dir_created() -> void:
 
 func _on_store_loaded() -> void:
 	# Load manifest.json file
-	if ModLoaderUtils.file_exists(ModToolStore.path_manifest):
+	if _ModLoaderFile.file_exists(ModToolStore.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
 
