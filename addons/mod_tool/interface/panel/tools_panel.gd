@@ -12,8 +12,9 @@ var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
 
 onready var tab_container := $"%TabContainer"
-onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
+onready var select_mod: WindowDialog = $"%SelectMod"
+onready var select_mod_template: WindowDialog = $"%SelectModTemplate"
 onready var file_dialog = $FileDialog
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
@@ -115,6 +116,19 @@ func _is_mod_dir_valid() -> bool:
 	return true
 
 
+func load_mod(name_mod_dir: String) -> void:
+	# Set the dir name
+	ModToolStore.name_mod_dir = name_mod_dir
+
+	# Load Manifest
+	manifest_editor.load_manifest()
+	manifest_editor.update_ui()
+
+	# TODO: Load Mod Config if existing
+
+	ModToolUtils.output_info("Mod \"%s\" loaded." % name_mod_dir)
+
+
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		var zipper := ModToolZipBuilder.new()
@@ -140,7 +154,7 @@ func _on_save_config_pressed() -> void:
 
 
 func _on_export_settings_create_new_mod_pressed() -> void:
-	popup.popup_centered()
+	create_mod.popup_centered()
 	create_mod.clear_mod_id_input()
 
 
@@ -151,7 +165,7 @@ func _on_ModId_value_changed(new_text: String, input_node: ModToolInterfaceInput
 
 
 func _on_CreateMod_mod_dir_created() -> void:
-	popup.hide()
+	create_mod.hide()
 	_update_ui()
 	manifest_editor.load_manifest()
 	manifest_editor.update_ui()
@@ -165,10 +179,23 @@ func _on_store_loaded() -> void:
 
 
 func _on_SelectTemplate_pressed():
-	file_dialog.show()
-	file_dialog.current_dir = ModToolStore.path_addon_dir.plus_file("templates")
+	select_mod_template.generate_dir_buttons(ModToolStore.PATH_TEMPLATES_DIR)
+	select_mod_template.popup_centered()
 
 
-func _on_FileDialog_dir_selected(dir):
-	ModToolStore.path_current_template_dir = dir
+func _on_SelectModTemplate_dir_selected(dir_path: String) -> void:
+	ModToolUtils.output_info("New template with the path \"%s\" selected." % dir_path)
+	ModToolStore.path_current_template_dir = dir_path
+	select_mod_template.hide()
 
+
+func _on_ConnectMod_pressed() -> void:
+	# Opens a popup that displays the mod directory names in the mods-unpacked directory
+	select_mod.generate_dir_buttons(ModLoaderMod.get_unpacked_dir())
+	select_mod.popup_centered()
+
+
+func _on_SelectMod_dir_selected(dir_path: String) -> void:
+	var mod_dir_name := dir_path.split("/")[-1]
+	load_mod(mod_dir_name)
+	select_mod.hide()

@@ -1,10 +1,10 @@
 tool
-extends MarginContainer
+extends WindowDialog
 
 
 signal mod_dir_created
 
-onready var mod_id := $Settings/Scroll/VBox/ModId
+onready var mod_id: HBoxContainer = $"%ModId"
 
 
 func _ready() -> void:
