@@ -238,11 +238,8 @@ editor_icon_name = ""
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
-<<<<<<< HEAD
-=======
 is_editable = false
 input_text = "test01-test01"
->>>>>>> 1d90e2d (refactor: :recycle: new create mod popup)
 
 [node name="ExportPath" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 4 )]
 unique_name_in_owner = true
