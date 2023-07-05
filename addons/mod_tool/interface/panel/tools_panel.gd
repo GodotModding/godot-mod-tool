@@ -109,7 +109,7 @@ func _is_mod_dir_valid() -> bool:
 		return false
 
 	# Check if mod dir exists
-	if not ModLoaderUtils.dir_exists(ModToolStore.path_mod_dir):
+	if not _ModLoaderFile.dir_exists(ModToolStore.path_mod_dir):
 		ModToolUtils.output_error("Mod folder %s does not exist" % ModToolStore.path_mod_dir)
 		return false
 
@@ -173,7 +173,7 @@ func _on_CreateMod_mod_dir_created() -> void:
 
 func _on_store_loaded() -> void:
 	# Load manifest.json file
-	if ModLoaderUtils.file_exists(ModToolStore.path_manifest):
+	if _ModLoaderFile.file_exists(ModToolStore.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
 

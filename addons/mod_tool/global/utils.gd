@@ -53,7 +53,7 @@ static func output_info(message) -> void:
 
 
 static func save_to_manifest_json() -> bool:
-	var is_success := ModLoaderUtils.save_string_to_file(
+	var is_success := _ModLoaderFile._save_string_to_file(
 		ModToolStore.manifest_data.to_json(),
 		ModToolStore.path_manifest
 	)
