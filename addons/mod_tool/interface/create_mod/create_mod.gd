@@ -4,11 +4,15 @@ extends MarginContainer
 
 signal mod_dir_created
 
-onready var mod_id := $Settings/Scroll/VBox/ModId
+onready var namespace: ModToolInterfaceInputString = $"%Namespace"
+onready var mod_name: ModToolInterfaceInputString = $"%ModName"
+onready var mod_id: ModToolInterfaceInputString = $"%ModId"
+onready var mod_template: ModToolInterfaceInputOptions = $"%ModTemplate"
 
 
 func _ready() -> void:
-	mod_id.set_error_icon(ModToolStore.base_theme.get_icon("NodeWarning", "EditorIcons"))
+	namespace.show_error_if_not(false)
+	mod_name.show_error_if_not(false)
 	mod_id.show_error_if_not(false)
 
 
@@ -81,7 +85,47 @@ func clear_mod_id_input() -> void:
 	mod_id.input_text = ""
 
 
+func get_template_options() -> PoolStringArray:
+	var mod_template_options := []
+
+	var template_dirs := _ModLoaderPath.get_dir_paths_in_dir(ModToolStore.PATH_TEMPLATES_DIR)
+
+	for template_dir in template_dirs:
+		mod_template_options.push_back(template_dir.split("/")[-1])
+
+	return mod_template_options as PoolStringArray
+
+
+func _on_Namespace_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
+	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
+	mod_id.input_text = "%s-%s" % [namespace.get_input_value(), mod_name.get_input_value()]
+
+
+func _on_ModName_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
+	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
+	mod_id.input_text = "%s-%s" % [namespace.get_input_value(), mod_name.get_input_value()]
+
+
+func _on_ModId_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
+	input_node.validate(ModManifest.is_mod_id_valid(new_value, new_value, "", true))
+	ModToolStore.name_mod_dir = new_value
+
+
 func _on_btn_create_mod_pressed() -> void:
 	add_mod()
 	emit_signal("mod_dir_created")
 
+
+func _on_CreateMod_about_to_show() -> void:
+	# Reset Inputs
+	namespace.input_text = ""
+	mod_name.input_text = ""
+	# Reset Template
+	ModToolStore.path_current_template_dir = ModToolStore.PATH_TEMPLATES_DIR + "default"
+
+	# Get all Template options
+	mod_template.input_options = get_template_options()
+
+
+func _on_ModTemplate_value_changed(new_value: String, input_node: ModToolInterfaceInputOptions) -> void:
+	ModToolStore.path_current_template_dir = ModToolStore.PATH_TEMPLATES_DIR + new_value

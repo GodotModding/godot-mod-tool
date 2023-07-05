@@ -3,6 +3,7 @@ extends ModToolInterfaceInput
 tool
 
 
+export var is_editable := true setget set_is_editable
 export var input_text: String setget set_input_text
 export var input_placeholder: String setget set_input_placeholder
 
@@ -16,6 +17,11 @@ func set_input_text(new_text: String) -> void:
 func set_input_placeholder(new_text: String) -> void:
 	input_placeholder = new_text
 	$"%Input".placeholder_text = new_text
+
+
+func set_is_editable(new_is_editable: bool) -> void:
+	is_editable = new_is_editable
+	$"%Input".editable = new_is_editable
 
 
 func get_input_value() -> String:

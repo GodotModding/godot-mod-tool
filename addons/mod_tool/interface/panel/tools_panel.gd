@@ -14,7 +14,7 @@ var log_dock_button: ToolButton
 onready var tab_container := $"%TabContainer"
 onready var popup := $"%Popup"
 onready var create_mod := $"%CreateMod"
-onready var file_dialog = $FileDialog
+onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor = $"%Manifest Editor"
@@ -144,12 +144,6 @@ func _on_export_settings_create_new_mod_pressed() -> void:
 	create_mod.clear_mod_id_input()
 
 
-# Update the mod name in the ModToolStore
-func _on_ModId_value_changed(new_text: String, input_node: ModToolInterfaceInput) -> void:
-	ModToolStore.name_mod_dir = new_text
-	input_node.show_error_if_not(ModManifest.is_mod_id_valid(new_text, new_text, '', true))
-
-
 func _on_CreateMod_mod_dir_created() -> void:
 	popup.hide()
 	_update_ui()
@@ -164,11 +158,13 @@ func _on_store_loaded() -> void:
 		manifest_editor.update_ui()
 
 
-func _on_SelectTemplate_pressed():
-	file_dialog.show()
-	file_dialog.current_dir = ModToolStore.path_addon_dir.plus_file("templates")
+func _on_ConnectMod_pressed() -> void:
+	# Opens a popup that displays the mod directory names in the mods-unpacked directory
+	select_mod.generate_dir_buttons(ModLoaderMod.get_unpacked_dir())
+	select_mod.popup_centered()
 
 
-func _on_FileDialog_dir_selected(dir):
-	ModToolStore.path_current_template_dir = dir
-
+func _on_SelectMod_dir_selected(dir_path: String) -> void:
+	var mod_dir_name := dir_path.split("/")[-1]
+	load_mod(mod_dir_name)
+	select_mod.hide()
