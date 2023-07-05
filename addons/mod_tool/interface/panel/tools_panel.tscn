@@ -187,6 +187,7 @@ Format: Namespace-ModName
 
 [node name="ExportType" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 6 )]
 unique_name_in_owner = true
+visible = false
 anchor_right = 0.0
 margin_top = 100.0
 margin_right = 692.0
