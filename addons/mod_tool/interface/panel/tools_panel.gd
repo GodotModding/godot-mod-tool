@@ -116,6 +116,19 @@ func _is_mod_dir_valid() -> bool:
 	return true
 
 
+func load_mod(name_mod_dir: String) -> void:
+	# Set the dir name
+	ModToolStore.name_mod_dir = name_mod_dir
+
+	# Load Manifest
+	manifest_editor.load_manifest()
+	manifest_editor.update_ui()
+
+	# TODO: Load Mod Config if existing
+
+	ModToolUtils.output_info("Mod \"%s\" loaded." % name_mod_dir)
+
+
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		var zipper := ModToolZipBuilder.new()
@@ -182,4 +195,7 @@ func _on_ConnectMod_pressed() -> void:
 	select_mod.popup_centered()
 
 
-
+func _on_SelectMod_dir_selected(dir_path: String) -> void:
+	var mod_dir_name := dir_path.split("/")[-1]
+	load_mod(mod_dir_name)
+	select_mod.hide()
