@@ -170,11 +170,16 @@ func _on_SelectTemplate_pressed():
 	select_mod_template.popup_centered()
 
 
-func _on_FileDialog_dir_selected(dir):
-	ModToolStore.path_current_template_dir = dir
+func _on_SelectModTemplate_dir_selected(dir_path: String) -> void:
+	ModToolUtils.output_info("New template with the path \"%s\" selected." % dir_path)
+	ModToolStore.path_current_template_dir = dir_path
+	select_mod_template.hide()
 
 
 func _on_ConnectMod_pressed() -> void:
 	# Opens a popup that displays the mod directory names in the mods-unpacked directory
 	select_mod.generate_dir_buttons(ModLoaderMod.get_unpacked_dir())
 	select_mod.popup_centered()
+
+
+

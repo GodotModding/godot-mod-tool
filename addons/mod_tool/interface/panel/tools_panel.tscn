@@ -370,5 +370,6 @@ window_title = "Select Mod Template"
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/SelectTemplate" to="." method="_on_SelectTemplate_pressed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
+[connection signal="dir_selected" from="SelectModTemplate" to="." method="_on_SelectModTemplate_dir_selected"]
 
 [editable path="CreateMod"]
