@@ -38,7 +38,5 @@ func validate(condition: bool) -> bool:
 	return is_valid
 
 
-func _on_Input_option_changed(new_text: String) -> void:
-	emit_signal("value_changed", get_input_value(), self)
-
-
+func _on_Input_item_selected(index: int) -> void:
+	emit_signal("value_changed", get_input_string(), self)

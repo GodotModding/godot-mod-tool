@@ -239,7 +239,8 @@ editor_icon_name = ""
 hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
-input_text = "test-test"
+is_editable = false
+input_text = ""
 
 [node name="ExportPath" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 4 )]
 unique_name_in_owner = true
@@ -318,36 +319,18 @@ margin_right = 300.0
 margin_bottom = 72.0
 text = "Connect existing Mod"
 
-[node name="SelectTemplate" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
-margin_top = 76.0
-margin_right = 300.0
-margin_bottom = 96.0
-text = "Select Template"
-
 [node name="CreateMod" parent="." instance=ExtResource( 1 )]
 unique_name_in_owner = true
+visible = false
 margin_left = 20.0
 margin_top = 20.0
 margin_right = 340.0
 margin_bottom = 73.0
+rect_min_size = Vector2( 500, 280 )
 
-[node name="Settings" parent="CreateMod/MarginContainer" index="0"]
-margin_right = 310.0
-margin_bottom = 43.0
-
-[node name="FileDialog" type="FileDialog" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -350.0
-margin_top = -200.0
-margin_right = 350.0
-margin_bottom = 200.0
-rect_min_size = Vector2( 500, 300 )
-window_title = "Open a Directory"
-resizable = true
-mode = 2
+[node name="SelectMod" parent="." instance=ExtResource( 7 )]
+unique_name_in_owner = true
+window_title = "Connect existing Mod"
 
 [node name="SelectMod" parent="." instance=ExtResource( 7 )]
 unique_name_in_owner = true
@@ -363,14 +346,8 @@ window_title = "Select Mod Template"
 [connection signal="timeout" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor/ValidationDelay" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
-[connection signal="value_changed" from="Panel/VSplit/Export/HSplit/Settings/VBox/ModId" to="." method="_on_ModId_value_changed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/ConnectMod" to="." method="_on_ConnectMod_pressed"]
-[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/SelectTemplate" to="." method="_on_SelectTemplate_pressed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
-[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
-[connection signal="dir_selected" from="SelectModTemplate" to="." method="_on_SelectModTemplate_dir_selected"]
-
-[editable path="CreateMod"]

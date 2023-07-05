@@ -13,9 +13,7 @@ var log_dock_button: ToolButton
 
 onready var tab_container := $"%TabContainer"
 onready var create_mod := $"%CreateMod"
-onready var select_mod: WindowDialog = $"%SelectMod"
-onready var select_mod_template: WindowDialog = $"%SelectModTemplate"
-onready var file_dialog = $FileDialog
+onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor = $"%Manifest Editor"
@@ -158,12 +156,6 @@ func _on_export_settings_create_new_mod_pressed() -> void:
 	create_mod.clear_mod_id_input()
 
 
-# Update the mod name in the ModToolStore
-func _on_ModId_value_changed(new_text: String, input_node: ModToolInterfaceInput) -> void:
-	ModToolStore.name_mod_dir = new_text
-	input_node.show_error_if_not(ModManifest.is_mod_id_valid(new_text, new_text, '', true))
-
-
 func _on_CreateMod_mod_dir_created() -> void:
 	create_mod.hide()
 	_update_ui()
@@ -176,17 +168,6 @@ func _on_store_loaded() -> void:
 	if _ModLoaderFile.file_exists(ModToolStore.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
-
-
-func _on_SelectTemplate_pressed():
-	select_mod_template.generate_dir_buttons(ModToolStore.PATH_TEMPLATES_DIR)
-	select_mod_template.popup_centered()
-
-
-func _on_SelectModTemplate_dir_selected(dir_path: String) -> void:
-	ModToolUtils.output_info("New template with the path \"%s\" selected." % dir_path)
-	ModToolStore.path_current_template_dir = dir_path
-	select_mod_template.hide()
 
 
 func _on_ConnectMod_pressed() -> void:

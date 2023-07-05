@@ -1,13 +1,16 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.gd" type="Script" id=1]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=3]
 
 [node name="CreateMod" type="WindowDialog"]
 margin_left = 10.0
 margin_top = 25.0
 margin_right = 1014.0
 margin_bottom = 590.0
+window_title = "Create new Mod"
+resizable = true
 script = ExtResource( 1 )
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -31,46 +34,85 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
 [node name="Scroll" type="ScrollContainer" parent="MarginContainer/Settings"]
-margin_right = 1004.0
-margin_bottom = 527.0
+margin_right = 984.0
+margin_bottom = 492.0
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer/Settings/Scroll"]
-margin_right = 1004.0
-margin_bottom = 32.0
+margin_right = 984.0
+margin_bottom = 163.0
 size_flags_horizontal = 3
+custom_constants/separation = 5
+
+[node name="Namespace" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_right = 984.0
+margin_bottom = 32.0
+is_required = true
+key = "namespace"
+label_text = "Namespace ( Author Name )"
+input_placeholder = "Namespace"
+
+[node name="ModName" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_top = 37.0
+margin_right = 984.0
+margin_bottom = 69.0
+is_required = true
+key = "name"
+label_text = "Mod Name"
+input_placeholder = "ModName"
 
 [node name="ModId" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_right = 1004.0
-margin_bottom = 32.0
-hint_tooltip = "ID of the mod to be exported.
-Format: Namespace-ModName
-(Often Author-ModName)"
-mouse_default_cursor_shape = 16
+margin_top = 74.0
+margin_right = 984.0
+margin_bottom = 106.0
 is_required = true
+key = "mod_id"
 label_text = "Mod ID"
-hint_text = "ID of the mod to be exported.
-Format: Namespace-ModName
-(Often Author-ModName)"
-input_placeholder = "Author-ModName"
+is_editable = false
+input_placeholder = "Namespace-ModName"
+
+[node name="Space" type="Control" parent="MarginContainer/Settings/Scroll/VBox"]
+margin_top = 111.0
+margin_right = 984.0
+margin_bottom = 126.0
+rect_min_size = Vector2( 0, 15 )
+
+[node name="ModTemplate" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+margin_top = 131.0
+margin_right = 984.0
+margin_bottom = 163.0
+is_required = true
+key = "mod_template"
+label_text = "Template"
 
 [node name="Buttons" type="PanelContainer" parent="MarginContainer/Settings"]
-margin_top = 531.0
-margin_right = 1004.0
-margin_bottom = 565.0
+margin_top = 496.0
+margin_right = 984.0
+margin_bottom = 530.0
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer/Settings/Buttons"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 997.0
+margin_right = 977.0
 margin_bottom = 27.0
 
 [node name="btn_create_mod" type="Button" parent="MarginContainer/Settings/Buttons/VBox"]
-margin_right = 990.0
+margin_right = 970.0
 margin_bottom = 20.0
 text = "Create"
 
-[connection signal="pressed" from="MarginContainer/Settings/Buttons/VBox/btn_create_mod" to="MarginContainer" method="_on_btn_create_mod_pressed"]
+[connection signal="about_to_show" from="." to="." method="_on_CreateMod_about_to_show"]
+[connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/Namespace" to="." method="_on_Namespace_value_changed"]
+[connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/ModName" to="." method="_on_ModName_value_changed"]
+[connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_value_changed"]
+[connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/ModTemplate" to="." method="_on_ModTemplate_value_changed"]
+[connection signal="pressed" from="MarginContainer/Settings/Buttons/VBox/btn_create_mod" to="." method="_on_btn_create_mod_pressed"]
