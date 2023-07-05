@@ -45,9 +45,12 @@ func validate(condition: bool) -> bool:
 	return is_valid
 
 
+func emit_value_changed() -> void:
+	emit_signal("value_changed", get_input_value(), self)
+
 
 func _on_Input_text_changed(new_text: String) -> void:
-	emit_signal("value_changed", get_input_value(), self)
+	emit_value_changed()
 
 
 

@@ -5,6 +5,11 @@ extends PanelContainer
 var input_fields := []
 
 onready var manifest_input_vbox := $"%InputVBox"
+onready var input_incompatibilities: ModToolInterfaceInputString = $"%Incompatibilities"
+onready var input_dependencies: ModToolInterfaceInputString = $"%Dependencies"
+onready var input_optional_dependencies: ModToolInterfaceInputString = $"%OptionalDependencies"
+onready var input_load_before: ModToolInterfaceInputString = $"%LoadBefore"
+
 
 
 func _ready() -> void:
@@ -16,7 +21,7 @@ func _ready() -> void:
 
 
 func load_manifest() -> void:
-	var manifest_dict_json := ModLoaderUtils.get_json_as_dict(ModToolStore.path_manifest)
+	var manifest_dict_json := _ModLoaderFile.get_json_as_dict(ModToolStore.path_manifest)
 	ModToolStore.manifest_data = ModManifest.new(manifest_dict_json)
 	ModToolUtils.output_info("Loaded manifest from " + ModToolStore.path_manifest)
 
@@ -67,46 +72,194 @@ func _on_SaveManifest_pressed() -> void:
 
 # Validated StringInputs
 # =============================================================================
+
+
 func _on_ModName_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	if input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true)):
-		_update_manifest_value(input_node, new_text)
+	_update_manifest_value(input_node, new_text)
+	input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true))
 
 
 func _on_Namespace_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	if input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true)):
-		_update_manifest_value(input_node, new_text)
+	_update_manifest_value(input_node, new_text)
+	input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true))
 
 
 func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	if input_node.validate(ModManifest.is_semver_valid("", new_text, "version", true)):
-		_update_manifest_value(input_node, new_text)
+	_update_manifest_value(input_node, new_text)
+	input_node.validate(ModManifest.is_semver_valid("", new_text, "version", true))
 
 
-func _on_WebsiteUrl_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var dependencies := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.validate_dependencies(ModToolStore.name_mod_dir, dependencies, true)):
-		_update_manifest_value(input_node, dependencies)
+# When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
+# This is because the `value_changed` signal is connected to this method for all relevant inputs.
+# As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
+# In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
+func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
+	var dependencies: PoolStringArray
+
+	if validate_only:
+		dependencies = ModToolStore.manifest_data.dependencies
+	else:
+		dependencies = input_dependencies.get_input_as_array_from_comma_separated_string()
+		_update_manifest_value(input_dependencies, dependencies)
+
+	var is_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, dependencies, "dependencies", true)
+	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			dependencies,
+			ModToolStore.manifest_data.incompatibilities,
+			["dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			dependencies,
+			ModToolStore.manifest_data.optional_dependencies,
+			["dependencies", "optional_dependencies"],
+			"",
+			true
+		)
+
+	input_dependencies.validate(
+		is_id_array_valid and
+		is_distinct_mod_id_incompatibilities and
+		is_distinct_mod_id_optional_dependencies
+	)
 
 
-func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var incompatibilities := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.validate_incompatibilities(ModToolStore.name_mod_dir, incompatibilities, true)):
-		_update_manifest_value(input_node, incompatibilities)
+# When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
+# This is because the `value_changed` signal is connected to this method for all relevant inputs.
+# As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
+# In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
+func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
+	var optional_dependencies: PoolStringArray
+
+	if validate_only:
+		optional_dependencies = ModToolStore.manifest_data.optional_dependencies
+	else:
+		optional_dependencies = input_optional_dependencies.get_input_as_array_from_comma_separated_string()
+		_update_manifest_value(input_optional_dependencies, optional_dependencies)
+
+	var is_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, optional_dependencies, "optional_dependencies", true)
+	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			optional_dependencies,
+			ModToolStore.manifest_data.incompatibilities,
+			["optional_dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			optional_dependencies,
+			ModToolStore.manifest_data.dependencies,
+			["optional_dependencies", "dependencies"],
+			"",
+			true
+		)
+
+	input_optional_dependencies.validate(
+		is_id_array_valid and
+		is_distinct_mod_id_incompatibilities and
+		is_distinct_mod_id_dependencies
+	)
 
 
-func _on_Description_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var compatible_modloader_versions := input_node.get_input_as_array_from_comma_separated_string()
-	if input_node.validate(ModManifest.is_semver_version_array_valid("", compatible_modloader_versions, "CompatibleModLoaderVersions", true)):
-		_update_manifest_value(input_node, compatible_modloader_versions)
+	_update_manifest_value(input_node, compatible_modloader_versions)
+	input_node.validate(ModManifest.is_semver_version_array_valid(ModToolStore.name_mod_dir, compatible_modloader_versions, "Compatible ModLoader Versions", true))
+
+
+# When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
+# This is because the `value_changed` signal is connected to this method for all relevant inputs.
+# As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
+# In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
+func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
+	var incompatibilities: PoolStringArray
+
+	if validate_only:
+		incompatibilities = ModToolStore.manifest_data.incompatibilities
+	else:
+		incompatibilities = input_incompatibilities.get_input_as_array_from_comma_separated_string()
+		_update_manifest_value(input_incompatibilities, incompatibilities)
+
+	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, incompatibilities, "incompatibilities", true)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			ModToolStore.manifest_data.dependencies,
+			incompatibilities,
+			["dependencies", "incompatibilities"],
+			"",
+			true
+		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			ModToolStore.manifest_data.optional_dependencies,
+			incompatibilities,
+			["optional_dependencies", "incompatibilities"],
+			"",
+			true
+		)
+
+	input_incompatibilities.validate(
+		is_mod_id_array_valid and
+		is_distinct_mod_id_dependencies and
+		is_distinct_mod_id_optional_dependencies
+	)
+
+
+# When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
+# This is because the `value_changed` signal is connected to this method for all relevant inputs.
+# As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
+# In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
+func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
+	var load_before: PoolStringArray
+
+	if validate_only:
+		load_before = ModToolStore.manifest_data.load_before
+	else:
+		load_before = input_load_before.get_input_as_array_from_comma_separated_string()
+		_update_manifest_value(input_load_before, load_before)
+
+	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(ModToolStore.name_mod_dir, load_before, "load_before", true)
+	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			load_before,
+			ModToolStore.manifest_data.dependencies,
+			["load_before", "dependencies"],
+			"\"load_before\" should be handled as optional dependency adding it to \"dependencies\" will cancel out the desired effect.",
+			true
+		)
+	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+			ModToolStore.name_mod_dir,
+			load_before,
+			ModToolStore.manifest_data.optional_dependencies,
+			["load_before", "optional_dependencies"],
+			"\"load_before\" can be viewed as optional dependency, please remove the duplicate mod-id.",
+			true
+		)
+
+	input_load_before.validate(
+		is_mod_id_array_valid and
+		is_distinct_mod_id_dependencies and
+		is_distinct_mod_id_optional_dependencies
+	)
 
 
 # Non Validated StringInputs
 # =============================================================================
-func _on_Authors_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+
+
+func _on_WebsiteUrl_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
 
 
-func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+func _on_Description_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
+	_update_manifest_value(input_node, new_text)
+
+
+func _on_Authors_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
 
 
@@ -115,13 +268,6 @@ func _on_CompatibleGameVersions_value_changed(new_text: String, input_node: ModT
 	_update_manifest_value(input_node, authors)
 
 
-func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var compatible_game_versions := input_node.get_input_as_array_from_comma_separated_string()
-	_update_manifest_value(input_node, compatible_game_versions)
-
-
 func _on_Tags_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var tags := input_node.get_input_as_array_from_comma_separated_string()
 	_update_manifest_value(input_node, tags)
-
-

@@ -53,7 +53,7 @@ func set_name_mod_dir(new_name_mod_dir: String) -> void:
 
 
 func init(store: Dictionary) -> void:
-	path_global_project_dir = ProjectSettings.globalize_path(ModLoaderUtils.get_local_folder_dir())
+	path_global_project_dir = ProjectSettings.globalize_path(_ModLoaderPath.get_local_folder_dir())
 	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
 	if OS.has_feature("Windows"):
 		path_global_seven_zip = path_global_addon_dir + "vendor/7zip/windows/7z.exe"
