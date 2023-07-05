@@ -332,10 +332,6 @@ rect_min_size = Vector2( 500, 280 )
 unique_name_in_owner = true
 window_title = "Connect existing Mod"
 
-[node name="SelectMod" parent="." instance=ExtResource( 7 )]
-unique_name_in_owner = true
-window_title = "Connect existing Mod"
-
 [node name="SelectModTemplate" parent="." instance=ExtResource( 7 )]
 unique_name_in_owner = true
 window_title = "Select Mod Template"
