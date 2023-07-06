@@ -17,7 +17,7 @@ var error_color := ""
 var name_mod_dir := "" setget set_name_mod_dir
 var path_mod_dir := ""
 var path_current_template_dir := "res://addons/mod_tool/templates/default/"
-var path_export_dir := ""
+var path_export_dir := "" setget set_path_export_dir
 var path_temp_dir := ""
 var path_manifest := ""
 var path_global_export_dir := ""
@@ -50,6 +50,12 @@ func set_base_theme(new_base_theme: Theme) -> void:
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:
 	update_paths(new_name_mod_dir)
+
+
+func set_path_export_dir(new_path_export_dir: String) -> void:
+	path_export_dir = new_path_export_dir
+	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
+	path_global_final_zip =  "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 
 
 func init(store: Dictionary) -> void:

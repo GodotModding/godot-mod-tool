@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" type="PackedScene" id=2]
