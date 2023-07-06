@@ -166,7 +166,6 @@ static func create_script_extension(file_path: String) -> String:
 		file.close()
 		ModToolUtils.output_info('Created script extension of "%s" at path %s' % [file_path.get_file(), extension_path])
 
-
 	ModToolStore.editor_file_system.scan()
 	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
 	# Load the new extension script
