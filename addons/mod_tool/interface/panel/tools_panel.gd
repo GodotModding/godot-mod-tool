@@ -17,7 +17,6 @@ onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor := $"%Manifest Editor"
-onready var config_editor := $"%ConfigEditor"
 onready var export_path := $"%ExportPath"
 onready var file_dialog := $"%FileDialog"
 
@@ -57,8 +56,6 @@ func get_log_nodes() -> void:
 	# The button hbox should be last, but here it is second from last for some reason
 	var dock_tool_button_bar: HBoxContainer = get_parent().get_child(get_parent().get_child_count() -2)
 	log_dock_button = dock_tool_button_bar.get_child(0).get_child(0)
-
-	$"%ConfigEditor".connect("discard_last_console_error", self, "discard_last_console_error")
 
 
 # Removes the last error line from the output console as if nothing happened
