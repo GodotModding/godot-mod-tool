@@ -71,7 +71,7 @@ func init(store: Dictionary) -> void:
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
 	path_current_template_dir = store.path_current_template_dir
-	path_export_dir = "res://zips/"
+	path_export_dir = store.path_export_dir
 	path_global_export_dir = ProjectSettings.globalize_path(path_export_dir)
 	path_temp_dir = "user://temp/" + store.name_mod_dir
 	path_manifest = path_mod_dir + "/manifest.json"

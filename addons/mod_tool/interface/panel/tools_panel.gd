@@ -16,7 +16,10 @@ onready var create_mod := $"%CreateMod"
 onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
-onready var manifest_editor = $"%Manifest Editor"
+onready var manifest_editor := $"%Manifest Editor"
+onready var config_editor := $"%ConfigEditor"
+onready var export_path := $"%ExportPath"
+onready var file_dialog := $"%FileDialog"
 
 
 func _ready() -> void:
@@ -94,6 +97,7 @@ func show_config_editor() -> void:
 
 func _update_ui():
 	mod_id.input_text = ModToolStore.name_mod_dir
+	export_path.input_text = ModToolStore.path_export_dir
 
 
 func _is_mod_dir_valid() -> bool:
@@ -159,6 +163,8 @@ func _on_store_loaded() -> void:
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
 
+	_update_ui()
+
 
 func _on_ConnectMod_pressed() -> void:
 	# Opens a popup that displays the mod directory names in the mods-unpacked directory
@@ -170,3 +176,14 @@ func _on_SelectMod_dir_selected(dir_path: String) -> void:
 	var mod_dir_name := dir_path.split("/")[-1]
 	load_mod(mod_dir_name)
 	select_mod.hide()
+
+
+func _on_ButtonExportPath_pressed() -> void:
+	file_dialog.current_path = ModToolStore.path_export_dir
+	file_dialog.popup_centered()
+
+
+func _on_FileDialog_dir_selected(dir: String) -> void:
+	ModToolStore.path_export_dir = dir
+	export_path.input_text = dir
+	file_dialog.hide()
