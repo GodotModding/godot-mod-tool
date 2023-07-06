@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/mod_tool/interface/panel/tools_panel.gd" type="Script" id=3]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/mod_tool/interface/get_7zip/get_7zip.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/mod_tool/interface/global/directory_selection/select_directory.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" type="PackedScene" id=8]
@@ -64,7 +65,7 @@ margin_bottom = 603.0
 [node name="TabContainer" type="TabContainer" parent="Panel/VSplit"]
 unique_name_in_owner = true
 margin_right = 1018.0
-margin_bottom = 414.0
+margin_bottom = 394.0
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 14 )
 tab_align = 0
@@ -73,7 +74,7 @@ tab_align = 0
 margin_top = 24.0
 
 [node name="Export" type="PanelContainer" parent="Panel/VSplit"]
-margin_top = 426.0
+margin_top = 406.0
 margin_right = 1018.0
 margin_bottom = 596.0
 
@@ -81,7 +82,7 @@ margin_bottom = 596.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 1011.0
-margin_bottom = 163.0
+margin_bottom = 183.0
 
 [node name="Console" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 visible = false
@@ -128,7 +129,7 @@ selection_enabled = true
 
 [node name="Settings" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 margin_right = 692.0
-margin_bottom = 156.0
+margin_bottom = 176.0
 rect_min_size = Vector2( 300, 0 )
 rect_pivot_offset = Vector2( -1685, 180 )
 size_flags_horizontal = 3
@@ -136,7 +137,7 @@ size_flags_stretch_ratio = 0.5
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings"]
 margin_right = 692.0
-margin_bottom = 156.0
+margin_bottom = 176.0
 size_flags_horizontal = 3
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
@@ -169,7 +170,7 @@ hint_text = "ID of the mod to be exported.
 Format: Namespace-ModName
 (Often Author-ModName)"
 is_editable = false
-input_text = ""
+input_text = "Test-Test"
 
 [node name="ExportType" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 6 )]
 unique_name_in_owner = true
@@ -185,22 +186,22 @@ input_options = PoolStringArray( "Steam Workshop", "Thunderstore" )
 
 [node name="ExportPath" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 8 )]
 unique_name_in_owner = true
-visible = false
 anchor_right = 0.0
-margin_top = 100.0
+margin_top = 64.0
 margin_right = 692.0
-margin_bottom = 132.0
+margin_bottom = 96.0
 hint_tooltip = "The directory to which the final mod zip is exported."
 mouse_default_cursor_shape = 16
 is_required = true
 key = "path_export_dir"
 label_text = "Export Path"
 hint_text = "The directory to which the final mod zip is exported."
+input_text = "C:/Users/Kai/Documents/godot/Brotato/mods/Mods/exports"
 
 [node name="Align" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
-margin_top = 136.0
+margin_top = 100.0
 margin_right = 692.0
-margin_bottom = 156.0
+margin_bottom = 120.0
 alignment = 2
 
 [node name="ExportStatus" type="Label" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
@@ -220,7 +221,7 @@ text = "Export Mod"
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 margin_left = 704.0
 margin_right = 1004.0
-margin_bottom = 156.0
+margin_bottom = 176.0
 rect_min_size = Vector2( 300, 0 )
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/VBox"]
@@ -247,6 +248,17 @@ margin_top = 52.0
 margin_right = 300.0
 margin_bottom = 72.0
 text = "Connect existing Mod"
+
+[node name="Get7Zip" parent="Panel/VSplit/Export/HSplit/VBox" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 0.0
+margin_top = 76.0
+margin_right = 300.0
+margin_bottom = 176.0
 
 [node name="CreateMod" parent="." instance=ExtResource( 1 )]
 unique_name_in_owner = true
@@ -280,6 +292,7 @@ access = 2
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/ConnectMod" to="." method="_on_ConnectMod_pressed"]
+[connection signal="installed" from="Panel/VSplit/Export/HSplit/VBox/Get7Zip" to="." method="_on_Get7Zip_installed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]

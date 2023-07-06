@@ -19,6 +19,7 @@ onready var mod_id := $"%ModId"
 onready var manifest_editor := $"%Manifest Editor"
 onready var export_path := $"%ExportPath"
 onready var file_dialog := $"%FileDialog"
+onready var get_seven_zip := $"%Get7Zip"
 
 
 func _ready() -> void:
@@ -95,6 +96,8 @@ func show_config_editor() -> void:
 func _update_ui():
 	mod_id.input_text = ModToolStore.name_mod_dir
 	export_path.input_text = ModToolStore.path_export_dir
+	# Hide or show the "Get 7zip button"
+	get_seven_zip.hide() if ModToolStore.is_seven_zip_installed else get_seven_zip.show()
 
 
 func _is_mod_dir_valid() -> bool:
@@ -184,3 +187,7 @@ func _on_FileDialog_dir_selected(dir: String) -> void:
 	ModToolStore.path_export_dir = dir
 	export_path.input_text = dir
 	file_dialog.hide()
+
+
+func _on_Get7Zip_installed() -> void:
+	get_seven_zip.hide()
