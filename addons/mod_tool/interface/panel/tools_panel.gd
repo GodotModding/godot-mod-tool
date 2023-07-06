@@ -17,7 +17,6 @@ onready var select_mod := $"%SelectMod"
 onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor = $"%Manifest Editor"
-onready var config_editor = $"%ConfigEditor"
 
 
 func _ready() -> void:
@@ -42,9 +41,6 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 		plugin.get_editor_interface().get_file_system_dock(),
 		plugin.get_editor_interface().get_base_control().theme
 	)
-
-	$"%ConfigEditor".editor_settings = plugin.get_editor_interface().get_editor_settings()
-	$"%ConfigEditor".base_theme = ModToolStore.base_theme
 
 
 func get_log_nodes() -> void:
@@ -143,12 +139,6 @@ func _on_copy_output_pressed() -> void:
 
 func _on_save_manifest_pressed() -> void:
 	manifest_editor.save_manifest()
-
-
-func _on_save_config_pressed() -> void:
-	var config_defaults_json := config_editor.text as String
-	ModToolStore.manifest_data.config_defaults = JSON.parse(config_defaults_json).result
-	var _is_success := ModToolUtils.save_to_manifest_json()
 
 
 func _on_export_settings_create_new_mod_pressed() -> void:
