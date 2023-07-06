@@ -5,11 +5,8 @@ class_name ModToolZipBuilder
 func build_zip() -> void:
 	# Get all file paths inside the mod folder
 	ModToolStore.path_mod_files = ModToolUtils.get_flat_view_dict(ModToolStore.path_mod_dir)
-	ModToolUtils.output_info(JSON.print(ModToolStore.path_mod_files, '\t'))
 
 	# Loop over each file path
-	print(JSON.print(ModToolStore.path_mod_files, '\t'))
-	print(JSON.print(ModToolStore.path_mod_files.size(), '\t'))
 	for i in ModToolStore.path_mod_files.size():
 		var path_mod_file := ModToolStore.path_mod_files[i] as String
 		# Check for excluded file extensions
@@ -39,7 +36,8 @@ func build_zip() -> void:
 
 	var output := []
 	var _exit_code := OS.execute(ModToolStore.path_global_seven_zip, ["a", ModToolStore.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
-	ModToolUtils.output_info(JSON.print(output, '\t'))
+	# Output the 7zip cli info
+	ModToolUtils.output_info(output[0])
 
 	# Delete the temp folder
 	ModToolUtils.remove_recursive(ModToolStore.path_global_temp_dir)
