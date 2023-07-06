@@ -137,6 +137,8 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
 		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+		# Switch to the script screen
+		ModToolStore.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
 	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
 		file_paths = metadata.mod_tool_override_paths
@@ -166,6 +168,10 @@ static func create_script_extension(file_path: String) -> String:
 
 	ModToolStore.editor_file_system.scan()
 	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
+	# Load the new extension script
+	var extension_script: Script = load(extension_path)
+	# Open the ne extension script in the script editor
+	ModToolStore.editor_plugin.get_editor_interface().edit_script(extension_script)
 
 	return extension_path
 
