@@ -173,6 +173,7 @@ input_text = ""
 
 [node name="ExportType" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource( 6 )]
 unique_name_in_owner = true
+visible = false
 anchor_right = 0.0
 margin_top = 64.0
 margin_right = 692.0
@@ -273,10 +274,6 @@ resizable = true
 mode = 2
 access = 2
 
-[connection signal="pressed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/HBox/SaveConfig" to="." method="_on_save_config_pressed"]
-[connection signal="cursor_changed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_cursor_changed"]
-[connection signal="text_changed" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_text_changed"]
-[connection signal="timeout" from="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor/ValidationDelay" to="Panel/VSplit/TabContainer/Mod Config Editor/VBox/ConfigEditor" method="_on_ValidationDelay_timeout"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
 [connection signal="button_pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/ExportPath" to="." method="_on_ButtonExportPath_pressed"]
