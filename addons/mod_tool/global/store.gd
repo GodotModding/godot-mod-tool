@@ -82,7 +82,7 @@ func init(store: Dictionary) -> void:
 	if not File.new().file_exists(path_global_seven_zip):
 		is_seven_zip_installed = false
 		ModToolUtils.output_error("7-Zip installation not found at the path: %s. Please install it at this location." % path_global_seven_zip)
-		ModToolUtils.output_error("Use the \"Get 7zip\" button in the \"Mod Tool\" to download or install it.")
+		ModToolUtils.output_error("You can use the \"Get 7zip\" button in the \"Mod Tool\" panel to download and install it.")
 
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir

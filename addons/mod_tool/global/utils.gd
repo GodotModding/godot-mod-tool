@@ -45,7 +45,7 @@ static func file_copy(src: String, dst: String) -> void:
 
 # Log error messages
 static func output_error(message) -> void:
-	printerr("ModTool Error:" + str(message))
+	printerr("ModTool Error: " + str(message))
 
 
 static func output_info(message) -> void:
