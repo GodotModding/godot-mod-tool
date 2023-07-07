@@ -16,9 +16,14 @@ onready var http_request: HTTPRequest = $"%HTTPRequest"
 onready var download: Button = $"%Download"
 
 
-func install_win(download_file_path: String) -> void:
-	# Run the setup
-	var _exit_code := OS.execute("cmd.exe", ["/c", "%s /S /D=\"%s\"" % [download_file_path, ModToolStore.path_global_seven_zip_base_dir]], true)
+func install(download_file_path: String) -> void:
+	if ModToolStore.current_os == "windows":
+		# Run the setup
+		var _exit_code := OS.execute("cmd.exe", ["/c", "%s /S /D=\"%s\"" % [download_file_path, ModToolStore.path_global_seven_zip_base_dir]], true)
+	else:
+		# Unpack install files
+		var _exit_code := OS.execute('bash',["-c", "tar -xf %s -C %s" % [download_file_path, ModToolStore.path_global_seven_zip_base_dir]], true)
+
 	# Delete the downloaded installer
 	Directory.new().remove(download_file_path)
 
@@ -26,6 +31,8 @@ func install_win(download_file_path: String) -> void:
 	if _ModLoaderFile.file_exists(ModToolStore.path_global_seven_zip):
 		ModToolUtils.output_info("Sucessfully installed 7zip!")
 		emit_signal("installed")
+	else:
+		ModToolUtils.output_error("Something went wrong during the installation of 7zip.")
 
 
 func _on_Download_pressed() -> void:
@@ -63,8 +70,7 @@ func _on_HTTPRequest_request_completed(result: int, response_code: int, headers:
 	file.store_buffer(body)
 	file.close()
 
-	if ModToolStore.current_os == "windows":
-		install_win(path_global_seven_zip_download_file)
+	install(path_global_seven_zip_download_file)
 
 
 	OS.shell_open(ModToolStore.path_global_seven_zip_base_dir)
