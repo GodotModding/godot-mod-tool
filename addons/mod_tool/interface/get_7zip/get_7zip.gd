@@ -29,7 +29,7 @@ func install(download_file_path: String) -> void:
 
 	# If the setup was successfull log success and emit the installed signal
 	if _ModLoaderFile.file_exists(ModToolStore.path_global_seven_zip):
-		ModToolUtils.output_info("Sucessfully installed 7zip!")
+		ModToolUtils.output_info("Successfully installed 7zip at \"%s\"" % ModToolStore.path_global_seven_zip_base_dir)
 		emit_signal("installed")
 	else:
 		ModToolUtils.output_error("Something went wrong during the installation of 7zip.")
@@ -72,5 +72,5 @@ func _on_HTTPRequest_request_completed(result: int, response_code: int, headers:
 
 	install(path_global_seven_zip_download_file)
 
-
-	OS.shell_open(ModToolStore.path_global_seven_zip_base_dir)
+	if not ModToolStore.current_os == "osx":
+		OS.shell_open(ModToolStore.path_global_seven_zip_base_dir)
