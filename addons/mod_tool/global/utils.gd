@@ -45,7 +45,7 @@ static func file_copy(src: String, dst: String) -> void:
 
 # Log error messages
 static func output_error(message) -> void:
-	printerr("ModTool Error:" + str(message))
+	printerr("ModTool Error: " + str(message))
 
 
 static func output_info(message) -> void:
@@ -64,7 +64,7 @@ static func save_to_manifest_json() -> bool:
 	return is_success
 
 
-static func make_dir_recursive(dst_dir) -> bool:
+static func make_dir_recursive(dst_dir: String) -> bool:
 	var dir := Directory.new()
 	var error := dir.make_dir_recursive(dst_dir)
 	if error != OK:
