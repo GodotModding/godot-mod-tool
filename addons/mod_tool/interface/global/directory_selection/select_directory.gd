@@ -4,8 +4,6 @@ extends WindowDialog
 
 signal dir_selected(dir_path)
 
-export(PackedScene) var btn_dir_scene
-
 onready var directory_list: VBoxContainer = $"%DirectoryList"
 
 
@@ -16,12 +14,11 @@ func generate_dir_buttons(dir_path: String) -> void:
 	for dir_path in dir_paths:
 		var dir_name: String = dir_path.split('/')[-1]
 
-		var dir_btn: ModToolDirSelectButton = btn_dir_scene.instance()
+		var dir_btn := Button.new()
 		dir_btn.text = dir_name
-		dir_btn.path = dir_path
 
 		directory_list.add_child(dir_btn)
-		dir_btn.connect("dir_selected", self, "_on_dir_btn_dir_selected")
+		dir_btn.connect("pressed", self, "_on_dir_btn_dir_selected", [dir_path])
 
 
 func clear_directory_list() -> void:
