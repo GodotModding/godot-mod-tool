@@ -1,6 +1,7 @@
 class_name FileSystemContextActions
 extends Reference
 
+
 var base_theme: Theme
 
 
@@ -192,7 +193,7 @@ static func add_script_extension_to_mod_main(extension_path: String) -> void:
 
 	# Construct the line required to install the extension. If the standard way is used and a
 	# variable "extensions_dir_path" is found, use that variable in combination with plus_file
-	var extension_install_line := "\tmodLoader.install_script_extension(%s)\n"
+	var extension_install_line := "\tModLoaderMod.install_script_extension(%s)\n"
 	if mod_extensions_dir_path_index == -1:
 		extension_install_line = extension_install_line % quote_string(extension_path)
 	else:
@@ -203,9 +204,9 @@ static func add_script_extension_to_mod_main(extension_path: String) -> void:
 	if extension_install_line.strip_edges() in file_content:
 		return
 
-	var last_install_line_index := file_content.find_last("modLoader.install_script_extension")
+	var last_install_line_index := file_content.find_last("ModLoaderMod.install_script_extension")
 	if last_install_line_index == -1:
-		# If there is no modLoader.install_script_extension yet, put it at the end of install_script_extensions
+		# If there is no ModLoaderMod.install_script_extension yet, put it at the end of install_script_extensions
 		var insertion_index := get_index_at_method_end("install_script_extensions", file_content)
 		file_content = file_content.insert(insertion_index, "\n" + extension_install_line)
 	else:
