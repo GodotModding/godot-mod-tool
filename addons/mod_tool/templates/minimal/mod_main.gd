@@ -2,7 +2,7 @@ extends Node
 
 
 const AUTHORNAME_MODNAME_DIR := "AuthorName-ModName"
-const AUTHORNAME_MODNAME_LOG_NAME := "AuthorName-ModName"
+const AUTHORNAME_MODNAME_LOG_NAME := "AuthorName-ModName:Main"
 
 var mod_dir_path := ""
 var extensions_dir_path := ""

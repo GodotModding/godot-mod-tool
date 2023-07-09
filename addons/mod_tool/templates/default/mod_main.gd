@@ -12,7 +12,7 @@ extends Node
 # ? Brief overview of what your mod does...
 
 const AUTHORNAME_MODNAME_DIR := "AuthorName-ModName" # Name of the directory that this file is in
-const AUTHORNAME_MODNAME_LOG_NAME := "AuthorName-ModName" # Full ID of the mod (AuthorName-ModName)
+const AUTHORNAME_MODNAME_LOG_NAME := "AuthorName-ModName:Main" # Full ID of the mod (AuthorName-ModName)
 
 var mod_dir_path := ""
 var extensions_dir_path := ""
