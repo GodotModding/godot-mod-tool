@@ -43,7 +43,10 @@ func build_zip() -> void:
 	ModToolUtils.remove_recursive(ModToolStore.path_global_temp_dir)
 
 	# Open the export dir
-	OS.shell_open(ModToolStore.path_global_export_dir)
+	var file_manager_path := ModToolStore.path_global_export_dir
+	if OS.has_feature("OSX"):
+		file_manager_path = "file://" + file_manager_path
+	OS.shell_open(file_manager_path)
 
 
 func _get_imported_file_path(import_file_path: String) -> String:
