@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-var tools_panel: ModToolsPanel
+var tools_panel # ModToolsPanel (not typed to avoid issues with the store when disabled)
 
 
 func _enter_tree() -> void:

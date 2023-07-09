@@ -72,5 +72,7 @@ func _on_HTTPRequest_request_completed(result: int, response_code: int, headers:
 
 	install(path_global_seven_zip_download_file)
 
-	if not ModToolStore.current_os == "osx":
-		OS.shell_open(ModToolStore.path_global_seven_zip_base_dir)
+	var file_manager_path := ModToolStore.path_global_seven_zip_base_dir
+	if OS.has_feature("OSX"):
+		file_manager_path = "file://" + file_manager_path
+	OS.shell_open(file_manager_path)
