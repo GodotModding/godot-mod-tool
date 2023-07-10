@@ -57,3 +57,7 @@ func emit_value_changed() -> void:
 
 func _on_Input_text_changed(new_text: String) -> void:
 	emit_value_changed()
+
+
+func _on_Mutiline_Input_text_changed() -> void:
+	emit_value_changed()

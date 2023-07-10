@@ -261,12 +261,13 @@ func _on_Description_value_changed(new_text: String, input_node: ModToolInterfac
 
 
 func _on_Authors_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	_update_manifest_value(input_node, new_text)
+	var authors := input_node.get_input_as_array_from_comma_separated_string()
+	_update_manifest_value(input_node, authors)
 
 
 func _on_CompatibleGameVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
-	var authors := input_node.get_input_as_array_from_comma_separated_string()
-	_update_manifest_value(input_node, authors)
+	var compatible_game_versions := input_node.get_input_as_array_from_comma_separated_string()
+	_update_manifest_value(input_node, compatible_game_versions)
 
 
 func _on_Tags_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
