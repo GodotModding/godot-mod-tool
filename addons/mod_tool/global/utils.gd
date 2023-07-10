@@ -52,10 +52,10 @@ static func output_info(message) -> void:
 	print("ModTool: " + str(message))
 
 
-static func save_to_manifest_json() -> bool:
+static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: String) -> bool:
 	var is_success := _ModLoaderFile._save_string_to_file(
-		ModToolStore.manifest_data.to_json(),
-		ModToolStore.path_manifest
+		manifest_data.to_json(),
+		path_manifest
 	)
 
 	if is_success:
