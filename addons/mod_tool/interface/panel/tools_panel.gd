@@ -135,7 +135,7 @@ func load_mod(name_mod_dir: String) -> void:
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		var zipper := ModToolZipBuilder.new()
-		zipper.build_zip()
+		zipper.build_zip(mod_tool_store)
 
 
 func _on_clear_output_pressed() -> void:

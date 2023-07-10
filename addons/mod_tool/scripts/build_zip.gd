@@ -2,10 +2,7 @@ extends Node
 class_name ModToolZipBuilder
 
 
-onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
-
-
-func build_zip() -> void:
+func build_zip(mod_tool_store: ModToolStore) -> void:
 	# Get all file paths inside the mod folder
 	mod_tool_store.path_mod_files = ModToolUtils.get_flat_view_dict(mod_tool_store.path_mod_dir)
 
