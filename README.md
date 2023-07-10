@@ -1,5 +1,19 @@
-# Godot Mod (Development) Tool
+<div align="center">
+
+# Godot Mod Loader Development Tool
+
+<img alt="Godot Mod Loader Devtool Logo" src="https://github.com/GodotModding/godot-mod-tool/assets/41547570/fe277599-b8c0-4eaf-8268-3eca1a78d1ff" width="256" />
+
+<br />
+<br />
+
 The mod tool aims to improve the development experience when creating [Godot ModLoader](https://github.com/GodotModding/godot-mod-loader) mods.
+
+</div>
+
+
+
+
 
 ## Features:
 - Simple mod zipping process with 7zip to ensure proper format for ModLoader
