@@ -3,15 +3,15 @@ The mod tool aims to improve the development experience when creating [Godot Mod
 
 ## Features:
 - Simple mod zipping process with 7zip to ensure proper format for ModLoader
-    - Steam Workshop (default, works manually too)
-    - Thunderstore (coming soon)
+    - Steam Workshop
+    - Thunderstore (soon™)
 - Easy editing of the mod's `manifest.json` file, with validation
-- Json editor for the mod's default configuration settings, with validation
+- Json Schema editor for the mod's configuration settings, with validation (soon™)
 - Advanced right click context menu
     - Create new script override file
     - Create new asset overwrite
 - Create a simple mod skeleton with a single click
-- Easy installation as an addon (soon from the AssetLib)
+- Easy installation as an addon (soon™ from the AssetLib)
 
 
 ## Installation
@@ -19,7 +19,7 @@ The mod tool aims to improve the development experience when creating [Godot Mod
 1. Add the `mod_tool` folder to your Godot project's `addons` folder
 1. Enable the addon in the Godot editor's Project Settings
 
-Even more convenient, you can install the addon from the AssetLib (coming soon).
+Even more convenient, you can install the addon from the AssetLib (coming soon™).
 1. Go to the AssetLib tab
 1. Search for `mod tool`
 1. Click `Install` on the addon
