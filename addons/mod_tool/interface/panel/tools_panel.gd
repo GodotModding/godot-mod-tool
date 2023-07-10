@@ -176,6 +176,7 @@ func _on_SelectMod_dir_selected(dir_path: String) -> void:
 	var mod_dir_name := dir_path.split("/")[-1]
 	load_mod(mod_dir_name)
 	select_mod.hide()
+	_update_ui()
 
 
 func _on_ButtonExportPath_pressed() -> void:
