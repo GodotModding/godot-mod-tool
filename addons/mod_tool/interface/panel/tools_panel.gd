@@ -4,6 +4,7 @@ extends Control
 
 
 # passed from the EditorPlugin
+var mod_tool_store: ModToolStore
 var editor_plugin: EditorPlugin setget set_editor_plugin
 var context_actions: FileSystemContextActions
 
@@ -11,6 +12,7 @@ var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
 
+onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
 onready var tab_container := $"%TabContainer"
 onready var create_mod := $"%CreateMod"
 onready var select_mod := $"%SelectMod"
@@ -25,24 +27,26 @@ onready var get_seven_zip := $"%Get7Zip"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	_update_ui()
-
 	get_log_nodes()
 
-	# Connect signals
-	ModToolStore.connect("store_loaded", self, "_on_store_loaded")
+	# Load manifest.json file
+	if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+		manifest_editor.load_manifest()
+		manifest_editor.update_ui()
+
+	_update_ui()
 
 
 func set_editor_plugin(plugin: EditorPlugin) -> void:
 	editor_plugin = plugin
 
-	ModToolStore.editor_plugin = plugin
-	ModToolStore.base_theme = plugin.get_editor_interface().get_base_control().theme
-	ModToolStore.editor_file_system = plugin.get_editor_interface().get_resource_filesystem()
+	mod_tool_store.editor_plugin = editor_plugin
+	mod_tool_store.base_theme = editor_plugin.get_editor_interface().get_base_control().theme
+	mod_tool_store.editor_file_system = editor_plugin.get_editor_interface().get_resource_filesystem()
 
 	context_actions = FileSystemContextActions.new(
-		plugin.get_editor_interface().get_file_system_dock(),
-		plugin.get_editor_interface().get_base_control().theme
+		editor_plugin.get_editor_interface().get_file_system_dock(),
+		editor_plugin.get_editor_interface().get_base_control().theme
 	)
 
 
@@ -94,21 +98,23 @@ func show_config_editor() -> void:
 
 
 func _update_ui():
-	mod_id.input_text = ModToolStore.name_mod_dir
-	export_path.input_text = ModToolStore.path_export_dir
+	if not mod_tool_store:
+		return
+	mod_id.input_text = mod_tool_store.name_mod_dir
+	export_path.input_text = mod_tool_store.path_export_dir
 	# Hide or show the "Get 7zip button"
-	get_seven_zip.hide() if ModToolStore.is_seven_zip_installed else get_seven_zip.show()
+	get_seven_zip.hide() if mod_tool_store.is_seven_zip_installed else get_seven_zip.show()
 
 
 func _is_mod_dir_valid() -> bool:
 	# Check if Mod ID is given
-	if ModToolStore.name_mod_dir == '':
+	if mod_tool_store.name_mod_dir == '':
 		ModToolUtils.output_error("Please provide a Mod ID")
 		return false
 
 	# Check if mod dir exists
-	if not _ModLoaderFile.dir_exists(ModToolStore.path_mod_dir):
-		ModToolUtils.output_error("Mod folder %s does not exist" % ModToolStore.path_mod_dir)
+	if not _ModLoaderFile.dir_exists(mod_tool_store.path_mod_dir):
+		ModToolUtils.output_error("Mod folder %s does not exist" % mod_tool_store.path_mod_dir)
 		return false
 
 	return true
@@ -116,7 +122,7 @@ func _is_mod_dir_valid() -> bool:
 
 func load_mod(name_mod_dir: String) -> void:
 	# Set the dir name
-	ModToolStore.name_mod_dir = name_mod_dir
+	mod_tool_store.name_mod_dir = name_mod_dir
 
 	# Load Manifest
 	manifest_editor.load_manifest()
@@ -130,7 +136,7 @@ func load_mod(name_mod_dir: String) -> void:
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		var zipper := ModToolZipBuilder.new()
-		zipper.build_zip()
+		zipper.build_zip(mod_tool_store)
 
 
 func _on_clear_output_pressed() -> void:
@@ -157,15 +163,6 @@ func _on_CreateMod_mod_dir_created() -> void:
 	manifest_editor.update_ui()
 
 
-func _on_store_loaded() -> void:
-	# Load manifest.json file
-	if _ModLoaderFile.file_exists(ModToolStore.path_manifest):
-		manifest_editor.load_manifest()
-		manifest_editor.update_ui()
-
-	_update_ui()
-
-
 func _on_ConnectMod_pressed() -> void:
 	# Opens a popup that displays the mod directory names in the mods-unpacked directory
 	select_mod.generate_dir_buttons(ModLoaderMod.get_unpacked_dir())
@@ -180,12 +177,12 @@ func _on_SelectMod_dir_selected(dir_path: String) -> void:
 
 
 func _on_ButtonExportPath_pressed() -> void:
-	file_dialog.current_path = ModToolStore.path_export_dir
+	file_dialog.current_path = mod_tool_store.path_export_dir
 	file_dialog.popup_centered()
 
 
 func _on_FileDialog_dir_selected(dir: String) -> void:
-	ModToolStore.path_export_dir = dir
+	mod_tool_store.path_export_dir = dir
 	export_path.input_text = dir
 	file_dialog.hide()
 

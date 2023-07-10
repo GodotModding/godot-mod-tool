@@ -41,8 +41,10 @@ func set_hint_text(new_text: String) -> void:
 
 
 func set_editor_icon(icon_name: String) -> void:
-	if icon_name:
-		set_error_icon(ModToolStore.base_theme.get_icon(icon_name, "EditorIcons"))
+	var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
+
+	if icon_name and mod_tool_store:
+		set_error_icon(mod_tool_store.base_theme.get_icon(icon_name, "EditorIcons"))
 
 
 func set_error_icon(icon: Texture) -> void:

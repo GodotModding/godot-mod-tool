@@ -1,10 +1,10 @@
 tool
+class_name ModToolStore
 extends Node
 
 
 # Global store for all Data the ModTool requires.
 
-signal store_loaded
 
 const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 const PATH_TEMPLATES_DIR := "res://addons/mod_tool/templates/"
@@ -135,5 +135,3 @@ func load_store() -> void:
 	var content := file.get_as_text()
 
 	init(JSON.parse(content).result)
-
-	emit_signal("store_loaded")

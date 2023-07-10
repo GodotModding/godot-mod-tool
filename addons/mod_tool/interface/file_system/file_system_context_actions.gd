@@ -1,7 +1,8 @@
 class_name FileSystemContextActions
-extends Reference
+extends Node
 
 
+onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
 var base_theme: Theme
 
 
@@ -137,9 +138,9 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
-		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 		# Switch to the script screen
-		ModToolStore.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
+		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
 	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
 		file_paths = metadata.mod_tool_override_paths
@@ -147,16 +148,16 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var asset_path := create_overwrite_asset(file_path)
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
-		ModToolStore.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 
 
-static func create_script_extension(file_path: String) -> String:
-	if not ModToolStore.name_mod_dir:
+func create_script_extension(file_path: String) -> String:
+	if not mod_tool_store.name_mod_dir:
 		ModToolUtils.output_error("Select an existing mod or create a new one to create script overrides")
 		return ""
 
 	var file_directory := file_path.get_base_dir().trim_prefix("res://")
-	var extension_directory: String = ModToolStore.path_mod_dir.plus_file("extensions").plus_file(file_directory)
+	var extension_directory: String = mod_tool_store.path_mod_dir.plus_file("extensions").plus_file(file_directory)
 	ModToolUtils.make_dir_recursive(extension_directory)
 
 	var file := File.new()
@@ -167,19 +168,19 @@ static func create_script_extension(file_path: String) -> String:
 		file.close()
 		ModToolUtils.output_info('Created script extension of "%s" at path %s' % [file_path.get_file(), extension_path])
 
-	ModToolStore.editor_file_system.scan()
-	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
+	mod_tool_store.editor_file_system.scan()
+	mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
 	# Load the new extension script
 	var extension_script: Script = load(extension_path)
 	# Open the ne extension script in the script editor
-	ModToolStore.editor_plugin.get_editor_interface().edit_script(extension_script)
+	mod_tool_store.editor_plugin.get_editor_interface().edit_script(extension_script)
 
 	return extension_path
 
 
-static func add_script_extension_to_mod_main(extension_path: String) -> void:
+func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var file := File.new()
-	var main_script_path := ModToolStore.path_mod_dir.plus_file("mod_main.gd")
+	var main_script_path: String = mod_tool_store.path_mod_dir.plus_file("mod_main.gd")
 	if not script_has_method(main_script_path, "install_script_extensions"):
 		ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
 		return
@@ -197,7 +198,7 @@ static func add_script_extension_to_mod_main(extension_path: String) -> void:
 	if mod_extensions_dir_path_index == -1:
 		extension_install_line = extension_install_line % quote_string(extension_path)
 	else:
-		extension_path = extension_path.trim_prefix(ModToolStore.path_mod_dir.plus_file("extensions/"))
+		extension_path = extension_path.trim_prefix(mod_tool_store.path_mod_dir.plus_file("extensions/"))
 		extension_install_line = extension_install_line % "extensions_dir_path.plus_file(%s)" % quote_string(extension_path)
 
 	# Check if that file was already used as script extension
@@ -220,12 +221,12 @@ static func add_script_extension_to_mod_main(extension_path: String) -> void:
 
 
 func create_overwrite_asset(file_path: String) -> String:
-	if not ModToolStore.name_mod_dir:
+	if not mod_tool_store.name_mod_dir:
 		ModToolUtils.output_error("Select an existing mod or create a new one to overwrite assets")
 		return ""
 
 	var file_directory := file_path.get_base_dir().trim_prefix("res://")
-	var overwrite_directory: String = ModToolStore.path_mod_dir.plus_file("overwrites").plus_file(file_directory)
+	var overwrite_directory: String = mod_tool_store.path_mod_dir.plus_file("overwrites").plus_file(file_directory)
 	ModToolUtils.make_dir_recursive(overwrite_directory)
 
 	var dir := Directory.new()
@@ -234,8 +235,8 @@ func create_overwrite_asset(file_path: String) -> String:
 		dir.copy(file_path, overwrite_path)
 		ModToolUtils.output_info('Copied asset "%s" as overwrite to path %s' % [file_path.get_file(), overwrite_path])
 
-	ModToolStore.editor_file_system.scan()
-	ModToolStore.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(overwrite_path)
+	mod_tool_store.editor_file_system.scan()
+	mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(overwrite_path)
 
 	return overwrite_path
 
@@ -265,16 +266,16 @@ static func get_index_at_method_end(method_name: String, text: String) -> int:
 	return last_non_empty_line_index +1
 
 
-static func quote_string(string: String) -> String:
-	var settings := ModToolStore.editor_plugin.get_editor_interface().get_editor_settings()
+func quote_string(string: String) -> String:
+	var settings: EditorSettings = mod_tool_store.editor_plugin.get_editor_interface().get_editor_settings()
 	if settings.get_setting("text_editor/completion/use_single_quotes"):
 		return "'%s'" % string
 	return "\"%s\"" % string
 
 
-static func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
+func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
 	var file := File.new()
-	var overwrites_script_path := ModToolStore.path_mod_dir.plus_file("overwrites.gd")
+	var overwrites_script_path: String = mod_tool_store.path_mod_dir.plus_file("overwrites.gd")
 	if not file.file_exists(overwrites_script_path):
 		file.open(overwrites_script_path, File.WRITE)
 		file.store_line("extends Node\n\n")
