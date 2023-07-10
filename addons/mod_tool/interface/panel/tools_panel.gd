@@ -27,13 +27,14 @@ onready var get_seven_zip := $"%Get7Zip"
 func _ready() -> void:
 	tab_parent_bottom_panel = get_parent().get_parent() as PanelContainer
 
-	_update_ui()
-
 	get_log_nodes()
 
-	if mod_tool_store_node:
-		# Connect signals
-		mod_tool_store_node.connect("store_loaded", self, "_on_store_loaded")
+	# Load manifest.json file
+	if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+		manifest_editor.load_manifest()
+		manifest_editor.update_ui()
+
+	_update_ui()
 
 
 func set_editor_plugin(plugin: EditorPlugin) -> void:
@@ -160,15 +161,6 @@ func _on_CreateMod_mod_dir_created() -> void:
 	_update_ui()
 	manifest_editor.load_manifest()
 	manifest_editor.update_ui()
-
-
-func _on_store_loaded() -> void:
-	# Load manifest.json file
-	if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
-		manifest_editor.load_manifest()
-		manifest_editor.update_ui()
-
-	_update_ui()
 
 
 func _on_ConnectMod_pressed() -> void:
