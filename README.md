@@ -25,7 +25,7 @@ The mod tool aims to improve the development experience when creating [Godot Mod
     - Create new script override file
     - Create new asset overwrite
 - Create a simple mod skeleton with a single click
-- Easy installation as an addon (soon™ from the AssetLib)
+- Easy installation as an addon (from the AssetLib)
 
 
 ## Installation
@@ -33,9 +33,9 @@ The mod tool aims to improve the development experience when creating [Godot Mod
 1. Add the `mod_tool` folder to your Godot project's `addons` folder
 1. Enable the addon in the Godot editor's Project Settings
 
-Even more convenient, you can install the addon from the AssetLib (coming soon™).
+Even more convenient, you can install the addon from the AssetLib.
 1. Go to the AssetLib tab
-1. Search for `mod tool`
+1. Search for [`mod loader dev tool`](https://godotengine.org/asset-library/asset?filter=mod+loader+dev+tool)
 1. Click `Install` on the addon
 1. Enable the addon in the Godot editor's Project Settings
 
