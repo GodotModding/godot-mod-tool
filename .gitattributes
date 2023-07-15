@@ -11,4 +11,4 @@
 test/                                   export-ignore
 
 # Files not required by AssetLib downloads
-/icon.png
+icon.png
