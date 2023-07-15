@@ -2,13 +2,14 @@ class_name FileSystemContextActions
 extends Node
 
 
-onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
+var mod_tool_store: ModToolStore
 var base_theme: Theme
 
 
-func _init(file_system_dock: FileSystemDock, p_base_theme: Theme) -> void:
-	base_theme = p_base_theme
+func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock, p_base_theme: Theme) -> void:
+	mod_tool_store = _mod_tool_store
 	connect_file_system_context_actions(file_system_dock)
+	base_theme = p_base_theme
 
 
 func connect_file_system_context_actions(file_system_dock: FileSystemDock) -> void:

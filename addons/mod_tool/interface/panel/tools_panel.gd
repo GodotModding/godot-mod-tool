@@ -45,6 +45,7 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	mod_tool_store.editor_file_system = editor_plugin.get_editor_interface().get_resource_filesystem()
 
 	context_actions = FileSystemContextActions.new(
+		mod_tool_store,
 		editor_plugin.get_editor_interface().get_file_system_dock(),
 		editor_plugin.get_editor_interface().get_base_control().theme
 	)
