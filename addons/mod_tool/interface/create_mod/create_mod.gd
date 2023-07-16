@@ -4,6 +4,9 @@ extends WindowDialog
 
 signal mod_dir_created
 
+const DIR_NAME_DEFAULT_TEMPLATE = "default"
+const DIR_NAME_MINIMAL_TEMPLATE = "minimal"
+
 onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
 onready var namespace: ModToolInterfaceInputString = $"%Namespace"
 onready var mod_name: ModToolInterfaceInputString = $"%ModName"
@@ -92,7 +95,23 @@ func get_template_options() -> PoolStringArray:
 	var template_dirs := _ModLoaderPath.get_dir_paths_in_dir(mod_tool_store.PATH_TEMPLATES_DIR)
 
 	for template_dir in template_dirs:
-		mod_template_options.push_back(template_dir.split("/")[-1])
+		var template_dir_name: String = template_dir.split("/")[-1]
+
+		# Skip if its one of the default templates
+		if (
+			template_dir_name == DIR_NAME_DEFAULT_TEMPLATE or
+			template_dir_name == DIR_NAME_MINIMAL_TEMPLATE
+		):
+			continue
+
+		# Add the default templates
+		mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
+		mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
+
+		# Add all the custom templates
+		mod_template_options.push_back(template_dir_name)
+
+
 
 	return mod_template_options as PoolStringArray
 
