@@ -103,6 +103,7 @@ func update_paths(new_name_mod_dir: String) -> void:
 	path_temp_dir = "user://temp/" + new_name_mod_dir
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 	path_manifest = path_mod_dir + "/manifest.json"
+	path_global_final_zip =  "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 
 
 func save_store() -> void:

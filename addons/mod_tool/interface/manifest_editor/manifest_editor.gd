@@ -49,6 +49,9 @@ func update_ui() -> void:
 			# Else convert the value to a string
 			else:
 				input.input_text = str(value)
+		# If the key is not in the data clear the input
+		else:
+			input.input_text = ""
 
 
 # Returns an array of invalid fields

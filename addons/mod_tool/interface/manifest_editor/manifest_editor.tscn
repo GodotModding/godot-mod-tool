@@ -326,11 +326,11 @@ anchor_right = 0.0
 margin_top = 668.0
 margin_right = 990.0
 margin_bottom = 700.0
-hint_tooltip = "Compatible ModLoader Versions"
+hint_tooltip = "Comma-separated list of tags that describe your mod.."
 mouse_default_cursor_shape = 16
 key = "tags"
 label_text = "Tags"
-hint_text = "Compatible ModLoader Versions"
+hint_text = "Comma-separated list of tags that describe your mod.."
 input_placeholder = "Tag1, Tag2"
 
 [connection signal="pressed" from="VBox/HBox2/SaveManifest" to="." method="_on_SaveManifest_pressed"]
