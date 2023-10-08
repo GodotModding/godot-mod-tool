@@ -4,11 +4,11 @@
 [ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=3]
 
-[node name="CreateMod" type="WindowDialog"]
-margin_left = 10.0
-margin_top = 25.0
-margin_right = 1014.0
-margin_bottom = 590.0
+[node name="CreateMod" type="Window"]
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 1014.0
+offset_bottom = 590.0
 window_title = "Create new Mod"
 resizable = true
 script = ExtResource( 1 )
@@ -18,38 +18,38 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/margin_right = 10
-custom_constants/margin_top = 25
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="Settings" type="VBoxContainer" parent="MarginContainer"]
-margin_left = 10.0
-margin_top = 25.0
-margin_right = 994.0
-margin_bottom = 555.0
-rect_min_size = Vector2( 300, 0 )
-rect_pivot_offset = Vector2( -1685, 180 )
+offset_left = 10.0
+offset_top = 25.0
+offset_right = 994.0
+offset_bottom = 555.0
+custom_minimum_size = Vector2( 300, 0 )
+pivot_offset = Vector2( -1685, 180 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
 [node name="Scroll" type="ScrollContainer" parent="MarginContainer/Settings"]
-margin_right = 984.0
-margin_bottom = 492.0
+offset_right = 984.0
+offset_bottom = 492.0
 size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer/Settings/Scroll"]
-margin_right = 984.0
-margin_bottom = 163.0
+offset_right = 984.0
+offset_bottom = 163.0
 size_flags_horizontal = 3
-custom_constants/separation = 5
+theme_override_constants/separation = 5
 
 [node name="Namespace" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_right = 984.0
-margin_bottom = 32.0
+offset_right = 984.0
+offset_bottom = 32.0
 is_required = true
 key = "namespace"
 label_text = "Namespace ( Author Name )"
@@ -58,9 +58,9 @@ input_placeholder = "Namespace"
 [node name="ModName" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 37.0
-margin_right = 984.0
-margin_bottom = 69.0
+offset_top = 37.0
+offset_right = 984.0
+offset_bottom = 69.0
 is_required = true
 key = "name"
 label_text = "Mod Name"
@@ -69,9 +69,9 @@ input_placeholder = "ModName"
 [node name="ModId" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 74.0
-margin_right = 984.0
-margin_bottom = 106.0
+offset_top = 74.0
+offset_right = 984.0
+offset_bottom = 106.0
 is_required = true
 key = "mod_id"
 label_text = "Mod ID"
@@ -79,38 +79,38 @@ is_editable = false
 input_placeholder = "Namespace-ModName"
 
 [node name="Space" type="Control" parent="MarginContainer/Settings/Scroll/VBox"]
-margin_top = 111.0
-margin_right = 984.0
-margin_bottom = 126.0
-rect_min_size = Vector2( 0, 15 )
+offset_top = 111.0
+offset_right = 984.0
+offset_bottom = 126.0
+custom_minimum_size = Vector2( 0, 15 )
 
 [node name="ModTemplate" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource( 3 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 131.0
-margin_right = 984.0
-margin_bottom = 163.0
+offset_top = 131.0
+offset_right = 984.0
+offset_bottom = 163.0
 is_required = true
 key = "mod_template"
 label_text = "Template"
 
 [node name="Buttons" type="PanelContainer" parent="MarginContainer/Settings"]
-margin_top = 496.0
-margin_right = 984.0
-margin_bottom = 530.0
+offset_top = 496.0
+offset_right = 984.0
+offset_bottom = 530.0
 
 [node name="VBox" type="VBoxContainer" parent="MarginContainer/Settings/Buttons"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 977.0
-margin_bottom = 27.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 977.0
+offset_bottom = 27.0
 
 [node name="btn_create_mod" type="Button" parent="MarginContainer/Settings/Buttons/VBox"]
-margin_right = 970.0
-margin_bottom = 20.0
+offset_right = 970.0
+offset_bottom = 20.0
 text = "Create"
 
-[connection signal="about_to_show" from="." to="." method="_on_CreateMod_about_to_show"]
+[connection signal="about_to_popup" from="." to="." method="_on_CreateMod_about_to_show"]
 [connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/Namespace" to="." method="_on_Namespace_value_changed"]
 [connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/ModName" to="." method="_on_ModName_value_changed"]
 [connection signal="value_changed" from="MarginContainer/Settings/Scroll/VBox/ModId" to="." method="_on_ModId_value_changed"]

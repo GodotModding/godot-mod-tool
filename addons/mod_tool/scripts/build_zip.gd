@@ -12,7 +12,7 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 		# Check for excluded file extensions
 		if ModToolUtils.is_file_extension(path_mod_file, mod_tool_store.excluded_file_extensions):
 			# Dont add files with unwanted extensions to the zip
-			mod_tool_store.path_mod_files.remove(i)
+			mod_tool_store.path_mod_files.remove_at(i)
 			continue
 
 		# If it's a .import file
@@ -35,7 +35,7 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 	var path_global_temp_dir_with_wildcard: String = mod_tool_store.path_global_temp_dir + "/*"
 
 	var output := []
-	var _exit_code := OS.execute(mod_tool_store.path_global_seven_zip, ["a", mod_tool_store.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
+	var _exit_code := OS.execute(mod_tool_store.path_global_seven_zip, ["a", mod_tool_store.path_global_final_zip, path_global_temp_dir_with_wildcard], output)
 	# Output the 7zip cli info
 	ModToolUtils.output_info(output[0])
 

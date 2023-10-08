@@ -23,77 +23,77 @@ anchor_bottom = 1.0
 script = ExtResource( 4 )
 
 [node name="VBox" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 593.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 1017.0
+offset_bottom = 593.0
 
 [node name="HBox2" type="HBoxContainer" parent="VBox"]
-margin_right = 1010.0
-margin_bottom = 40.0
+offset_right = 1010.0
+offset_bottom = 40.0
 
 [node name="Label" type="Label" parent="VBox/HBox2"]
-margin_top = 13.0
-margin_right = 661.0
-margin_bottom = 27.0
+offset_top = 13.0
+offset_right = 661.0
+offset_bottom = 27.0
 size_flags_horizontal = 3
 text = "Metadata required for your mod"
 
 [node name="ErrorLabel" type="Label" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 665.0
-margin_top = 13.0
-margin_right = 769.0
-margin_bottom = 27.0
+offset_left = 665.0
+offset_top = 13.0
+offset_right = 769.0
+offset_bottom = 27.0
 text = "Manifest is valid"
 
 [node name="ShouldValidate" type="CheckButton" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 773.0
-margin_right = 849.0
-margin_bottom = 40.0
+offset_left = 773.0
+offset_right = 849.0
+offset_bottom = 40.0
 pressed = true
 flat = true
 
 [node name="VSeparator" type="VSeparator" parent="VBox/HBox2"]
-margin_left = 853.0
-margin_right = 857.0
-margin_bottom = 40.0
+offset_left = 853.0
+offset_right = 857.0
+offset_bottom = 40.0
 
 [node name="SaveManifest" type="Button" parent="VBox/HBox2"]
-margin_left = 861.0
-margin_right = 1010.0
-margin_bottom = 40.0
+offset_left = 861.0
+offset_right = 1010.0
+offset_bottom = 40.0
 text = "Save to manifest.json"
 
 [node name="Panel" type="PanelContainer" parent="VBox"]
-margin_top = 44.0
-margin_right = 1010.0
-margin_bottom = 586.0
+offset_top = 44.0
+offset_right = 1010.0
+offset_bottom = 586.0
 size_flags_vertical = 3
-custom_styles/panel = SubResource( 1 )
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBox/Panel"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 1006.0
-margin_bottom = 538.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 1006.0
+offset_bottom = 538.0
 size_flags_vertical = 3
 follow_focus = true
 scroll_horizontal_enabled = false
 
 [node name="InputVBox" type="VBoxContainer" parent="VBox/Panel/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 990.0
-margin_bottom = 700.0
+offset_right = 990.0
+offset_bottom = 700.0
 size_flags_horizontal = 3
 __meta__ = {
 "_editor_description_": ""
 }
 
 [node name="Category" type="LineEdit" parent="VBox/Panel/ScrollContainer/InputVBox"]
-margin_right = 990.0
-margin_bottom = 24.0
+offset_right = 990.0
+offset_bottom = 24.0
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 text = "Manifest"
@@ -107,10 +107,10 @@ middle_mouse_paste_enabled = false
 [node name="ModName" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 28.0
-margin_right = 990.0
-margin_bottom = 60.0
-hint_tooltip = "Name of the Mod.
+offset_top = 28.0
+offset_right = 990.0
+offset_bottom = 60.0
+tooltip_text = "Name of the Mod.
 Only letters, numbers and underscores allowed."
 mouse_default_cursor_shape = 16
 is_required = true
@@ -122,10 +122,10 @@ Only letters, numbers and underscores allowed."
 [node name="Namespace" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 64.0
-margin_right = 990.0
-margin_bottom = 96.0
-hint_tooltip = "Namespace of the Mod.
+offset_top = 64.0
+offset_right = 990.0
+offset_bottom = 96.0
+tooltip_text = "Namespace of the Mod.
 Often just the main author or team name.
 Only letters, numbers and underscores allowed."
 mouse_default_cursor_shape = 16
@@ -139,10 +139,10 @@ Only letters, numbers and underscores allowed."
 [node name="Version" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 100.0
-margin_right = 990.0
-margin_bottom = 132.0
-hint_tooltip = "Semantic version string.
+offset_top = 100.0
+offset_right = 990.0
+offset_bottom = 132.0
+tooltip_text = "Semantic version string.
 Only integers and periods allowed.
 Format: {major}.{minor}.{patch}
 For reference, see https://semver.org"
@@ -159,10 +159,10 @@ input_text = "0.0.1"
 [node name="WebsiteUrl" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 136.0
-margin_right = 990.0
-margin_bottom = 168.0
-hint_tooltip = "URL for your website or repository."
+offset_top = 136.0
+offset_right = 990.0
+offset_bottom = 168.0
+tooltip_text = "URL for your website or repository."
 mouse_default_cursor_shape = 16
 key = "website_url"
 label_text = "Mod website URL"
@@ -172,10 +172,10 @@ input_placeholder = "https://example.com"
 [node name="Dependencies" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 172.0
-margin_right = 990.0
-margin_bottom = 204.0
-hint_tooltip = "Comma-separated list of mod IDs.
+offset_top = 172.0
+offset_right = 990.0
+offset_bottom = 204.0
+tooltip_text = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
 A single dash in the middle is required.
 Format: {namespace}-{name}
@@ -195,16 +195,16 @@ input_placeholder = "Namespace-ModName, Author-Name"
 [node name="Description" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 1 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 208.0
-margin_right = 990.0
-margin_bottom = 420.0
+offset_top = 208.0
+offset_right = 990.0
+offset_bottom = 420.0
 key = "description"
 label_text = "Description"
 
 [node name="Category2" type="LineEdit" parent="VBox/Panel/ScrollContainer/InputVBox"]
-margin_top = 424.0
-margin_right = 990.0
-margin_bottom = 448.0
+offset_top = 424.0
+offset_right = 990.0
+offset_bottom = 448.0
 mouse_filter = 2
 mouse_default_cursor_shape = 0
 text = "Manifest Extra"
@@ -218,10 +218,10 @@ middle_mouse_paste_enabled = false
 [node name="Authors" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 452.0
-margin_right = 990.0
-margin_bottom = 484.0
-hint_tooltip = "Comma-separated list of Authors"
+offset_top = 452.0
+offset_right = 990.0
+offset_bottom = 484.0
+tooltip_text = "Comma-separated list of Authors"
 mouse_default_cursor_shape = 16
 key = "authors"
 label_text = "Authors"
@@ -231,10 +231,10 @@ input_placeholder = "Author1, Autor2"
 [node name="Incompatibilities" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 488.0
-margin_right = 990.0
-margin_bottom = 520.0
-hint_tooltip = "Comma-separated list of mod IDs.
+offset_top = 488.0
+offset_right = 990.0
+offset_bottom = 520.0
+tooltip_text = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
 A single dash in the middle is required.
 Format: {namespace}-{name}
@@ -252,10 +252,10 @@ input_placeholder = "Namespace-ModName, Author-Name"
 [node name="OptionalDependencies" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 524.0
-margin_right = 990.0
-margin_bottom = 556.0
-hint_tooltip = "Comma-separated list of mod IDs.
+offset_top = 524.0
+offset_right = 990.0
+offset_bottom = 556.0
+tooltip_text = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
 A single dash in the middle is required.
 Format: {namespace}-{name}
@@ -273,10 +273,10 @@ input_placeholder = "Namespace-ModName, Author-Name"
 [node name="LoadBefore" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 560.0
-margin_right = 990.0
-margin_bottom = 592.0
-hint_tooltip = "Comma-separated list of mod IDs.
+offset_top = 560.0
+offset_right = 990.0
+offset_bottom = 592.0
+tooltip_text = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
 A single dash in the middle is required.
 Format: {namespace}-{name}
@@ -296,10 +296,10 @@ input_placeholder = "Namespace-ModName, Author-Name"
 [node name="CompatibleGameVersions" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 596.0
-margin_right = 990.0
-margin_bottom = 628.0
-hint_tooltip = "Comma-separated list of valid game versions."
+offset_top = 596.0
+offset_right = 990.0
+offset_bottom = 628.0
+tooltip_text = "Comma-separated list of valid game versions."
 mouse_default_cursor_shape = 16
 key = "compatible_game_version"
 label_text = "Compatible Game Versions"
@@ -309,10 +309,10 @@ input_placeholder = "1.0.0, 1.2.0"
 [node name="CompatibleModLoaderVersions" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 632.0
-margin_right = 990.0
-margin_bottom = 664.0
-hint_tooltip = "Comma-separated list of ModLoader versions."
+offset_top = 632.0
+offset_right = 990.0
+offset_bottom = 664.0
+tooltip_text = "Comma-separated list of ModLoader versions."
 mouse_default_cursor_shape = 16
 is_required = true
 key = "compatible_mod_loader_version"
@@ -323,10 +323,10 @@ input_placeholder = "5.0.0, 4.1.0"
 [node name="Tags" parent="VBox/Panel/ScrollContainer/InputVBox" instance=ExtResource( 2 )]
 unique_name_in_owner = true
 anchor_right = 0.0
-margin_top = 668.0
-margin_right = 990.0
-margin_bottom = 700.0
-hint_tooltip = "Comma-separated list of tags that describe your mod.."
+offset_top = 668.0
+offset_right = 990.0
+offset_bottom = 700.0
+tooltip_text = "Comma-separated list of tags that describe your mod.."
 mouse_default_cursor_shape = 16
 key = "tags"
 label_text = "Tags"
@@ -338,20 +338,20 @@ input_placeholder = "Tag1, Tag2"
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Namespace" to="." method="_on_Namespace_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Version" to="." method="_on_Version_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/WebsiteUrl" to="." method="_on_WebsiteUrl_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Dependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Dependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Description" to="." method="_on_Description_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Authors" to="." method="_on_Authors_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Incompatibilities_value_changed" binds= [ false ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_OptionalDependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_LoadBefore_value_changed" binds= [ false ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleGameVersions" to="." method="_on_CompatibleGameVersions_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleModLoaderVersions" to="." method="_on_CompatibleModLoaderVersions_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Tags" to="." method="_on_Tags_value_changed"]

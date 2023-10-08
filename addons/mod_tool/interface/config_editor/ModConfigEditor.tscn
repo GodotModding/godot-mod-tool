@@ -6,63 +6,63 @@
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 24.0
+offset_top = 24.0
 
 [node name="VBox" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1907.0
-margin_bottom = 891.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 1907.0
+offset_bottom = 891.0
 
 [node name="HBox" type="HBoxContainer" parent="VBox"]
-margin_right = 1900.0
-margin_bottom = 40.0
+offset_right = 1900.0
+offset_bottom = 40.0
 
 [node name="Label" type="Label" parent="VBox/HBox"]
-margin_top = 13.0
-margin_right = 1533.0
-margin_bottom = 27.0
+offset_top = 13.0
+offset_right = 1533.0
+offset_bottom = 27.0
 size_flags_horizontal = 3
 text = "Default json for user mod configuration"
 
 [node name="ErrorLabel" type="Label" parent="VBox/HBox"]
 unique_name_in_owner = true
-margin_left = 1537.0
-margin_top = 13.0
-margin_right = 1617.0
-margin_bottom = 27.0
+offset_left = 1537.0
+offset_top = 13.0
+offset_right = 1617.0
+offset_bottom = 27.0
 text = "JSON is valid"
 
 [node name="ShouldValidate" type="CheckButton" parent="VBox/HBox"]
 unique_name_in_owner = true
-margin_left = 1621.0
-margin_right = 1697.0
-margin_bottom = 40.0
+offset_left = 1621.0
+offset_right = 1697.0
+offset_bottom = 40.0
 pressed = true
 flat = true
 
 [node name="VSeparator" type="VSeparator" parent="VBox/HBox"]
-margin_left = 1701.0
-margin_right = 1705.0
-margin_bottom = 40.0
+offset_left = 1701.0
+offset_right = 1705.0
+offset_bottom = 40.0
 
 [node name="SaveConfig" type="Button" parent="VBox/HBox"]
-margin_left = 1709.0
-margin_right = 1900.0
-margin_bottom = 40.0
+offset_left = 1709.0
+offset_right = 1900.0
+offset_bottom = 40.0
 text = "Save config to manifest.json"
 
 [node name="ConfigEditor" type="TextEdit" parent="VBox"]
 unique_name_in_owner = true
-margin_top = 44.0
-margin_right = 1900.0
-margin_bottom = 884.0
+offset_top = 44.0
+offset_right = 1900.0
+offset_bottom = 884.0
 size_flags_vertical = 3
 text = "{
 
 }"
 highlight_current_line = true
-syntax_highlighting = true
+syntax_highlighter = true
 show_line_numbers = true
 fold_gutter = true
 highlight_all_occurrences = true

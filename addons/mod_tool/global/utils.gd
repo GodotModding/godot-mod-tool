@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 class_name ModToolUtils
 
@@ -7,7 +7,7 @@ class_name ModToolUtils
 
 
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
-static func is_file_extension(path: String, excluded_extensions: PoolStringArray) -> bool:
+static func is_file_extension(path: String, excluded_extensions: PackedStringArray) -> bool:
 	var is_extension := false
 
 	for extension in excluded_extensions:
@@ -23,8 +23,7 @@ static func is_file_extension(path: String, excluded_extensions: PoolStringArray
 
 # Returns the content of the file from the given path as a string.
 static func file_get_as_text(path: String) -> String:
-	var file_access := File.new()
-	file_access.open(path, file_access.READ)
+	var file_access := FileAccess.open(path, FileAccess.READ)
 	var content := file_access.get_as_text()
 	file_access.close()
 	return content
@@ -34,13 +33,12 @@ static func file_get_as_text(path: String) -> String:
 # src = path/to/file.extension
 # dst = other/path/to/file.extension
 static func file_copy(src: String, dst: String) -> void:
-	var dir := Directory.new()
 	var dst_dir := dst.get_base_dir()
 
-	if not dir.dir_exists(dst_dir):
-		dir.make_dir_recursive(dst_dir)
+	if not DirAccess.dir_exists_absolute(dst_dir):
+		DirAccess.make_dir_recursive_absolute(dst_dir)
 
-	dir.copy(src, dst)
+	DirAccess.copy_absolute(src, dst)
 
 
 # Log error messages
@@ -54,7 +52,7 @@ static func output_info(message) -> void:
 
 static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: String) -> bool:
 	var is_success := _ModLoaderFile._save_string_to_file(
-		manifest_data.to_json(),
+		manifest_data.JSON.new().stringify(),
 		path_manifest
 	)
 
@@ -65,7 +63,7 @@ static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: Str
 
 
 static func make_dir_recursive(dst_dir: String) -> bool:
-	var dir := Directory.new()
+	var dir := DirAccess.open(dst_dir)
 	var error := dir.make_dir_recursive(dst_dir)
 	if error != OK:
 		output_error("Failed creating directory at %s with error code %s" % [dst_dir, error])
@@ -76,25 +74,24 @@ static func make_dir_recursive(dst_dir: String) -> bool:
 # Takes a directory path to get removed.
 # https://www.davidepesce.com/2019/11/04/essential-guide-to-godot-filesystem-api/
 static func remove_recursive(path: String) -> void:
-	var directory := Directory.new()
+	var directory := DirAccess.open(path)
 
-	# Open directory
-	var error := directory.open(path)
-	if error == OK:
-		# List directory content
-		directory.list_dir_begin(true)
-		var file_name := directory.get_next()
-		while file_name != "":
-			if directory.current_is_dir():
-				remove_recursive(path + "/" + file_name)
-			else:
-				directory.remove(file_name)
-			file_name = directory.get_next()
-
-		# Remove current path
-		directory.remove(path)
-	else:
+	if not directory:
 		print("Error removing " + path)
+		return
+
+	# List directory content
+	directory.list_dir_begin()
+	var file_name := directory.get_next()
+	while file_name != "":
+		if directory.current_is_dir():
+			remove_recursive(path + "/" + file_name)
+		else:
+			directory.remove(file_name)
+		file_name = directory.get_next()
+
+	# Remove current path
+	directory.remove(path)
 
 
 # Slightly modified version of:
@@ -103,8 +100,8 @@ static func remove_recursive(path: String) -> void:
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
-static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, include_empty_dirs := false) -> PoolStringArray:
-	var data: PoolStringArray = []
+static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, include_empty_dirs := false) -> PackedStringArray:
+	var data: PackedStringArray = []
 	var regex: RegEx
 
 	if p_match_is_regex:
@@ -115,13 +112,13 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 
 	var dirs := [p_dir]
 	var first := true
-	while not dirs.empty():
-		var dir := Directory.new()
+	while not dirs.is_empty():
 		var dir_name : String = dirs.back()
+		var dir := DirAccess.open(dir_name)
 		dirs.pop_back()
 
-		if dir.open(dir_name) == OK:
-			var _dirlist_error: int = dir.list_dir_begin()
+		if dir:
+			var _dirlist_error: int = dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 			var file_name := dir.get_next()
 			if include_empty_dirs and not dir_name == p_dir:
 				data.append(dir_name)

@@ -1,15 +1,15 @@
-tool
+@tool
 extends TextEdit
 
 signal discard_last_console_error
 
-var base_theme: Theme setget set_base_theme
-var editor_settings: EditorSettings setget set_editor_settings
+var base_theme: Theme: set = set_base_theme
+var editor_settings: EditorSettings: set = set_editor_settings
 
 var last_text := ""
 var last_selection: TextSelection
 
-var highlight_settings: PoolStringArray = [
+var highlight_settings: PackedStringArray = [
 	"string_color", "background_color", "line_number_color",
 	"text_selected_color", "selection_color", "brace_mismatch_color",
 	"current_line_color", "word_highlighted_color", "number_color",
@@ -27,19 +27,19 @@ var autobrace_pairs := {
 
 func _ready() -> void:
 	last_text = text
-	$"%ShouldValidate".connect("pressed", self, "validate")
+	$"%ShouldValidate".connect("pressed", Callable(self, "validate"))
 	validate()
 
 
 func set_base_theme(p_base_theme: Theme) -> void:
 	base_theme = p_base_theme
-	add_font_override("font", base_theme.get_font("source", "EditorFonts"))
+	add_theme_font_override("font", base_theme.get_font("source", "EditorFonts"))
 
 
 func set_editor_settings(p_editor_settings: EditorSettings) -> void:
 	editor_settings = p_editor_settings
 
-	syntax_highlighting = get_setting_bool("text_editor/highlighting/syntax_highlighting")
+#	TODO -> syntax_highlighter = get_setting_bool("text_editor/highlighting/syntax_highlighter")
 	highlight_all_occurrences = get_setting_bool("text_editor/highlighting/highlight_all_occurrences")
 	highlight_current_line = get_setting_bool("text_editor/highlighting/highlight_current_line")
 
@@ -48,9 +48,9 @@ func set_editor_settings(p_editor_settings: EditorSettings) -> void:
 
 	$ValidationDelay.wait_time = editor_settings.get_setting("text_editor/completion/idle_parse_delay")
 
-	add_color_region('"', '"', get_highlight_color("string_color"))
+#	TODO -> add_color_region('"', '"', get_highlight_color("string_color"))
 	for highlight in highlight_settings:
-		add_color_override(highlight, get_highlight_color(highlight))
+		add_theme_color_override(highlight, get_highlight_color(highlight))
 
 
 func get_highlight_color(name: String) -> Color:
@@ -68,7 +68,9 @@ func validate() -> void:
 		$"%ErrorLabel".text = "Validation off"
 		return
 
-	var parsed := JSON.parse(text)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(text)
+	var parsed := test_json_conv.get_data()
 	if not parsed.error == OK:
 		$"%ErrorLabel".text = "Line %s: %s" % [parsed.error_line +1, parsed.error_string]
 		emit_signal("discard_last_console_error")
@@ -78,7 +80,7 @@ func validate() -> void:
 
 
 func _on_cursor_changed() -> void:
-	if get_selection_text().length() > 0:
+	if get_selected_text().length() > 0:
 		last_selection = TextSelection.from_text_edit(self)
 	else:
 		last_selection = null
@@ -95,15 +97,15 @@ func _on_text_changed() -> void:
 
 
 func autobrace() -> void:
-	var line := get_line(cursor_get_line())
+	var line := get_line(get_caret_line())
 
 	var char_before_cursor := ""
-	if cursor_get_column() > 0:
-		char_before_cursor = line[cursor_get_column()-1]
+	if get_caret_column() > 0:
+		char_before_cursor = line[get_caret_column()-1]
 
 	var char_after_cursor := ""
-	if cursor_get_column() < line.length():
-		char_after_cursor = line[cursor_get_column()]
+	if get_caret_column() < line.length():
+		char_after_cursor = line[get_caret_column()]
 
 	# When deleting, also delete the autobraced character
 	if Input.is_key_pressed(KEY_BACKSPACE):
@@ -120,11 +122,11 @@ func autobrace() -> void:
 	# If a character is in the autoclose dict, close it
 	elif char_before_cursor in autobrace_pairs.keys():
 		var closing_char: String = autobrace_pairs[char_before_cursor]
-		var last_cursor_column := cursor_get_column()
+		var last_cursor_column := get_caret_column()
 
 		if not last_selection:
-			insert_text_at_cursor(closing_char)
-			cursor_set_column(last_cursor_column)
+			insert_text_at_caret(closing_char)
+			set_caret_column(last_cursor_column)
 			return
 
 		# If there is a selection, surround that with the bracing characters
@@ -136,18 +138,18 @@ func autobrace() -> void:
 					last_selection.from_line, last_selection.from_col +1,
 					last_selection.to_line, last_selection.to_col +1
 				)
-				insert_text_at_cursor(last_selection.enclosed_text + closing_char)
-				cursor_set_column(last_selection.to_col +1)
+				insert_text_at_caret(last_selection.enclosed_text + closing_char)
+				set_caret_column(last_selection.to_col +1)
 			else:
 				# If selected left to right, something else goes wrong as well,
 				# but it can be fixed by inserting the whole selection with braces
 				# and removing the leftover trailing brace behind it afterwards
-				insert_text_at_cursor(char_before_cursor + last_selection.enclosed_text + closing_char)
+				insert_text_at_caret(char_before_cursor + last_selection.enclosed_text + closing_char)
 				delete_character_after_cursor()
-				cursor_set_column(last_selection.to_col +1)
+				set_caret_column(last_selection.to_col +1)
 		else:
-			insert_text_at_cursor(last_selection.enclosed_text + closing_char)
-			cursor_set_column(last_selection.to_col +1)
+			insert_text_at_caret(last_selection.enclosed_text + closing_char)
+			set_caret_column(last_selection.to_col +1)
 		last_selection = null
 
 
@@ -167,15 +169,15 @@ func is_matching_closing_brace(new_character: String, char_after_cursor: String)
 
 
 func delete_character_after_cursor() -> void:
-	var line_text := get_line(cursor_get_line())
-	var cursor_col := cursor_get_column() +1
+	var line_text := get_line(get_caret_line())
+	var cursor_col := get_caret_column() +1
 	var text_length := len(line_text)
 	if cursor_col < 1 or cursor_col > text_length:
 		return
 	var left_text := line_text.substr(0, cursor_col - 1)
 	var right_text := line_text.substr(cursor_col, text_length - cursor_col)
-	set_line(cursor_get_line(), left_text + right_text)
-	cursor_set_column(cursor_col - 1)
+	set_line(get_caret_line(), left_text + right_text)
+	set_caret_column(cursor_col - 1)
 
 
 func first_different_character(str1: String, str2: String) -> String:

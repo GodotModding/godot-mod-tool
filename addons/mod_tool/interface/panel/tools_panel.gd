@@ -1,27 +1,27 @@
-tool
+@tool
 class_name ModToolsPanel
 extends Control
 
 
 # passed from the EditorPlugin
 var mod_tool_store: ModToolStore
-var editor_plugin: EditorPlugin setget set_editor_plugin
+var editor_plugin: EditorPlugin: set = set_editor_plugin
 var context_actions: FileSystemContextActions
 
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
-var log_dock_button: ToolButton
+var log_dock_button: Button
 
-onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
-onready var tab_container := $"%TabContainer"
-onready var create_mod := $"%CreateMod"
-onready var select_mod := $"%SelectMod"
-onready var label_output := $"%Output"
-onready var mod_id := $"%ModId"
-onready var manifest_editor := $"%Manifest Editor"
-onready var export_path := $"%ExportPath"
-onready var file_dialog := $"%FileDialog"
-onready var get_seven_zip := $"%Get7Zip"
+@onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
+@onready var tab_container := $"%TabContainer"
+@onready var create_mod := $"%CreateMod"
+@onready var select_mod := $"%SelectMod"
+@onready var label_output := $"%Output"
+@onready var mod_id := $"%ModId"
+@onready var manifest_editor := $"%Manifest Editor"
+@onready var export_path := $"%ExportPath"
+@onready var file_dialog := $"%FileDialog"
+@onready var get_seven_zip := $"%Get7Zip"
 
 
 func _ready() -> void:
@@ -56,7 +56,7 @@ func get_log_nodes() -> void:
 	log_richtext_label = editor_log.get_child(1) as RichTextLabel
 	if not log_richtext_label:
 		# on project load it can happen that these nodes don't exist yet, wait for parent
-		yield(get_parent(), "ready")
+		await get_parent().ready
 		log_richtext_label = editor_log.get_child(1) as RichTextLabel
 
 	# The button hbox should be last, but here it is second from last for some reason
@@ -87,7 +87,7 @@ func discard_last_console_error() -> void:
 	# If there were no other error lines, remove the icon
 	# Setting to null will crash the editor occasionally, this does not
 	if log_dock_button:
-		log_dock_button.icon = StreamTexture.new()
+		log_dock_button.icon = CompressedTexture2D.new()
 
 
 func show_manifest_editor() -> void:
@@ -98,7 +98,7 @@ func show_config_editor() -> void:
 	tab_container.current_tab = 1
 
 
-func _update_ui():
+func _update_ui() -> void:
 	if not mod_tool_store:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
@@ -145,7 +145,7 @@ func _on_clear_output_pressed() -> void:
 
 
 func _on_copy_output_pressed() -> void:
-	OS.clipboard = label_output.text
+	DisplayServer.clipboard_set(label_output.text)
 
 
 func _on_save_manifest_pressed() -> void:

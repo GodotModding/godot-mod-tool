@@ -1,4 +1,4 @@
-tool
+@tool
 class_name ModToolStore
 extends Node
 
@@ -10,14 +10,14 @@ const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 const PATH_TEMPLATES_DIR := "res://addons/mod_tool/templates/"
 
 var editor_plugin: EditorPlugin
-var base_theme: Theme setget set_base_theme
+var base_theme: Theme: set = set_base_theme
 var editor_file_system: EditorFileSystem
 var error_color := ""
 
-var name_mod_dir := "" setget set_name_mod_dir
+var name_mod_dir := "": set = set_name_mod_dir
 var path_mod_dir := ""
 var path_current_template_dir := "res://addons/mod_tool/templates/default/"
-var path_export_dir := "" setget set_path_export_dir
+var path_export_dir := "": set = set_path_export_dir
 var path_temp_dir := ""
 var path_manifest := ""
 var path_global_export_dir := ""
@@ -28,7 +28,7 @@ var path_global_addon_dir := ""
 var path_global_seven_zip := ""
 var path_global_seven_zip_base_dir := ""
 var path_global_final_zip := ""
-var excluded_file_extensions: PoolStringArray = [".csv.import"]
+var excluded_file_extensions: PackedStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
 var is_seven_zip_installed := true
@@ -79,7 +79,7 @@ func init(store: Dictionary) -> void:
 	else:
 		ModToolUtils.output_error("OS currently not supported to export zips via mod tool. Please open an issue on GitHub")
 
-	if not File.new().file_exists(path_global_seven_zip):
+	if not FileAccess.file_exists(path_global_seven_zip):
 		is_seven_zip_installed = false
 		ModToolUtils.output_error("7-Zip installation not found at the path: %s. Please install it at this location." % path_global_seven_zip)
 		ModToolUtils.output_error("You can use the \"Get 7zip\" button in the \"Mod Tool\" panel to download and install it.")
@@ -117,22 +117,23 @@ func save_store() -> void:
 		"excluded_file_extensions": excluded_file_extensions
 	}
 
-	var file := File.new()
-	var error := file.open(PATH_SAVE_FILE, File.WRITE)
-	if error != OK:
-		ModToolUtils.output_error(str(error))
-	file.store_string(JSON.print(save_data))
+	var file := FileAccess.open(PATH_SAVE_FILE, FileAccess.WRITE)
+	if not file:
+		ModToolUtils.output_error(str(FileAccess.get_open_error()))
+	file.store_string(JSON.stringify(save_data))
 	file.close()
 
 
 # NOTE: Check if mod_dir still exists when loading
 func load_store() -> void:
-	var dir := Directory.new()
-	if not dir.file_exists(PATH_SAVE_FILE):
+	if not FileAccess.file_exists(PATH_SAVE_FILE):
 		return
 
-	var file := File.new()
-	file.open(PATH_SAVE_FILE, File.READ)
+	var file := FileAccess.open(PATH_SAVE_FILE, FileAccess.READ)
+	if not file:
+		ModToolUtils.output_error(str(FileAccess.get_open_error()))
 	var content := file.get_as_text()
 
-	init(JSON.parse(content).result)
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(content)
+	init(test_json_conv.data)
