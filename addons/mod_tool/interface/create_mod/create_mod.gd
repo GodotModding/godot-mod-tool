@@ -104,14 +104,12 @@ func get_template_options() -> PoolStringArray:
 		):
 			continue
 
-		# Add the default templates
-		mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
-		mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
-
 		# Add all the custom templates
 		mod_template_options.push_back(template_dir_name)
 
-
+	# Add the default templates
+	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
+	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
 
 	return mod_template_options as PoolStringArray
 
