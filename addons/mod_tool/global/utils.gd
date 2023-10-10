@@ -52,7 +52,7 @@ static func output_info(message) -> void:
 
 static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: String) -> bool:
 	var is_success := _ModLoaderFile._save_string_to_file(
-		manifest_data.JSON.new().stringify(),
+		manifest_data.to_json(),
 		path_manifest
 	)
 
@@ -63,10 +63,9 @@ static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: Str
 
 
 static func make_dir_recursive(dst_dir: String) -> bool:
-	var dir := DirAccess.open(dst_dir)
-	var error := dir.make_dir_recursive(dst_dir)
-	if error != OK:
-		output_error("Failed creating directory at %s with error code %s" % [dst_dir, error])
+	var error := DirAccess.make_dir_recursive_absolute(dst_dir)
+	if not error == OK:
+		output_error("Failed creating directory at %s with error \"%s\"" % [dst_dir, error_string(error)])
 		return false
 	return true
 

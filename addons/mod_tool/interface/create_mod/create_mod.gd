@@ -64,7 +64,7 @@ func add_mod() -> void:
 		var name_mod_dir_split: Array = mod_tool_store.name_mod_dir.split("-")
 
 		# Update the namespace in the manifest
-		mod_tool_store.manifest_data.namespace = name_mod_dir_split[0]
+		mod_tool_store.manifest_data.mod_namespace = name_mod_dir_split[0]
 
 		# Update the mod name in the manifest
 		mod_tool_store.manifest_data.name = name_mod_dir_split[1]
@@ -149,3 +149,7 @@ func _on_CreateMod_about_to_show() -> void:
 
 func _on_ModTemplate_value_changed(new_value: String, input_node: ModToolInterfaceInputOptions) -> void:
 	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + new_value
+
+
+func _on_close_requested() -> void:
+	hide()

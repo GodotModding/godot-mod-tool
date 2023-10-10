@@ -39,5 +39,5 @@ func _get_plugin_name():
 
 
 func _get_plugin_icon():
-	return get_editor_interface().get_base_control().get_icon("Tools", "EditorIcons")
+	return get_editor_interface().get_base_control().get_theme_icon("Tools", "EditorIcons")
 

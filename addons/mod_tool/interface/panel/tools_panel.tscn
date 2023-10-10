@@ -1,10 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://jgayt8758anm"]
+[gd_scene load_steps=11 format=3 uid="uid://jgayt8758anm"]
 
-[ext_resource type="PackedScene" path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://glui2s46v4x4" path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://hpefgw6k5qpq" path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" id="2"]
 [ext_resource type="Script" path="res://addons/mod_tool/interface/panel/tools_panel.gd" id="3"]
 [ext_resource type="PackedScene" path="res://addons/mod_tool/interface/global/input_string.tscn" id="4"]
-[ext_resource type="PackedScene" path="res://addons/mod_tool/interface/get_7zip/get_7zip.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://dyunxqcmy4esi" path="res://addons/mod_tool/interface/global/input_options.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://du17jjwqtopix" path="res://addons/mod_tool/interface/global/directory_selection/select_directory.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" id="8"]
@@ -118,9 +117,7 @@ Format: Namespace-ModName
 mouse_default_cursor_shape = 16
 is_editable = false
 input_text = "Test-Test"
-input_placeholder = ""
 is_required = true
-key = ""
 label_text = "Mod ID"
 editor_icon_name = ""
 hint_text = "ID of the mod to be exported.
@@ -135,21 +132,16 @@ input_options = PackedStringArray("Steam Workshop", "Thunderstore")
 is_required = true
 key = "export_type"
 label_text = "Export Type"
-editor_icon_name = "NodeWarning"
-hint_text = ""
 
 [node name="ExportPath" parent="Panel/VSplit/Export/HSplit/Settings/VBox" instance=ExtResource("8")]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The directory to which the final mod zip is exported."
 mouse_default_cursor_shape = 16
-is_editable = true
 input_text = "C:/Users/Kai/Documents/godot/Brotato/mods/Mods/exports"
-input_placeholder = ""
 is_required = true
 key = "path_export_dir"
-label_text = "Export Path3D"
-editor_icon_name = "NodeWarning"
+label_text = "Export Path"
 hint_text = "The directory to which the final mod zip is exported."
 
 [node name="Align" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
@@ -188,10 +180,6 @@ text = "Create new Mod"
 layout_mode = 2
 text = "Connect existing Mod"
 
-[node name="Get7Zip" parent="Panel/VSplit/Export/HSplit/VBox" instance=ExtResource("5")]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="CreateMod" parent="." instance=ExtResource("1")]
 unique_name_in_owner = true
 initial_position = 2
@@ -208,7 +196,11 @@ visible = false
 
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
-mode = 2
+title = "Open a Directory"
+initial_position = 1
+size = Vector2i(800, 500)
+ok_button_text = "Select Current Folder"
+file_mode = 2
 access = 2
 
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
@@ -217,7 +209,6 @@ access = 2
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/ConnectMod" to="." method="_on_ConnectMod_pressed"]
-[connection signal="installed" from="Panel/VSplit/Export/HSplit/VBox/Get7Zip" to="." method="_on_Get7Zip_installed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]

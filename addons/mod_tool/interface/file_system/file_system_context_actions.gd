@@ -12,37 +12,33 @@ func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock, p_ba
 	base_theme = p_base_theme
 
 
-func connect_file_system_context_actions(file_system_dock: FileSystemDock) -> void:
-	# There are two file systems: one is a Tree, the second is an ItemList.
-	# Both need to be handled. Toggle the button with two bars at the top to see both
-	var file_tree: Tree
-	var file_list: ItemList
-	for node in file_system_dock.get_children():
-		# Only the parent of the file tree and file list is a VSplit
-		if node is VSplitContainer:
+func connect_file_system_context_actions(file_system : FileSystemDock) -> void:
+	var file_tree : Tree
+	var file_list : ItemList
+
+	for node in file_system.get_children():
+		if is_instance_of(node, VSplitContainer):
 			file_tree = node.get_child(0)
 			file_list = node.get_child(1).get_child(1)
 			break
 
+	for node in file_system.get_children():
+		var context_menu : PopupMenu = node as PopupMenu
+		if not context_menu:
+			continue
 
-	for node in file_system_dock.get_children():
-		var context_menu: PopupMenu = node as PopupMenu
-		if not context_menu: continue
+		context_menu.id_pressed.connect(file_system_context_menu_pressed.bind(context_menu))
 
-		context_menu.connect("id_pressed", Callable(self, "file_system_context_menu_pressed").bind(context_menu))
-
-		# The order of the menus isn't always the same, but we can use their
-		# signal connections to find out if they belong to the list or the tree
-		var signals: Array = context_menu.get_signal_connection_list("id_pressed")
+		var signals := context_menu.get_signal_connection_list(&"id_pressed")
 		if not signals.is_empty():
-			match signals[0]["method"]:
-				"_tree_rmb_option":
-					context_menu.connect("about_to_popup", Callable(self, "_on_file_tree_context_actions_about_to_show").bind(context_menu, file_tree))
-				"_file_list_rmb_option":
-					context_menu.connect("about_to_popup", Callable(self, "_on_file_list_context_actions_about_to_show").bind(context_menu, file_list))
+			match signals[0]["callable"].get_method():
+				&"FileSystemDock::_tree_rmb_option":
+					context_menu.about_to_popup.connect(_on_file_tree_context_actions_about_to_popup.bind(context_menu, file_tree))
+				&"FileSystemDock::_file_list_rmb_option":
+					context_menu.about_to_popup.connect(_on_file_list_context_actions_about_to_popup.bind(context_menu, file_tree))
 
 
-func _on_file_tree_context_actions_about_to_show(context_menu: PopupMenu, tree: Tree) -> void:
+func _on_file_tree_context_actions_about_to_popup(context_menu: PopupMenu, tree: Tree) -> void:
 	var selected := tree.get_next_selected(null)
 	if not selected:		# Empty space was clicked
 		return
@@ -58,7 +54,7 @@ func _on_file_tree_context_actions_about_to_show(context_menu: PopupMenu, tree: 
 	add_custom_context_actions(context_menu, file_paths)
 
 
-func _on_file_list_context_actions_about_to_show(context_menu: PopupMenu, list: ItemList) -> void:
+func _on_file_list_context_actions_about_to_popup(context_menu: PopupMenu, list: ItemList) -> void:
 	if not list.get_selected_items().size() > 0:		# Empty space was clicked
 		return
 
@@ -137,7 +133,8 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+		mod_tool_store.editor_file_system.update_file(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
+		mod_tool_store.editor_file_system.scan()
 		# Switch to the script screen
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
@@ -147,7 +144,8 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var asset_path := create_overwrite_asset(file_path)
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
+		mod_tool_store.editor_file_system.update_file(mod_tool_store.path_mod_dir.path_join("overwrites.gd"))
+		mod_tool_store.editor_file_system.scan()
 
 
 func create_script_extension(file_path: String) -> String:
@@ -170,7 +168,7 @@ func create_script_extension(file_path: String) -> String:
 	mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(extension_path)
 	# Load the new extension script
 	var extension_script: Script = load(extension_path)
-	# Open the ne extension script in the script editor
+	# Open the new extension script in the script editor
 	mod_tool_store.editor_plugin.get_editor_interface().edit_script(extension_script)
 
 	return extension_path
@@ -179,6 +177,8 @@ func create_script_extension(file_path: String) -> String:
 func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var main_script_path: String = mod_tool_store.path_mod_dir.path_join("mod_main.gd")
 	var file := FileAccess.open(main_script_path, FileAccess.READ_WRITE)
+	if not file:
+		ModToolUtils.output_error("Failed to open mod_main.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
 	if not script_has_method(main_script_path, "install_script_extensions"):
 		ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
 		return
@@ -189,13 +189,13 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var mod_extensions_dir_path_index := file_content.find("extensions_dir_path", index_find_from)
 
 	# Construct the line required to install the extension. If the standard way is used and a
-	# variable "extensions_dir_path" is found, use that variable in combination with plus_file
+	# variable "extensions_dir_path" is found, use that variable in combination with path_join
 	var extension_install_line := "\tModLoaderMod.install_script_extension(%s)\n"
 	if mod_extensions_dir_path_index == -1:
 		extension_install_line = extension_install_line % quote_string(extension_path)
 	else:
 		extension_path = extension_path.trim_prefix(mod_tool_store.path_mod_dir.path_join("extensions/"))
-		extension_install_line = extension_install_line % "extensions_dir_path.plus_file(%s)" % quote_string(extension_path)
+		extension_install_line = extension_install_line % "extensions_dir_path.path_join(%s)" % quote_string(extension_path)
 
 	# Check if that file was already used as script extension
 	if extension_install_line.strip_edges() in file_content:
@@ -269,11 +269,16 @@ func quote_string(string: String) -> String:
 
 func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
 	var overwrites_script_path: String = mod_tool_store.path_mod_dir.path_join("overwrites.gd")
-	var file := FileAccess.open(overwrites_script_path, FileAccess.READ_WRITE)
-	if not file.file_exists(overwrites_script_path):
+
+	if not FileAccess.file_exists(overwrites_script_path):
+		var file := FileAccess.open(overwrites_script_path, FileAccess.WRITE)
 		file.store_line("extends Node\n\n")
 		file.store_line("func _init() -> void:\n")
+		file.close()
 
+	var file = FileAccess.open(overwrites_script_path, FileAccess.READ_WRITE)
+	if not file:
+		ModToolUtils.output_error("Failed to open overwrite.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
 	if not script_has_method(overwrites_script_path, "_init"):
 		file.store_string(file.get_as_text() + "\nfunc _init() -> void:\n")
 
