@@ -1,20 +1,20 @@
-tool
+@tool
 extends PanelContainer
 
 
 var input_fields := []
 
-onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
-onready var manifest_input_vbox := $"%InputVBox"
-onready var input_incompatibilities: ModToolInterfaceInputString = $"%Incompatibilities"
-onready var input_dependencies: ModToolInterfaceInputString = $"%Dependencies"
-onready var input_optional_dependencies: ModToolInterfaceInputString = $"%OptionalDependencies"
-onready var input_load_before: ModToolInterfaceInputString = $"%LoadBefore"
+@onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
+@onready var manifest_input_vbox := $"%InputVBox"
+@onready var input_incompatibilities: ModToolInterfaceInputString = $"%Incompatibilities"
+@onready var input_dependencies: ModToolInterfaceInputString = $"%Dependencies"
+@onready var input_optional_dependencies: ModToolInterfaceInputString = $"%OptionalDependencies"
+@onready var input_load_before: ModToolInterfaceInputString = $"%LoadBefore"
 
 
 
 func _ready() -> void:
-	$VBox/Panel.add_stylebox_override("panel", mod_tool_store.base_theme.get_stylebox("bg", "ItemList") if mod_tool_store else null )
+	$VBox/Panel.add_theme_stylebox_override("panel", mod_tool_store.base_theme.get_stylebox("bg", "ItemList") if mod_tool_store else null )
 	# Setup input fields
 	for node in manifest_input_vbox.get_children():
 		if node is ModToolInterfaceInputString:
@@ -44,7 +44,7 @@ func update_ui() -> void:
 			var value = mod_tool_store.manifest_data.get(input.key)
 
 			# If the value is an Array create a comma separated list
-			if value is PoolStringArray:
+			if value is PackedStringArray:
 				input.input_text = ", ".join(value)
 			# Else convert the value to a string
 			else:
@@ -98,7 +98,7 @@ func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInp
 # As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
 # In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
 func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
-	var dependencies: PoolStringArray
+	var dependencies: PackedStringArray
 
 	if validate_only:
 		dependencies = mod_tool_store.manifest_data.dependencies
@@ -136,7 +136,7 @@ func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfa
 # As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
 # In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
 func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
-	var optional_dependencies: PoolStringArray
+	var optional_dependencies: PackedStringArray
 
 	if validate_only:
 		optional_dependencies = mod_tool_store.manifest_data.optional_dependencies
@@ -180,7 +180,7 @@ func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node:
 # As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
 # In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
 func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
-	var incompatibilities: PoolStringArray
+	var incompatibilities: PackedStringArray
 
 	if validate_only:
 		incompatibilities = mod_tool_store.manifest_data.incompatibilities
@@ -218,7 +218,7 @@ func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolIn
 # As a result, the input_node would retrieve multiple different nodes, which should not be updated but rather revalidated.
 # In such cases, the input node is directly referenced to prevent overwriting the values in other input fields.
 func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterfaceInputString, validate_only: bool) -> void:
-	var load_before: PoolStringArray
+	var load_before: PackedStringArray
 
 	if validate_only:
 		load_before = mod_tool_store.manifest_data.load_before

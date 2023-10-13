@@ -10,7 +10,7 @@ var translations_dir_path := ""
 
 
 func _init() -> void:
-	mod_dir_path = ModLoaderMod.get_unpacked_dir().plus_file(AUTHORNAME_MODNAME_DIR)
+	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(AUTHORNAME_MODNAME_DIR)
 	# Add extensions
 	install_script_extensions()
 	# Add translations
@@ -18,11 +18,11 @@ func _init() -> void:
 
 
 func install_script_extensions() -> void:
-	extensions_dir_path = mod_dir_path.plus_file("extensions")
+	extensions_dir_path = mod_dir_path.path_join("extensions")
 
 
 func add_translations() -> void:
-	translations_dir_path = mod_dir_path.plus_file("translations")
+	translations_dir_path = mod_dir_path.path_join("translations")
 
 
 func _ready() -> void:

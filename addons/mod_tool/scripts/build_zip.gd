@@ -3,6 +3,11 @@ class_name ModToolZipBuilder
 
 
 func build_zip(mod_tool_store: ModToolStore) -> void:
+	var writer := ZIPPacker.new()
+	var err := writer.open(mod_tool_store.path_global_final_zip)
+	if not err == OK:
+		return
+
 	# Get all file paths inside the mod folder
 	mod_tool_store.path_mod_files = ModToolUtils.get_flat_view_dict(mod_tool_store.path_mod_dir)
 
@@ -12,7 +17,7 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 		# Check for excluded file extensions
 		if ModToolUtils.is_file_extension(path_mod_file, mod_tool_store.excluded_file_extensions):
 			# Dont add files with unwanted extensions to the zip
-			mod_tool_store.path_mod_files.remove(i)
+			mod_tool_store.path_mod_files.remove_at(i)
 			continue
 
 		# If it's a .import file
@@ -23,24 +28,19 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 			if not path_imported_file == "":
 				mod_tool_store.path_mod_files.append(path_imported_file)
 
-	# Generate temp folder that get's zipped later
+	# Add each file to the mod zip
 	for i in mod_tool_store.path_mod_files.size():
 		var path_mod_file: String = mod_tool_store.path_mod_files[i]
-		var path_zip_file: String = mod_tool_store.path_temp_dir + '/' + path_mod_file.trim_prefix("res://")
+		var path_mod_file_data := FileAccess.open(path_mod_file, FileAccess.READ)
+		var path_mod_file_length := path_mod_file_data.get_length()
+		var path_mod_file_buffer := path_mod_file_data.get_buffer(path_mod_file_length)
+		var path_zip_file: String = path_mod_file.trim_prefix("res://")
 
-		# Copy mod_file to temp folder
-		ModToolUtils.file_copy(path_mod_file, path_zip_file)
+		writer.start_file(path_zip_file) # path inside the zip file
+		writer.write_file(path_mod_file_buffer)
+		writer.close_file()
 
-	# Zip that folder with 7zip
-	var path_global_temp_dir_with_wildcard: String = mod_tool_store.path_global_temp_dir + "/*"
-
-	var output := []
-	var _exit_code := OS.execute(mod_tool_store.path_global_seven_zip, ["a", mod_tool_store.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
-	# Output the 7zip cli info
-	ModToolUtils.output_info(output[0])
-
-	# Delete the temp folder
-	ModToolUtils.remove_recursive(mod_tool_store.path_global_temp_dir)
+	writer.close()
 
 	# Open the export dir
 	var file_manager_path: String = mod_tool_store.path_global_export_dir
@@ -59,7 +59,7 @@ func _get_imported_file_path(import_file_path: String) -> String:
 
 	# Get the path to the imported file
 	# Imported file example path:
-	# res://.import/ImportedPNG.png-eddc81c8e2d2fc90950be5862656c2b5.stex
+	# res://.godot/imported/ImportedPNG.png-eddc81c8e2d2fc90950be5862656c2b5.stex
 	var imported_file_path := config.get_value('remap', 'path', '') as String
 
 	if imported_file_path == '':

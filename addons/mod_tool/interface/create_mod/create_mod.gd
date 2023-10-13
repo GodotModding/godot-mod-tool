@@ -1,5 +1,5 @@
-tool
-extends WindowDialog
+@tool
+extends Window
 
 
 signal mod_dir_created
@@ -7,15 +7,15 @@ signal mod_dir_created
 const DIR_NAME_DEFAULT_TEMPLATE = "default"
 const DIR_NAME_MINIMAL_TEMPLATE = "minimal"
 
-onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
-onready var namespace: ModToolInterfaceInputString = $"%Namespace"
-onready var mod_name: ModToolInterfaceInputString = $"%ModName"
-onready var mod_id: ModToolInterfaceInputString = $"%ModId"
-onready var mod_template: ModToolInterfaceInputOptions = $"%ModTemplate"
+@onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
+@onready var mod_namespace: ModToolInterfaceInputString = $"%Namespace"
+@onready var mod_name: ModToolInterfaceInputString = $"%ModName"
+@onready var mod_id: ModToolInterfaceInputString = $"%ModId"
+@onready var mod_template: ModToolInterfaceInputOptions = $"%ModTemplate"
 
 
 func _ready() -> void:
-	namespace.show_error_if_not(false)
+	mod_namespace.show_error_if_not(false)
 	mod_name.show_error_if_not(false)
 	mod_id.show_error_if_not(false)
 
@@ -40,23 +40,23 @@ func add_mod() -> void:
 		for path in template_paths:
 			var template_local_path := path.trim_prefix(mod_tool_store.path_current_template_dir) as String
 			if _ModLoaderFile.file_exists(path):
-				ModToolUtils.file_copy(path, mod_tool_store.path_mod_dir.plus_file(template_local_path))
+				ModToolUtils.file_copy(path, mod_tool_store.path_mod_dir.path_join(template_local_path))
 			else:
-				ModToolUtils.make_dir_recursive(mod_tool_store.path_mod_dir.plus_file(template_local_path))
+				ModToolUtils.make_dir_recursive(mod_tool_store.path_mod_dir.path_join(template_local_path))
 
 		# Update FileSystem
 		mod_tool_store.editor_file_system.scan()
 		# Wait for the scan to finish
-		yield(mod_tool_store.editor_file_system, "filesystem_changed")
+		await mod_tool_store.editor_file_system.filesystem_changed
 
 		# Navigate to the new mod dir in the FileSystem pannel
-		mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.plus_file("mod_main.gd"))
+		mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 
 		# Output info
 		ModToolUtils.output_info("Added base mod files to " + mod_tool_store.path_mod_dir)
 
 		# Open mod_main.gd in the code editor
-		var mod_main_script := load(mod_tool_store.path_mod_dir.plus_file("mod_main.gd"))
+		var mod_main_script := load(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 		mod_tool_store.editor_plugin.get_editor_interface().edit_script(mod_main_script)
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
@@ -64,7 +64,7 @@ func add_mod() -> void:
 		var name_mod_dir_split: Array = mod_tool_store.name_mod_dir.split("-")
 
 		# Update the namespace in the manifest
-		mod_tool_store.manifest_data.namespace = name_mod_dir_split[0]
+		mod_tool_store.manifest_data.mod_namespace = name_mod_dir_split[0]
 
 		# Update the mod name in the manifest
 		mod_tool_store.manifest_data.name = name_mod_dir_split[1]
@@ -89,7 +89,7 @@ func clear_mod_id_input() -> void:
 	mod_id.input_text = ""
 
 
-func get_template_options() -> PoolStringArray:
+func get_template_options() -> PackedStringArray:
 	var mod_template_options := []
 
 	var template_dirs := _ModLoaderPath.get_dir_paths_in_dir(mod_tool_store.PATH_TEMPLATES_DIR)
@@ -111,17 +111,17 @@ func get_template_options() -> PoolStringArray:
 	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
 	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
 
-	return mod_template_options as PoolStringArray
+	return mod_template_options as PackedStringArray
 
 
 func _on_Namespace_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
 	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
-	mod_id.input_text = "%s-%s" % [namespace.get_input_value(), mod_name.get_input_value()]
+	mod_id.input_text = "%s-%s" % [mod_namespace.get_input_value(), mod_name.get_input_value()]
 
 
 func _on_ModName_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
 	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
-	mod_id.input_text = "%s-%s" % [namespace.get_input_value(), mod_name.get_input_value()]
+	mod_id.input_text = "%s-%s" % [mod_namespace.get_input_value(), mod_name.get_input_value()]
 
 
 func _on_ModId_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
@@ -136,7 +136,7 @@ func _on_btn_create_mod_pressed() -> void:
 
 func _on_CreateMod_about_to_show() -> void:
 	# Reset Inputs
-	namespace.input_text = ""
+	mod_namespace.input_text = ""
 	mod_name.input_text = ""
 	# Reset Template
 	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + "default"
@@ -147,3 +147,7 @@ func _on_CreateMod_about_to_show() -> void:
 
 func _on_ModTemplate_value_changed(new_value: String, input_node: ModToolInterfaceInputOptions) -> void:
 	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + new_value
+
+
+func _on_close_requested() -> void:
+	hide()

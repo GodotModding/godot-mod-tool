@@ -1,12 +1,12 @@
+@tool
 class_name ModToolInterfaceInputOptions
 extends ModToolInterfaceInput
-tool
 
 
-export var input_options: PoolStringArray setget set_input_options
+@export var input_options: PackedStringArray: set = set_input_options
 
 
-func set_input_options(new_options: PoolStringArray) -> void:
+func set_input_options(new_options: PackedStringArray) -> void:
 	input_options = new_options
 	var input: OptionButton = get_node_or_null("%Input") as OptionButton
 	if not input: return # node can't be found directly after reloading the plugin

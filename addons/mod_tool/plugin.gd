@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorPlugin
 
 var mod_tool_store
@@ -10,11 +10,11 @@ func _enter_tree() -> void:
 	get_tree().root.call_deferred("add_child", mod_tool_store, true)
 
 
-	tools_panel = preload("res://addons/mod_tool/interface/panel/tools_panel.tscn").instance() as ModToolsPanel
+	tools_panel = preload("res://addons/mod_tool/interface/panel/tools_panel.tscn").instantiate() as ModToolsPanel
 	tools_panel.mod_tool_store = mod_tool_store
 	tools_panel.editor_plugin = self
-	get_editor_interface().get_editor_viewport().call_deferred("add_child", tools_panel, true)
-	make_visible(false)
+	get_editor_interface().get_editor_main_screen().call_deferred("add_child", tools_panel, true)
+	_make_visible(false)
 
 
 func _exit_tree() -> void:
@@ -25,19 +25,19 @@ func _exit_tree() -> void:
 		tools_panel.free()
 
 
-func make_visible(visible):
+func _make_visible(visible):
 	if tools_panel:
 		tools_panel.visible = visible
 
 
-func has_main_screen():
+func _has_main_screen():
 	return true
 
 
-func get_plugin_name():
+func _get_plugin_name():
 	return "Mod Tool"
 
 
-func get_plugin_icon():
-	return get_editor_interface().get_base_control().get_icon("Tools", "EditorIcons")
+func _get_plugin_icon():
+	return get_editor_interface().get_base_control().get_theme_icon("Tools", "EditorIcons")
 

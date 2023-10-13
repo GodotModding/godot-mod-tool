@@ -1,17 +1,20 @@
+@tool
 class_name ModToolInterfaceInput
 extends HBoxContainer
-tool
 
 
 signal value_changed(new_value, input_node)
 
-export var is_required: bool setget set_is_required
-export var key: String
-export var label_text: String setget set_label_text
-export var editor_icon_name: String = "NodeWarning"
-export(String, MULTILINE) var hint_text setget set_hint_text
+@export var is_required: bool:
+	set = set_is_required
+@export var key: String
+@export var label_text: String:
+	set = set_label_text
+@export var editor_icon_name: String = "NodeWarning"
+@export var hint_text: String:
+	set = set_hint_text
 
-var is_valid := true setget set_is_valid
+var is_valid := true: set = set_is_valid
 
 
 func _ready() -> void:
@@ -36,7 +39,7 @@ func set_label_text(new_text: String) -> void:
 
 func set_hint_text(new_text: String) -> void:
 	hint_text = new_text
-	hint_tooltip = new_text
+	tooltip_text = new_text
 	mouse_default_cursor_shape = CURSOR_ARROW if new_text == "" else CURSOR_HELP
 
 
@@ -47,15 +50,15 @@ func set_editor_icon(icon_name: String) -> void:
 		set_error_icon(mod_tool_store.base_theme.get_icon(icon_name, "EditorIcons"))
 
 
-func set_error_icon(icon: Texture) -> void:
+func set_error_icon(icon: Texture2D) -> void:
 	$"%ErrorIcon".texture = icon
 
 
 func show_error_if_not(condition: bool) -> void:
 	if not condition:
-		$"%ErrorIcon".self_modulate = Color.white
+		$"%ErrorIcon".self_modulate = Color.WHITE
 	else:
-		$"%ErrorIcon".self_modulate = Color.transparent
+		$"%ErrorIcon".self_modulate = Color.TRANSPARENT
 
 
 func validate(_condition: bool) -> bool:

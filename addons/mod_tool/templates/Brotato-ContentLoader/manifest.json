@@ -4,7 +4,7 @@
 	"version_number": "0.0.1",
 	"description": "Description of your mod...",
 	"website_url": "https://github.com/exampleauthor/examplemod",
-	"dependencies": [],
+	"dependencies": ["Darkly77-Brotils"],
 	"extra": {
 		"godot": {
 			"authors": ["AuthorName"],
@@ -13,7 +13,7 @@
 			"incompatibilities": [],
 			"compatible_mod_loader_version": ["6.2.0"],
 			"compatible_game_version": ["0.0.1"],
-			"config_schema": {}
+			"config_defaults": {}
 		}
 	}
 }

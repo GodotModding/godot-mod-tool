@@ -1,27 +1,26 @@
-tool
+@tool
 class_name ModToolsPanel
 extends Control
 
 
 # passed from the EditorPlugin
 var mod_tool_store: ModToolStore
-var editor_plugin: EditorPlugin setget set_editor_plugin
+var editor_plugin: EditorPlugin: set = set_editor_plugin
 var context_actions: FileSystemContextActions
 
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
-var log_dock_button: ToolButton
+var log_dock_button: Button
 
-onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
-onready var tab_container := $"%TabContainer"
-onready var create_mod := $"%CreateMod"
-onready var select_mod := $"%SelectMod"
-onready var label_output := $"%Output"
-onready var mod_id := $"%ModId"
-onready var manifest_editor := $"%Manifest Editor"
-onready var export_path := $"%ExportPath"
-onready var file_dialog := $"%FileDialog"
-onready var get_seven_zip := $"%Get7Zip"
+@onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
+@onready var tab_container := $"%TabContainer"
+@onready var create_mod := $"%CreateMod"
+@onready var select_mod := $"%SelectMod"
+@onready var label_output := $"%Output"
+@onready var mod_id := $"%ModId"
+@onready var manifest_editor := $"%Manifest Editor"
+@onready var export_path := $"%ExportPath"
+@onready var file_dialog := $"%FileDialog"
 
 
 func _ready() -> void:
@@ -30,7 +29,7 @@ func _ready() -> void:
 	get_log_nodes()
 
 	# Load manifest.json file
-	if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
 
@@ -56,7 +55,7 @@ func get_log_nodes() -> void:
 	log_richtext_label = editor_log.get_child(1) as RichTextLabel
 	if not log_richtext_label:
 		# on project load it can happen that these nodes don't exist yet, wait for parent
-		yield(get_parent(), "ready")
+		await get_parent().ready
 		log_richtext_label = editor_log.get_child(1) as RichTextLabel
 
 	# The button hbox should be last, but here it is second from last for some reason
@@ -87,7 +86,7 @@ func discard_last_console_error() -> void:
 	# If there were no other error lines, remove the icon
 	# Setting to null will crash the editor occasionally, this does not
 	if log_dock_button:
-		log_dock_button.icon = StreamTexture.new()
+		log_dock_button.icon = CompressedTexture2D.new()
 
 
 func show_manifest_editor() -> void:
@@ -98,13 +97,11 @@ func show_config_editor() -> void:
 	tab_container.current_tab = 1
 
 
-func _update_ui():
+func _update_ui() -> void:
 	if not mod_tool_store:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
 	export_path.input_text = mod_tool_store.path_export_dir
-	# Hide or show the "Get 7zip button"
-	get_seven_zip.hide() if mod_tool_store.is_seven_zip_installed else get_seven_zip.show()
 
 
 func _is_mod_dir_valid() -> bool:
@@ -145,7 +142,7 @@ func _on_clear_output_pressed() -> void:
 
 
 func _on_copy_output_pressed() -> void:
-	OS.clipboard = label_output.text
+	DisplayServer.clipboard_set(label_output.text)
 
 
 func _on_save_manifest_pressed() -> void:
@@ -186,7 +183,3 @@ func _on_FileDialog_dir_selected(dir: String) -> void:
 	mod_tool_store.path_export_dir = dir
 	export_path.input_text = dir
 	file_dialog.hide()
-
-
-func _on_Get7Zip_installed() -> void:
-	get_seven_zip.hide()
