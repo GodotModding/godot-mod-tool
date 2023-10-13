@@ -139,7 +139,6 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 		# Switch to the script screen
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
@@ -149,7 +148,6 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var asset_path := create_overwrite_asset(file_path)
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 
 
 func create_script_extension(file_path: String) -> String:
@@ -217,7 +215,14 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 
 	file.open(main_script_path, File.WRITE)
 	file.store_string(file_content)
+
+	ModToolUtils.reload_script(
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
+		file.get_as_text()
+	)
+
 	file.close()
+
 	ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
 
 
@@ -304,6 +309,12 @@ func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: S
 
 	file.open(overwrites_script_path, File.WRITE)
 	file.store_string(file_content)
+
+	ModToolUtils.reload_script(
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
+		file.get_as_text()
+	)
+
 	file.close()
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
 

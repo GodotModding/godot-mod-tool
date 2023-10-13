@@ -6,6 +6,21 @@ class_name ModToolUtils
 # Utility functions used across the ModTool.
 
 
+static func reload_script(text_edit: TextEdit, source_code: String) -> void:
+	var column := text_edit.get_caret_column()
+	var row := text_edit.get_caret_line()
+	var scroll_position_h := text_edit.get_h_scroll_bar().value
+	var scroll_position_v := text_edit.get_v_scroll_bar().value
+
+	text_edit.text = source_code
+	text_edit.set_caret_column(column)
+	text_edit.set_caret_line(row)
+	text_edit.scroll_horizontal = scroll_position_h
+	text_edit.scroll_vertical = scroll_position_v
+
+	text_edit.tag_saved_version()
+
+
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
 static func is_file_extension(path: String, excluded_extensions: PoolStringArray) -> bool:
 	var is_extension := false
