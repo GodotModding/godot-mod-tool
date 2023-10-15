@@ -3,23 +3,20 @@ extends Node
 
 
 var mod_tool_store: ModToolStore
-var base_theme: Theme
+var base_theme: Theme = ThemeDB.get_default_theme()
 
 
 func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock, p_base_theme: Theme) -> void:
 	mod_tool_store = _mod_tool_store
 	connect_file_system_context_actions(file_system_dock)
-	base_theme = p_base_theme
 
 
-func connect_file_system_context_actions(file_system_dock: FileSystemDock) -> void:
-	# There are two file systems: one is a Tree, the second is an ItemList.
-	# Both need to be handled. Toggle the button with two bars at the top to see both
-	var file_tree: Tree
-	var file_list: ItemList
-	for node in file_system_dock.get_children():
-		# Only the parent of the file tree and file list is a VSplit
-		if node is VSplitContainer:
+func connect_file_system_context_actions(file_system : FileSystemDock) -> void:
+	var file_tree : Tree
+	var file_list : ItemList
+
+	for node in file_system.get_children():
+		if is_instance_of(node, SplitContainer):
 			file_tree = node.get_child(0)
 			file_list = node.get_child(1).get_child(1)
 			break
@@ -73,10 +70,10 @@ func _on_file_list_context_actions_about_to_show(context_menu: PopupMenu, list: 
 
 # Called every time the file system context actions pop up
 # Since they are dynamic, they are cleared every time and need to be refilled
-func add_custom_context_actions(context_menu: PopupMenu, file_paths: PoolStringArray) -> void:
-	var dir := Directory.new()
+func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStringArray) -> void:
+	print("add_custom_context_actions", context_menu)
 
-	if file_paths.empty():
+	if file_paths.is_empty():
 		return
 
 	var script_paths := []
@@ -139,6 +136,8 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
+		# This will most likely not be in 4.2 so change that back to use ModToolUtils.reload_script() like previously.
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 		# Switch to the script screen
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
@@ -148,7 +147,8 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var asset_path := create_overwrite_asset(file_path)
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
-
+		# This will most likely not be in 4.2 so change that back to use ModToolUtils.reload_script() like previously.
+		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts()
 
 func create_script_extension(file_path: String) -> String:
 	if not mod_tool_store.name_mod_dir:
@@ -215,11 +215,6 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 
 	file.open(main_script_path, File.WRITE)
 	file.store_string(file_content)
-
-	ModToolUtils.reload_script(
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
-		file.get_as_text()
-	)
 
 	file.close()
 
@@ -310,10 +305,7 @@ func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: S
 	file.open(overwrites_script_path, File.WRITE)
 	file.store_string(file_content)
 
-	ModToolUtils.reload_script(
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
-		file.get_as_text()
-	)
+	mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().reload_scripts(false)
 
 	file.close()
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
