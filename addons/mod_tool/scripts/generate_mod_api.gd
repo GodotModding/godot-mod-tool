@@ -273,7 +273,10 @@ func tempalte_script_extensions() -> String:
 	var script_extension_template := "ModLoaderMod.install_script_extension(\"%s\")"
 
 	for script_path in all_script_paths:
-		add_script_extensions_template = "%s\n\t%s" % [add_script_extensions_template, script_extension_template % script_path]
+		var mod_script_path := script_path.trim_prefix("res://")
+		mod_script_path = "%s/extensions/%s" % [mod_tool_store.path_mod_dir ,mod_script_path]
+
+		add_script_extensions_template = "%s\n\t%s" % [add_script_extensions_template, script_extension_template % mod_script_path]
 
 	return add_script_extensions_template
 
