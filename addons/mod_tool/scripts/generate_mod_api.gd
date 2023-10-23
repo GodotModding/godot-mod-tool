@@ -28,12 +28,8 @@ func init(_mod_tool_store: ModToolStore) -> void:
 	)
 	callable_stack = get_callable_stack()
 
-	print("script_needs_regex - %s" % JSON.stringify(script_needs_regex, "\t"))
-
 	for script_path in script_needs_regex.keys():
 		get_func_args(script_path, script_needs_regex[script_path])
-
-	print("callable_stack -> %s" % JSON.stringify(callable_stack, "\t"))
 
 
 func create_mod_main() -> void:
@@ -66,73 +62,6 @@ func create_script_extensions() -> void:
 		file.close()
 
 
-func remove_type_declarations(input_string: String) -> String:
-	# translation_key: String, format_string_values: Array = [], format_string_value_signs := []
-	var split_1 := input_string.split(":")
-	var new_string_array := []
-#	[
-#	"translation_key",
-#	" String, format_string_values",
-#	" Array = [], format_string_value_signs",
-#	"= []"
-#	]
-	for result in split_1:
-		var new_string := result.strip_edges()
-		if not new_string.begins_with("="):
-			# Serch for =
-			var index := new_string.find("=")
-			# If = was found
-			if not index == -1:
-				# Delete everything before it
-				new_string = new_string.erase(0, index)
-			else:
-				var indexx := new_string.find(",")
-				# If , was found
-				if not indexx == -1:
-					# Delete everything before it
-					new_string = new_string.erase(0, indexx)
-
-		new_string_array.push_back(new_string)
-
-	#	[
-#	"translation_key",
-#	", format_string_values",
-#	"= [], format_string_value_signs",
-#	"= []"
-#	]
-
-#	"translation_key, format_string_values= [], format_string_value_signs= []"
-	var joined := "".join(new_string_array)
-
-	return joined
-
-
-func remove_defaults(input_string: String) -> String:
-	# focus_prop, node= null, node_path= ""
-#			[
-#				"focus_prop, node",
-#				"null, node_path",
-#				"""" <- if no comma on last index delete index
-#			]
-	var split_1 := input_string.split('=')
-
-	# focus_prop, node null, node_path ""
-	var join_1 := "".join(split_1)
-
-#	[
-#		"focus_prop",
-#		"node null",
-#		"node_path """,
-#	]
-	var split_2 := join_1.split(",")
-
-	for result in split_2:
-		var new_string := result.strip_edges()
-		var split_3 := new_string.split(" ")
-		new_string = split_3[0]
-
-	return ""
-
 func get_func_args(script_path: String, method_names: Array) -> void:
 	var file := FileAccess.open(script_path, FileAccess.READ)
 	var script_text := file.get_as_text()
@@ -149,17 +78,6 @@ func get_func_args(script_path: String, method_names: Array) -> void:
 		var return_type := script_text_match.get_string(4)
 
 		if func_name in method_names:
-			print("args: %s " % args)
-			# translation_key: String, format_string_values: Array = [], format_string_value_signs := []
-			# Strip types - types can be `arg_name: type` or `arg_name := value`
-				# Remove all `:`
-				# If there is no `=` right after the `:` remove the following word
-			var new_args_with_defaults := remove_type_declarations(args)
-			print("removed_types -> %s" % new_args_with_defaults)
-
-			# translation_key, format_string_values = [], format_string_value_signs = []
-			# Get arg_name
-			# Get arg_default_value
 			callable_stack[script_path][func_name].args_with_defaults = args
 
 
