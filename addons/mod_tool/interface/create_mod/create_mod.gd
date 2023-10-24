@@ -6,6 +6,9 @@ signal mod_dir_created
 
 const DIR_NAME_DEFAULT_TEMPLATE = "default"
 const DIR_NAME_MINIMAL_TEMPLATE = "minimal"
+const CREATE_API_MOD_TEMPLATE = "generate-api-mod"
+
+var current_template: String
 
 @onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
 @onready var mod_namespace: ModToolInterfaceInputString = $"%Namespace"
@@ -34,7 +37,7 @@ func add_mod() -> void:
 			return
 
 		# Get Template files
-		var template_paths := ModToolUtils.get_flat_view_dict(mod_tool_store.path_current_template_dir, "", false, true)
+		var template_paths := ModToolUtils.get_flat_view_dict(mod_tool_store.path_current_template_dir, "", false, "", [], true)
 
 		# Copy current selected template dir files and folders to res://mods-unpacked
 		for path in template_paths:
@@ -46,11 +49,9 @@ func add_mod() -> void:
 
 		# Update FileSystem
 		mod_tool_store.editor_file_system.scan()
+
 		# Wait for the scan to finish
 		await mod_tool_store.editor_file_system.filesystem_changed
-
-		# Navigate to the new mod dir in the FileSystem pannel
-		mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 
 		# Output info
 		ModToolUtils.output_info("Added base mod files to " + mod_tool_store.path_mod_dir)
@@ -59,6 +60,9 @@ func add_mod() -> void:
 		var mod_main_script := load(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 		mod_tool_store.editor_plugin.get_editor_interface().edit_script(mod_main_script)
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
+
+		# Navigate to the new mod dir in the FileSystem pannel
+		mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 
 		# Split the new mod id
 		var name_mod_dir_split: Array = mod_tool_store.name_mod_dir.split("-")
@@ -78,6 +82,12 @@ func add_mod() -> void:
 		# Save the manifest
 		mod_tool_store.editor_plugin.tools_panel.manifest_editor.save_manifest()
 
+		if current_template == CREATE_API_MOD_TEMPLATE:
+			# Start API generation
+			var api_generator := ModToolAPIGenerator.new()
+			api_generator.init(mod_tool_store)
+			api_generator.create_mod_main()
+			api_generator.create_script_extensions()
 	else:
 		# If so - show error and ask if user wants to connect with the mod instead
 		ModToolUtils.output_error("Mod directory at %s already exists." % mod_tool_store.path_mod_dir)
@@ -110,6 +120,7 @@ func get_template_options() -> PackedStringArray:
 	# Add the default templates
 	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
 	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
+	mod_template_options.push_back(CREATE_API_MOD_TEMPLATE)
 
 	return mod_template_options as PackedStringArray
 
@@ -139,13 +150,20 @@ func _on_CreateMod_about_to_show() -> void:
 	mod_namespace.input_text = ""
 	mod_name.input_text = ""
 	# Reset Template
-	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + "default"
+	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + DIR_NAME_DEFAULT_TEMPLATE
+	current_template = DIR_NAME_DEFAULT_TEMPLATE
 
 	# Get all Template options
 	mod_template.input_options = get_template_options()
 
 
 func _on_ModTemplate_value_changed(new_value: String, input_node: ModToolInterfaceInputOptions) -> void:
+	current_template = new_value
+
+	# Use the minimal template files if generate-api-mod is selected
+	if new_value == CREATE_API_MOD_TEMPLATE:
+		new_value == DIR_NAME_MINIMAL_TEMPLATE
+
 	mod_tool_store.path_current_template_dir = mod_tool_store.PATH_TEMPLATES_DIR + new_value
 
 

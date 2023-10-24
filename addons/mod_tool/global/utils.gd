@@ -114,12 +114,11 @@ static func remove_recursive(path: String) -> void:
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
-static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, include_empty_dirs := false) -> PackedStringArray:
+static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, match_extension := "", ignored_dirs: PackedStringArray = [], include_empty_dirs := false) -> PackedStringArray:
 	var data: PackedStringArray = []
-	var regex: RegEx
+	var regex := RegEx.new()
 
 	if p_match_is_regex:
-		regex = RegEx.new()
 		var _compile_error: int = regex.compile(p_match)
 		if not regex.is_valid():
 			return data
@@ -129,10 +128,20 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 	while not dirs.is_empty():
 		var dir_name : String = dirs.back()
 		var dir := DirAccess.open(dir_name)
+		var is_ignored := false
 		dirs.pop_back()
 
+		# Check if this path should be ignored
+		for ignored_dir in ignored_dirs:
+			if dir_name.begins_with(ignored_dir):
+				is_ignored = true
+				break
+
+		if is_ignored:
+			continue
+
 		if dir:
-			var _dirlist_error: int = dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+			var _dirlist_error: int = dir.list_dir_begin()
 			var file_name := dir.get_next()
 			if include_empty_dirs and not dir_name == p_dir:
 				data.append(dir_name)
@@ -147,11 +156,14 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 					# If a file, check if we already have a record for the same name
 					else:
 						var path := dir.get_current_dir() + ("/" if not first else "") + file_name
+						# Grab matching extension
+						if not match_extension.is_empty() and file_name.get_extension() == match_extension:
+							data.append(path)
 						# grab all
-						if not p_match:
+						elif match_extension.is_empty() and not p_match:
 							data.append(path)
 						# grab matching strings
-						elif not p_match_is_regex and file_name.find(p_match, 0) != -1:
+						elif match_extension.is_empty() and not p_match_is_regex and file_name.contains(p_match):
 							data.append(path)
 						# grab matching regex
 						else:
