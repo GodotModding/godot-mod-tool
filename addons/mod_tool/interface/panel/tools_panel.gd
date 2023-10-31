@@ -3,6 +3,8 @@ class_name ModToolsPanel
 extends Control
 
 
+enum FileDialogMode {EXPORT, LINK_MOD}
+
 # passed from the EditorPlugin
 var mod_tool_store: ModToolStore
 var editor_plugin: EditorPlugin setget set_editor_plugin
@@ -11,6 +13,8 @@ var context_actions: FileSystemContextActions
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
 var log_dock_button: ToolButton
+
+var file_dialog_current_mode: int
 
 onready var mod_tool_store_node: ModToolStore = get_node_or_null("/root/ModToolStore")
 onready var tab_container := $"%TabContainer"
@@ -178,15 +182,29 @@ func _on_SelectMod_dir_selected(dir_path: String) -> void:
 
 
 func _on_ButtonExportPath_pressed() -> void:
+	file_dialog_current_mode = FileDialogMode.EXPORT
 	file_dialog.current_path = mod_tool_store.path_export_dir
 	file_dialog.popup_centered()
 
 
 func _on_FileDialog_dir_selected(dir: String) -> void:
-	mod_tool_store.path_export_dir = dir
-	export_path.input_text = dir
+	if file_dialog_current_mode == FileDialogMode.EXPORT:
+		mod_tool_store.path_export_dir = dir
+		export_path.input_text = dir
+
+	if file_dialog_current_mode == FileDialogMode.LINK_MOD:
+		var mods_unpacked_path := ModLoaderMod.get_unpacked_dir().plus_file(dir.get_file())
+		ModToolUtils.output_info("Linking Path -> %s" % dir.get_file())
+		FileSystemLink.mk_soft_dir(dir, mods_unpacked_path.get_base_dir())
+
 	file_dialog.hide()
 
 
 func _on_Get7Zip_installed() -> void:
 	get_seven_zip.hide()
+
+
+func _on_LinkMod_pressed():
+	file_dialog_current_mode = FileDialogMode.LINK_MOD
+	file_dialog.current_path = mod_tool_store.path_global_project_dir
+	file_dialog.show()
