@@ -193,9 +193,13 @@ func _on_FileDialog_dir_selected(dir: String) -> void:
 		export_path.input_text = dir
 
 	if file_dialog_current_mode == FileDialogMode.LINK_MOD:
+		# Create the Symlink
 		var mods_unpacked_path := ModLoaderMod.get_unpacked_dir().plus_file(dir.get_file())
 		ModToolUtils.output_info("Linking Path -> %s" % dir.get_file())
 		FileSystemLink.mk_soft_dir(dir, mods_unpacked_path.get_base_dir())
+
+		# Store the linked path
+		mod_tool_store.path_last_linked_mod = dir
 
 	file_dialog.hide()
 
@@ -205,6 +209,12 @@ func _on_Get7Zip_installed() -> void:
 
 
 func _on_LinkMod_pressed():
+	var current_path := ""
+	if not mod_tool_store.path_last_linked_mod == "":
+		current_path = mod_tool_store.path_last_linked_mod
+	else:
+		current_path = mod_tool_store.path_global_project_dir
+
 	file_dialog_current_mode = FileDialogMode.LINK_MOD
-	file_dialog.current_path = mod_tool_store.path_global_project_dir
-	file_dialog.show()
+	file_dialog.current_path = current_path
+	file_dialog.popup_centered()

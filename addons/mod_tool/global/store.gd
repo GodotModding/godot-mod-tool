@@ -28,6 +28,7 @@ var path_global_addon_dir := ""
 var path_global_seven_zip := ""
 var path_global_seven_zip_base_dir := ""
 var path_global_final_zip := ""
+var path_last_linked_mod := ""
 var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
@@ -92,6 +93,7 @@ func init(store: Dictionary) -> void:
 	path_temp_dir = "user://temp/" + store.name_mod_dir
 	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
+	path_last_linked_mod = store.path_last_linked_mod
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = [".csv.import"]
@@ -114,7 +116,8 @@ func save_store() -> void:
 		"path_export_dir": path_export_dir,
 		"path_global_project_dir": path_global_project_dir,
 		"path_temp_dir": path_temp_dir,
-		"excluded_file_extensions": excluded_file_extensions
+		"excluded_file_extensions": excluded_file_extensions,
+		"path_last_linked_mod": path_last_linked_mod,
 	}
 
 	var file := File.new()
