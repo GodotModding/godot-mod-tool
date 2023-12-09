@@ -99,7 +99,7 @@ func show_config_editor() -> void:
 	tab_container.current_tab = 1
 
 
-func _update_ui():
+func _update_ui() -> void:
 	if not mod_tool_store:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
@@ -206,7 +206,7 @@ func _on_Get7Zip_installed() -> void:
 	get_seven_zip.hide()
 
 
-func _on_LinkMod_pressed():
+func _on_LinkMod_pressed() -> void:
 	var current_path := ""
 	if not mod_tool_store.path_last_linked_mod == "":
 		current_path = mod_tool_store.path_last_linked_mod
