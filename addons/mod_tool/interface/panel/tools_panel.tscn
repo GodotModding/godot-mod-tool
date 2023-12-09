@@ -279,12 +279,22 @@ window_title = "Connect existing Mod"
 unique_name_in_owner = true
 window_title = "Select Mod Template"
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="FileDialogExport" type="FileDialog" parent="."]
 unique_name_in_owner = true
 margin_right = 600.0
 margin_bottom = 350.0
 rect_min_size = Vector2( 600, 350 )
 window_title = "Open a Directory"
+resizable = true
+mode = 2
+access = 2
+
+[node name="FileDialogLinkMod" type="FileDialog" parent="."]
+unique_name_in_owner = true
+margin_right = 600.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 600, 350 )
+window_title = "Open Mod Directory"
 resizable = true
 mode = 2
 access = 2
@@ -299,4 +309,5 @@ access = 2
 [connection signal="installed" from="Panel/VSplit/Export/HSplit/VBox/Get7Zip" to="." method="_on_Get7Zip_installed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
-[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
+[connection signal="dir_selected" from="FileDialogExport" to="." method="_on_FileDialogExport_dir_selected"]
+[connection signal="dir_selected" from="FileDialogLinkMod" to="." method="_on_FileDialogLinkMod_dir_selected"]
