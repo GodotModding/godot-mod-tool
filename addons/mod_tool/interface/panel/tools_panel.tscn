@@ -65,7 +65,7 @@ margin_bottom = 603.0
 [node name="TabContainer" type="TabContainer" parent="Panel/VSplit"]
 unique_name_in_owner = true
 margin_right = 1018.0
-margin_bottom = 394.0
+margin_bottom = 370.0
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 14 )
 tab_align = 0
@@ -74,7 +74,7 @@ tab_align = 0
 margin_top = 24.0
 
 [node name="Export" type="PanelContainer" parent="Panel/VSplit"]
-margin_top = 406.0
+margin_top = 382.0
 margin_right = 1018.0
 margin_bottom = 596.0
 
@@ -82,7 +82,7 @@ margin_bottom = 596.0
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 1011.0
-margin_bottom = 183.0
+margin_bottom = 207.0
 
 [node name="Console" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 visible = false
@@ -129,7 +129,7 @@ selection_enabled = true
 
 [node name="Settings" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 margin_right = 692.0
-margin_bottom = 176.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 300, 0 )
 rect_pivot_offset = Vector2( -1685, 180 )
 size_flags_horizontal = 3
@@ -137,7 +137,7 @@ size_flags_stretch_ratio = 0.5
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings"]
 margin_right = 692.0
-margin_bottom = 176.0
+margin_bottom = 200.0
 size_flags_horizontal = 3
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
@@ -221,7 +221,7 @@ text = "Export Mod"
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 margin_left = 704.0
 margin_right = 1004.0
-margin_bottom = 176.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 300, 0 )
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/VBox"]
@@ -249,16 +249,19 @@ margin_right = 300.0
 margin_bottom = 72.0
 text = "Connect existing Mod"
 
-[node name="Get7Zip" parent="Panel/VSplit/Export/HSplit/VBox" instance=ExtResource( 5 )]
-unique_name_in_owner = true
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_left = 0.0
+[node name="LinkMod" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
 margin_top = 76.0
 margin_right = 300.0
-margin_bottom = 176.0
+margin_bottom = 96.0
+text = "Link existing Mod"
+
+[node name="Get7Zip" parent="Panel/VSplit/Export/HSplit/VBox" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 100.0
+margin_right = 300.0
+margin_bottom = 200.0
 
 [node name="CreateMod" parent="." instance=ExtResource( 1 )]
 unique_name_in_owner = true
@@ -276,12 +279,22 @@ window_title = "Connect existing Mod"
 unique_name_in_owner = true
 window_title = "Select Mod Template"
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="FileDialogExport" type="FileDialog" parent="."]
 unique_name_in_owner = true
 margin_right = 600.0
 margin_bottom = 350.0
 rect_min_size = Vector2( 600, 350 )
 window_title = "Open a Directory"
+resizable = true
+mode = 2
+access = 2
+
+[node name="FileDialogLinkMod" type="FileDialog" parent="."]
+unique_name_in_owner = true
+margin_right = 600.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 600, 350 )
+window_title = "Open Mod Directory"
 resizable = true
 mode = 2
 access = 2
@@ -292,7 +305,9 @@ access = 2
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/ConnectMod" to="." method="_on_ConnectMod_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/LinkMod" to="." method="_on_LinkMod_pressed"]
 [connection signal="installed" from="Panel/VSplit/Export/HSplit/VBox/Get7Zip" to="." method="_on_Get7Zip_installed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
-[connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
+[connection signal="dir_selected" from="FileDialogExport" to="." method="_on_FileDialogExport_dir_selected"]
+[connection signal="dir_selected" from="FileDialogLinkMod" to="." method="_on_FileDialogLinkMod_dir_selected"]

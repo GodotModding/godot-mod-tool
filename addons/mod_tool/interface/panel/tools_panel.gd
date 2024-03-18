@@ -20,7 +20,8 @@ onready var label_output := $"%Output"
 onready var mod_id := $"%ModId"
 onready var manifest_editor := $"%Manifest Editor"
 onready var export_path := $"%ExportPath"
-onready var file_dialog := $"%FileDialog"
+onready var file_dialog_export := $"%FileDialogExport"
+onready var file_dialog_link_mod := $"%FileDialogLinkMod"
 onready var get_seven_zip := $"%Get7Zip"
 
 
@@ -98,7 +99,7 @@ func show_config_editor() -> void:
 	tab_container.current_tab = 1
 
 
-func _update_ui():
+func _update_ui() -> void:
 	if not mod_tool_store:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
@@ -178,15 +179,39 @@ func _on_SelectMod_dir_selected(dir_path: String) -> void:
 
 
 func _on_ButtonExportPath_pressed() -> void:
-	file_dialog.current_path = mod_tool_store.path_export_dir
-	file_dialog.popup_centered()
+	file_dialog_export.current_path = mod_tool_store.path_export_dir
+	file_dialog_export.popup_centered()
 
 
-func _on_FileDialog_dir_selected(dir: String) -> void:
+func _on_FileDialogExport_dir_selected(dir: String) -> void:
 	mod_tool_store.path_export_dir = dir
 	export_path.input_text = dir
-	file_dialog.hide()
+
+	file_dialog_export.hide()
+
+
+func _on_FileDialogLinkMod_dir_selected(dir: String) -> void:
+	# Create the Symlink
+	var mods_unpacked_path := ModLoaderMod.get_unpacked_dir().plus_file(dir.get_file())
+	ModToolUtils.output_info("Linking Path -> %s" % dir.get_file())
+	FileSystemLink.mk_soft_dir(dir, mods_unpacked_path.get_base_dir())
+
+	# Store the linked path
+	mod_tool_store.path_last_linked_mod = dir
+
+	file_dialog_link_mod.hide()
 
 
 func _on_Get7Zip_installed() -> void:
 	get_seven_zip.hide()
+
+
+func _on_LinkMod_pressed() -> void:
+	var current_path := ""
+	if not mod_tool_store.path_last_linked_mod == "":
+		current_path = mod_tool_store.path_last_linked_mod
+	else:
+		current_path = mod_tool_store.path_global_project_dir
+
+	file_dialog_link_mod.current_path = current_path
+	file_dialog_link_mod.popup_centered()
