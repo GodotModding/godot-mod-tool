@@ -89,10 +89,14 @@ func clear_mod_id_input() -> void:
 	mod_id.input_text = ""
 
 
-func get_template_options() -> PoolStringArray:
-	var mod_template_options := []
+func get_template_options() -> Array[String]:
+	var mod_template_options: Array[String] = []
 
 	var template_dirs := _ModLoaderPath.get_dir_paths_in_dir(mod_tool_store.PATH_TEMPLATES_DIR)
+
+	# Add the default templates
+	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
+	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
 
 	for template_dir in template_dirs:
 		var template_dir_name: String = template_dir.split("/")[-1]
@@ -104,16 +108,10 @@ func get_template_options() -> PoolStringArray:
 		):
 			continue
 
-		# Add the default templates
-		mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
-		mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
-
 		# Add all the custom templates
 		mod_template_options.push_back(template_dir_name)
 
-
-
-	return mod_template_options as PoolStringArray
+	return mod_template_options
 
 
 func _on_Namespace_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
