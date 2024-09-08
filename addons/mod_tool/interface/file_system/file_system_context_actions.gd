@@ -3,13 +3,12 @@ extends Node
 
 
 var mod_tool_store: ModToolStore
-var base_theme: Theme
+var base_theme: Theme = ThemeDB.get_default_theme()
 
 
 func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock, p_base_theme: Theme) -> void:
 	mod_tool_store = _mod_tool_store
 	connect_file_system_context_actions(file_system_dock)
-	base_theme = p_base_theme
 
 
 func connect_file_system_context_actions(file_system : FileSystemDock) -> void:
@@ -17,7 +16,7 @@ func connect_file_system_context_actions(file_system : FileSystemDock) -> void:
 	var file_list : ItemList
 
 	for node in file_system.get_children():
-		if is_instance_of(node, VSplitContainer):
+		if is_instance_of(node, SplitContainer):
 			file_tree = node.get_child(0)
 			file_list = node.get_child(1).get_child(1)
 			break
@@ -133,6 +132,9 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			var extension_path := create_script_extension(file_path)
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
+
+		# [reload_script]
+
 		# Switch to the script screen
 		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
@@ -143,6 +145,7 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
 
+		# [reload_script]
 
 func create_script_extension(file_path: String) -> String:
 	if not mod_tool_store.name_mod_dir:
@@ -207,11 +210,6 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 		file_content = file_content.insert(last_install_line_end_index +1, extension_install_line)
 
 	file.store_string(file_content)
-
-	ModToolUtils.reload_script(
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
-		file.get_as_text()
-	)
 
 	file.close()
 
@@ -299,11 +297,6 @@ func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: S
 
 	file.store_string(file_content)
 
-	ModToolUtils.reload_script(
-		mod_tool_store.editor_plugin.get_editor_interface().get_script_editor().get_current_editor().get_base_editor(),
-		file.get_as_text()
-	)
-
 	file.close()
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
 
@@ -319,4 +312,3 @@ static func script_has_method(script_path: String, method: String) -> bool:
 		return true
 
 	return false
-

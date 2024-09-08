@@ -40,7 +40,7 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	editor_plugin = plugin
 
 	mod_tool_store.editor_plugin = editor_plugin
-	mod_tool_store.base_theme = editor_plugin.get_editor_interface().get_base_control().theme
+	mod_tool_store.base_theme = ThemeDB.get_default_theme()
 	mod_tool_store.editor_file_system = editor_plugin.get_editor_interface().get_resource_filesystem()
 
 	context_actions = FileSystemContextActions.new(

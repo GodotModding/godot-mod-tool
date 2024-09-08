@@ -6,6 +6,7 @@ class_name ModToolUtils
 # Utility functions used across the ModTool.
 
 
+# ! Not used currently. This can overwrite existing text very easily if the wrong script is shown in the text editor.
 static func reload_script(text_edit: TextEdit, source_code: String) -> void:
 	var column := text_edit.get_caret_column()
 	var row := text_edit.get_caret_line()
