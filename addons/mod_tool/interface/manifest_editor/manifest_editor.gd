@@ -14,7 +14,7 @@ var input_fields := []
 
 
 func _ready() -> void:
-	$VBox/Panel.add_theme_stylebox_override("panel", mod_tool_store.base_theme.get_stylebox("bg", "ItemList") if mod_tool_store else null )
+	$VBox/Panel.add_theme_stylebox_override("panel", ThemeDB.get_default_theme().get_stylebox("bg", "ItemList"))
 	# Setup input fields
 	for node in manifest_input_vbox.get_children():
 		if node is ModToolInterfaceInputString:

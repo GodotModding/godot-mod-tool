@@ -10,9 +10,8 @@ const PATH_SAVE_FILE := "user://mod-tool-plugin-save.json"
 const PATH_TEMPLATES_DIR := "res://addons/mod_tool/templates/"
 
 var editor_plugin: EditorPlugin
-var base_theme: Theme: set = set_base_theme
 var editor_file_system: EditorFileSystem
-var error_color := ""
+var editor_base_control: Control
 
 var name_mod_dir := "":
 	set = set_name_mod_dir
@@ -46,11 +45,6 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if not name_mod_dir == "":
 		save_store()
-
-
-func set_base_theme(new_base_theme: Theme) -> void:
-	base_theme = new_base_theme
-	error_color = "#" + base_theme.get_color("error_color", "Editor").to_html()
 
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:

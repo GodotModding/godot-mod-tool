@@ -224,5 +224,3 @@ class TextSelection:
 
 	func _to_string() -> String:
 		return "%s %s %s" % [ Vector2(from_line, from_col), enclosed_text, Vector2(to_line, to_col) ]
-
-

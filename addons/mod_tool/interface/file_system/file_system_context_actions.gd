@@ -1,12 +1,11 @@
 class_name FileSystemContextActions
-extends Node
+extends Control
 
 
 var mod_tool_store: ModToolStore
-var base_theme: Theme = ThemeDB.get_default_theme()
 
 
-func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock, p_base_theme: Theme) -> void:
+func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock) -> void:
 	mod_tool_store = _mod_tool_store
 	connect_file_system_context_actions(file_system_dock)
 
@@ -91,7 +90,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStrin
 
 	if script_paths.size() > 0:
 		context_menu.add_icon_item(
-			base_theme.get_icon("ScriptExtend", "EditorIcons"),
+			mod_tool_store.editor_base_control.get_theme_icon(&"ScriptExtend", &"EditorIcons"),
 			"ModTool: Create Script Extension" + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
 		)
 		context_menu.set_item_metadata(
@@ -106,7 +105,8 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStrin
 
 	if asset_override_paths.size() > 0:
 		context_menu.add_icon_item(
-			base_theme.get_icon("Override", "EditorIcons"),
+
+			mod_tool_store.editor_base_control.get_theme_icon(&"Override", &"EditorIcons"),
 			"ModTool: Create Asset Overwrite" + ("s (%s)" % asset_override_paths.size() if asset_override_paths.size() > 1 else "")
 		)
 		context_menu.set_item_metadata(
