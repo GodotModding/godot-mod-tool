@@ -15,6 +15,7 @@ func _enter_tree() -> void:
 	tools_panel.editor_plugin = self
 	get_editor_interface().get_editor_main_screen().call_deferred("add_child", tools_panel, true)
 	_make_visible(false)
+	connect_to_script_editor()
 
 
 func _exit_tree() -> void:
@@ -40,3 +41,7 @@ func _get_plugin_name():
 
 func _get_plugin_icon():
 	return get_editor_interface().get_base_control().get_theme_icon(&"Tools", &"EditorIcons")
+
+
+func connect_to_script_editor() -> void:
+	get_editor_interface().get_script_editor().editor_script_changed.connect(ModToolUtils.reload_script.bind(self, mod_tool_store))

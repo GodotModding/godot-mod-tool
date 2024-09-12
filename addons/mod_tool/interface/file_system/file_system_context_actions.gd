@@ -133,10 +133,7 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
 
-		ModToolUtils.reload_script(
-			mod_tool_store.editor_plugin,
-			mod_tool_store.path_mod_dir.path_join("mod_main.gd")
-		)
+		mod_tool_store.pending_reloads.push_back(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 
 		# Switch to the script screen
 		#mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
@@ -148,10 +145,7 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
 
-		ModToolUtils.reload_script(
-			mod_tool_store.editor_plugin,
-			mod_tool_store.path_mod_dir.path_join("overwrites.gd"),
-		)
+		mod_tool_store.pending_reloads.push_back(mod_tool_store.path_mod_dir.path_join("overwrites.gd"))
 
 
 func create_script_extension(file_path: String) -> String:
@@ -182,12 +176,6 @@ func create_script_extension(file_path: String) -> String:
 
 func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var main_script_path: String = mod_tool_store.path_mod_dir.path_join("mod_main.gd")
-
-	# Save the script before editing
-	ResourceSaver.save(load(main_script_path))
-
-	# TODO: Find something to replace this with
-	await mod_tool_store.editor_plugin.get_tree().create_timer(0.5).timeout
 
 	var file := FileAccess.open(main_script_path, FileAccess.READ_WRITE)
 	if not file:

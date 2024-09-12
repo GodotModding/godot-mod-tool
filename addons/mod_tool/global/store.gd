@@ -33,6 +33,7 @@ var excluded_file_extensions: PackedStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
 var is_seven_zip_installed := true
+var pending_reloads: Array[String] = []
 
 # ModManifest instance
 var manifest_data : ModManifest

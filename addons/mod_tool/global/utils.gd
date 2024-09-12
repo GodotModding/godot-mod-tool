@@ -7,22 +7,30 @@ class_name ModToolUtils
 
 
 # ! Not used currently. This can overwrite existing text very easily if the wrong script is shown in the text editor.
-static func reload_script(editor_plugin: EditorPlugin, script_path: String) -> void:
-	var open_scripts: Array[Script] = editor_plugin.get_editor_interface().get_script_editor().get_open_scripts()
-	var open_script_editors: Array[ScriptEditorBase] = editor_plugin.get_editor_interface().get_script_editor().get_open_script_editors()
+static func reload_script(script: Script, editor_plugin: EditorPlugin, mod_tool_store: ModToolStore) -> void:
+	var pending_reloads := mod_tool_store.pending_reloads
 
-	for i in editor_plugin.get_editor_interface().get_script_editor().get_open_script_editors().size():
-		var open_editor := open_script_editors[i]
-		var open_script := open_scripts[i]
+	if script.resource_path in pending_reloads:
+		var source_code_from_disc := FileAccess.open(script.resource_path, FileAccess.READ).get_as_text()
 
-		if open_script.resource_path == script_path:
-			# Make sure the file is saved before using reload_script!
-			open_editor.free()
+		var script_editor := editor_plugin.get_editor_interface().get_script_editor()
+		var text_edit: CodeEdit = script_editor.get_current_editor().get_base_editor()
 
-	# TODO: Find something to replace this with
-	await editor_plugin.get_tree().create_timer(0.5).timeout
+		var column := text_edit.get_caret_column()
+		var row := text_edit.get_caret_line()
+		var scroll_position_h := text_edit.get_h_scroll_bar().value
+		var scroll_position_v := text_edit.get_v_scroll_bar().value
 
-	editor_plugin.get_editor_interface().edit_script(load(script_path))
+		text_edit.text = source_code_from_disc
+		text_edit.set_caret_column(column)
+		text_edit.set_caret_line(row)
+		text_edit.scroll_horizontal = scroll_position_h
+		text_edit.scroll_vertical = scroll_position_v
+
+		text_edit.tag_saved_version()
+
+		pending_reloads.erase(script.resource_path)
+		ModToolUtils.output_info("Reloaded %s" % script.resource_path)
 
 
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
