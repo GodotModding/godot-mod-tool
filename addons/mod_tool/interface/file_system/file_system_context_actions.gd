@@ -133,10 +133,13 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if extension_path:
 				add_script_extension_to_mod_main(extension_path)
 
-		# [reload_script]
+		ModToolUtils.reload_script(
+			mod_tool_store.editor_plugin,
+			mod_tool_store.path_mod_dir.path_join("mod_main.gd")
+		)
 
 		# Switch to the script screen
-		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
+		#mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
 
 	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
 		file_paths = metadata.mod_tool_override_paths
@@ -145,7 +148,11 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 			if asset_path:
 				add_asset_overwrite_to_overwrites(file_path, asset_path)
 
-		# [reload_script]
+		ModToolUtils.reload_script(
+			mod_tool_store.editor_plugin,
+			mod_tool_store.path_mod_dir.path_join("overwrites.gd"),
+		)
+
 
 func create_script_extension(file_path: String) -> String:
 	if not mod_tool_store.name_mod_dir:
@@ -168,13 +175,20 @@ func create_script_extension(file_path: String) -> String:
 	# Load the new extension script
 	var extension_script: Script = load(extension_path)
 	# Open the new extension script in the script editor
-	mod_tool_store.editor_plugin.get_editor_interface().edit_script(extension_script)
+	#mod_tool_store.editor_plugin.get_editor_interface().edit_script(extension_script)
 
 	return extension_path
 
 
 func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var main_script_path: String = mod_tool_store.path_mod_dir.path_join("mod_main.gd")
+
+	# Save the script before editing
+	ResourceSaver.save(load(main_script_path))
+
+	# TODO: Find something to replace this with
+	await mod_tool_store.editor_plugin.get_tree().create_timer(0.5).timeout
+
 	var file := FileAccess.open(main_script_path, FileAccess.READ_WRITE)
 	if not file:
 		ModToolUtils.output_error("Failed to open mod_main.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
@@ -271,33 +285,34 @@ func quote_string(string: String) -> String:
 func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
 	var overwrites_script_path: String = mod_tool_store.path_mod_dir.path_join("overwrites.gd")
 
+	var overwrites_script: GDScript
+
 	if not FileAccess.file_exists(overwrites_script_path):
-		var file := FileAccess.open(overwrites_script_path, FileAccess.WRITE)
-		file.store_line("extends Node\n\n")
-		file.store_line("func _init() -> void:\n")
-		file.close()
+		overwrites_script = GDScript.new()
+		overwrites_script.source_code = "extends Node\n\n"
+		var success := ResourceSaver.save(overwrites_script, overwrites_script_path)
 
-	var file = FileAccess.open(overwrites_script_path, FileAccess.READ_WRITE)
-	if not file:
-		ModToolUtils.output_error("Failed to open overwrite.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
+		if not success == OK:
+			ModToolUtils.output_error("Failed to save overwrite.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
+
+	overwrites_script = load(overwrites_script_path)
+
 	if not script_has_method(overwrites_script_path, "_init"):
-		file.store_string(file.get_as_text() + "\nfunc _init() -> void:\n")
-
-	var file_content := file.get_as_text()
+		overwrites_script.source_code += "func _init() -> void:\n"
 
 	# Construct the line required to preload the asset and take over the path
 	var asset_overwrite_line := "\tpreload(%s).take_over_path(%s)\n" % [quote_string(asset_path), quote_string(vanilla_asset_path)]
 
 	# Check if that asset is already being overwritten
-	if asset_overwrite_line.strip_edges() in file_content:
+	if asset_overwrite_line.strip_edges() in overwrites_script.source_code:
 		return
 
-	var insertion_index := get_index_at_method_end("_init", file_content)
-	file_content = file_content.insert(insertion_index, "\n" + asset_overwrite_line)
+	var insertion_index := get_index_at_method_end("_init", overwrites_script.source_code)
 
-	file.store_string(file_content)
+	overwrites_script.source_code = overwrites_script.source_code.insert(insertion_index, "\n" + asset_overwrite_line)
 
-	file.close()
+	ResourceSaver.save(overwrites_script)
+
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
 
 

@@ -7,19 +7,22 @@ class_name ModToolUtils
 
 
 # ! Not used currently. This can overwrite existing text very easily if the wrong script is shown in the text editor.
-static func reload_script(text_edit: TextEdit, source_code: String) -> void:
-	var column := text_edit.get_caret_column()
-	var row := text_edit.get_caret_line()
-	var scroll_position_h := text_edit.get_h_scroll_bar().value
-	var scroll_position_v := text_edit.get_v_scroll_bar().value
+static func reload_script(editor_plugin: EditorPlugin, script_path: String) -> void:
+	var open_scripts: Array[Script] = editor_plugin.get_editor_interface().get_script_editor().get_open_scripts()
+	var open_script_editors: Array[ScriptEditorBase] = editor_plugin.get_editor_interface().get_script_editor().get_open_script_editors()
 
-	text_edit.text = source_code
-	text_edit.set_caret_column(column)
-	text_edit.set_caret_line(row)
-	text_edit.scroll_horizontal = scroll_position_h
-	text_edit.scroll_vertical = scroll_position_v
+	for i in editor_plugin.get_editor_interface().get_script_editor().get_open_script_editors().size():
+		var open_editor := open_script_editors[i]
+		var open_script := open_scripts[i]
 
-	text_edit.tag_saved_version()
+		if open_script.resource_path == script_path:
+			# Make sure the file is saved before using reload_script!
+			open_editor.free()
+
+	# TODO: Find something to replace this with
+	await editor_plugin.get_tree().create_timer(0.5).timeout
+
+	editor_plugin.get_editor_interface().edit_script(load(script_path))
 
 
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
