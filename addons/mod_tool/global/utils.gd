@@ -30,7 +30,6 @@ static func reload_script(script: Script, mod_tool_store: ModToolStore) -> void:
 		text_edit.tag_saved_version()
 
 		pending_reloads.erase(script.resource_path)
-		ModToolUtils.output_info("Reloaded %s" % script.resource_path)
 
 
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]
