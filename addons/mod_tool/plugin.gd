@@ -13,7 +13,7 @@ func _enter_tree() -> void:
 	tools_panel = preload("res://addons/mod_tool/interface/panel/tools_panel.tscn").instantiate() as ModToolsPanel
 	tools_panel.mod_tool_store = mod_tool_store
 	tools_panel.editor_plugin = self
-	get_editor_interface().get_editor_main_screen().call_deferred("add_child", tools_panel, true)
+	EditorInterface.get_editor_main_screen().call_deferred("add_child", tools_panel, true)
 	_make_visible(false)
 	connect_to_script_editor()
 
@@ -40,8 +40,8 @@ func _get_plugin_name():
 
 
 func _get_plugin_icon():
-	return get_editor_interface().get_base_control().get_theme_icon(&"Tools", &"EditorIcons")
+	return EditorInterface.get_base_control().get_theme_icon(&"Tools", &"EditorIcons")
 
 
 func connect_to_script_editor() -> void:
-	get_editor_interface().get_script_editor().editor_script_changed.connect(ModToolUtils.reload_script.bind(self, mod_tool_store))
+	EditorInterface.get_script_editor().editor_script_changed.connect(ModToolUtils.reload_script.bind(mod_tool_store))

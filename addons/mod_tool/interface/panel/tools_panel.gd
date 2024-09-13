@@ -40,12 +40,12 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	editor_plugin = plugin
 
 	mod_tool_store.editor_plugin = editor_plugin
-	mod_tool_store.editor_file_system = editor_plugin.get_editor_interface().get_resource_filesystem()
-	mod_tool_store.editor_base_control = editor_plugin.get_editor_interface().get_base_control()
+	mod_tool_store.editor_file_system = EditorInterface.get_resource_filesystem()
+	mod_tool_store.editor_base_control = EditorInterface.get_base_control()
 
 	context_actions = FileSystemContextActions.new(
 		mod_tool_store,
-		editor_plugin.get_editor_interface().get_file_system_dock()
+		EditorInterface.get_file_system_dock()
 	)
 
 

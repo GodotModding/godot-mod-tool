@@ -7,13 +7,13 @@ class_name ModToolUtils
 
 
 # ! Not used currently. This can overwrite existing text very easily if the wrong script is shown in the text editor.
-static func reload_script(script: Script, editor_plugin: EditorPlugin, mod_tool_store: ModToolStore) -> void:
+static func reload_script(script: Script, mod_tool_store: ModToolStore) -> void:
 	var pending_reloads := mod_tool_store.pending_reloads
 
 	if script.resource_path in pending_reloads:
 		var source_code_from_disc := FileAccess.open(script.resource_path, FileAccess.READ).get_as_text()
 
-		var script_editor := editor_plugin.get_editor_interface().get_script_editor()
+		var script_editor := EditorInterface.get_script_editor()
 		var text_edit: CodeEdit = script_editor.get_current_editor().get_base_editor()
 
 		var column := text_edit.get_caret_column()
