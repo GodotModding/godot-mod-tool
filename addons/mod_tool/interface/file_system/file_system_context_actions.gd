@@ -162,6 +162,9 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 		if current_script.resource_path == overwrites_path:
 			ModToolUtils.reload_script(current_script, mod_tool_store)
 
+		#Switch to the script screen
+		EditorInterface.set_main_screen_editor("Script")
+
 
 func create_script_extension(file_path: String) -> String:
 	if not mod_tool_store.name_mod_dir:
@@ -247,7 +250,7 @@ func create_overwrite_asset(file_path: String) -> String:
 		DirAccess.copy_absolute(file_path, overwrite_path)
 		ModToolUtils.output_info('Copied asset "%s" as overwrite to path %s' % [file_path.get_file(), overwrite_path])
 
-	mod_tool_store.editor_file_system.scan()
+	EditorInterface.get_resource_filesystem().scan()
 	EditorInterface.get_file_system_dock().navigate_to_path(overwrite_path)
 
 	return overwrite_path
@@ -287,34 +290,64 @@ func quote_string(string: String) -> String:
 
 func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
 	var overwrites_script_path: String = mod_tool_store.path_mod_dir.path_join("overwrites.gd")
-
 	var overwrites_script: GDScript
+	var overwrites_script_new: Node
+	var overwrites_script_syntax_tempalte := """extends Node
 
+
+var vanilla_file_paths: Array[String] = {%VANILLA_FILE_PATHS%}
+var overwrite_file_paths: Array[String] = {%OVERWRITE_FILE_PATHS%}
+
+var overwrite_resources := []
+
+
+func _init():
+	for i in overwrite_file_paths.size():
+		var vanilla_path := vanilla_file_paths[i]
+		var overwrite_path := overwrite_file_paths[i]
+
+		var overwrite_resource := load(overwrite_path)
+		overwrite_resources.push_back(overwrite_resource)
+		overwrite_resource.take_over_path(vanilla_path)
+"""
+
+	# overwrite.gd does not exist yet
 	if not FileAccess.file_exists(overwrites_script_path):
 		overwrites_script = GDScript.new()
-		overwrites_script.source_code = "extends Node\n\n"
+		overwrites_script.source_code = overwrites_script_syntax_tempalte.format({
+			"%VANILLA_FILE_PATHS%": "[]",
+			"%OVERWRITE_FILE_PATHS%": "[]",
+		})
 		var success := ResourceSaver.save(overwrites_script, overwrites_script_path)
-
 		if not success == OK:
 			ModToolUtils.output_error("Failed to save overwrite.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
 
 	overwrites_script = load(overwrites_script_path)
+	overwrites_script_new = overwrites_script.new()
 
-	if not script_has_method(overwrites_script_path, "_init"):
-		overwrites_script.source_code += "func _init() -> void:\n"
-
-	# Construct the line required to preload the asset and take over the path
-	var asset_overwrite_line := "\tpreload(%s).take_over_path(%s)\n" % [quote_string(asset_path), quote_string(vanilla_asset_path)]
-
-	# Check if that asset is already being overwritten
-	if asset_overwrite_line.strip_edges() in overwrites_script.source_code:
+	# Check if the overwrites script has the neccessary props
+	if (
+		not script_has_method(overwrites_script_path, "vanilla_file_paths") or
+		not script_has_method(overwrites_script_path, "overwrite_file_paths")
+	):
+		ModToolUtils.output_error("The 'overwrites.gd' file has an unexpected format. To proceed, please delete the existing 'overwrites.gd' file and allow the tool to regenerate it automatically.")
 		return
 
-	var insertion_index := get_index_at_method_end("_init", overwrites_script.source_code)
+	# Check if that asset is already being overwritten
+	if asset_path in overwrites_script_new.overwrite_file_paths:
+		return
 
-	overwrites_script.source_code = overwrites_script.source_code.insert(insertion_index, "\n" + asset_overwrite_line)
+	overwrites_script_new.vanilla_file_paths.push_back(vanilla_asset_path)
+	overwrites_script_new.overwrite_file_paths.push_back(asset_path)
+
+	overwrites_script.source_code = overwrites_script_syntax_tempalte.format({
+		"%VANILLA_FILE_PATHS%": JSON.stringify(overwrites_script_new.vanilla_file_paths, "\t"),
+		"%OVERWRITE_FILE_PATHS%": JSON.stringify(overwrites_script_new.overwrite_file_paths, "\t"),
+	})
 
 	ResourceSaver.save(overwrites_script)
+
+	overwrites_script_new.free()
 
 	# Open the overwrites script in the script editor
 	EditorInterface.edit_script(overwrites_script)
