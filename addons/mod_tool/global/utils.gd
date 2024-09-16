@@ -6,19 +6,30 @@ class_name ModToolUtils
 # Utility functions used across the ModTool.
 
 
-static func reload_script(text_edit: TextEdit, source_code: String) -> void:
-	var column := text_edit.get_caret_column()
-	var row := text_edit.get_caret_line()
-	var scroll_position_h := text_edit.get_h_scroll_bar().value
-	var scroll_position_v := text_edit.get_v_scroll_bar().value
+# ! Not used currently. This can overwrite existing text very easily if the wrong script is shown in the text editor.
+static func reload_script(script: Script, mod_tool_store: ModToolStore) -> void:
+	var pending_reloads := mod_tool_store.pending_reloads
 
-	text_edit.text = source_code
-	text_edit.set_caret_column(column)
-	text_edit.set_caret_line(row)
-	text_edit.scroll_horizontal = scroll_position_h
-	text_edit.scroll_vertical = scroll_position_v
+	if script.resource_path in pending_reloads:
+		var source_code_from_disc := FileAccess.open(script.resource_path, FileAccess.READ).get_as_text()
 
-	text_edit.tag_saved_version()
+		var script_editor := EditorInterface.get_script_editor()
+		var text_edit: CodeEdit = script_editor.get_current_editor().get_base_editor()
+
+		var column := text_edit.get_caret_column()
+		var row := text_edit.get_caret_line()
+		var scroll_position_h := text_edit.get_h_scroll_bar().value
+		var scroll_position_v := text_edit.get_v_scroll_bar().value
+
+		text_edit.text = source_code_from_disc
+		text_edit.set_caret_column(column)
+		text_edit.set_caret_line(row)
+		text_edit.scroll_horizontal = scroll_position_h
+		text_edit.scroll_vertical = scroll_position_v
+
+		text_edit.tag_saved_version()
+
+		pending_reloads.erase(script.resource_path)
 
 
 # Takes a file path and an array of file extensions [.txt, .tscn, ..]

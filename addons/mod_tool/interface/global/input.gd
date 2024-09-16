@@ -47,7 +47,7 @@ func set_editor_icon(icon_name: String) -> void:
 	var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
 
 	if icon_name and mod_tool_store:
-		set_error_icon(mod_tool_store.base_theme.get_icon(icon_name, "EditorIcons"))
+		set_error_icon(mod_tool_store.editor_base_control.get_theme_icon(icon_name, "EditorIcons"))
 
 
 func set_error_icon(icon: Texture2D) -> void:
@@ -64,4 +64,3 @@ func show_error_if_not(condition: bool) -> void:
 func validate(_condition: bool) -> bool:
 	printerr("Implement a validation method")
 	return false
-

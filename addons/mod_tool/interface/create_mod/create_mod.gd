@@ -50,15 +50,15 @@ func add_mod() -> void:
 		await mod_tool_store.editor_file_system.filesystem_changed
 
 		# Navigate to the new mod dir in the FileSystem pannel
-		mod_tool_store.editor_plugin.get_editor_interface().get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
+		EditorInterface.get_file_system_dock().navigate_to_path(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 
 		# Output info
 		ModToolUtils.output_info("Added base mod files to " + mod_tool_store.path_mod_dir)
 
 		# Open mod_main.gd in the code editor
 		var mod_main_script := load(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
-		mod_tool_store.editor_plugin.get_editor_interface().edit_script(mod_main_script)
-		mod_tool_store.editor_plugin.get_editor_interface().set_main_screen_editor("Script")
+		EditorInterface.edit_script(mod_main_script)
+		EditorInterface.set_main_screen_editor("Script")
 
 		# Split the new mod id
 		var name_mod_dir_split: Array = mod_tool_store.name_mod_dir.split("-")
@@ -89,10 +89,14 @@ func clear_mod_id_input() -> void:
 	mod_id.input_text = ""
 
 
-func get_template_options() -> PackedStringArray:
-	var mod_template_options := []
+func get_template_options() -> Array[String]:
+	var mod_template_options: Array[String] = []
 
 	var template_dirs := _ModLoaderPath.get_dir_paths_in_dir(mod_tool_store.PATH_TEMPLATES_DIR)
+
+	# Add the default templates
+	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
+	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
 
 	for template_dir in template_dirs:
 		var template_dir_name: String = template_dir.split("/")[-1]
@@ -107,11 +111,7 @@ func get_template_options() -> PackedStringArray:
 		# Add all the custom templates
 		mod_template_options.push_back(template_dir_name)
 
-	# Add the default templates
-	mod_template_options.push_back(DIR_NAME_DEFAULT_TEMPLATE)
-	mod_template_options.push_back(DIR_NAME_MINIMAL_TEMPLATE)
-
-	return mod_template_options as PackedStringArray
+	return mod_template_options
 
 
 func _on_Namespace_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:

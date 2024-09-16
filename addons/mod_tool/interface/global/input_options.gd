@@ -3,13 +3,13 @@ class_name ModToolInterfaceInputOptions
 extends ModToolInterfaceInput
 
 
-@export var input_options: PackedStringArray: set = set_input_options
+@export var input_options: Array[String]: set = set_input_options
 
 
-func set_input_options(new_options: PackedStringArray) -> void:
+func set_input_options(new_options: Array[String]) -> void:
 	input_options = new_options
 	var input: OptionButton = get_node_or_null("%Input") as OptionButton
-	if not input: return # node can't be found directly after reloading the plugin
+	if not input or new_options.is_empty(): return # node can't be found directly after reloading the plugin
 
 	input.clear()
 	for option in input_options:

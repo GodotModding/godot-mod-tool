@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dyunxqcmy4esi" path="res://addons/mod_tool/interface/global/input_options.tscn" id="3"]
 
 [node name="CreateMod" type="Window"]
+position = Vector2i(0, 36)
 script = ExtResource("1")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -65,6 +66,7 @@ layout_mode = 2
 [node name="ModTemplate" parent="MarginContainer/Settings/Scroll/VBox" instance=ExtResource("3")]
 unique_name_in_owner = true
 layout_mode = 2
+input_options = Array[String]([])
 is_required = true
 key = "mod_template"
 label_text = "Template"
