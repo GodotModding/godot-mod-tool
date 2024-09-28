@@ -34,7 +34,7 @@ func add_mod() -> void:
 			return
 
 		# Get Template files
-		var template_paths := ModToolUtils.get_flat_view_dict(mod_tool_store.path_current_template_dir, "", false, true)
+		var template_paths := ModToolUtils.get_flat_view_dict(mod_tool_store.path_current_template_dir, "", [], false, true)
 
 		# Copy current selected template dir files and folders to res://mods-unpacked
 		for path in template_paths:

@@ -125,7 +125,14 @@ static func remove_recursive(path: String) -> void:
 # p_match is a string that filters the list of files.
 # If p_match_is_regex is false, p_match is directly string-searched against the FILENAME.
 # If it is true, a regex object compiles p_match and runs it against the FILEPATH.
-static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_regex := false, include_empty_dirs := false) -> PackedStringArray:
+static func get_flat_view_dict(
+	p_dir := "res://",
+ 	p_match := "",
+	p_match_file_extensions: Array[StringName] = [],
+	p_match_is_regex := false,
+	include_empty_dirs := false,
+	ignored_dirs: Array[StringName] = []
+) -> PackedStringArray:
 	var data: PackedStringArray = []
 	var regex: RegEx
 
@@ -142,8 +149,11 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 		var dir := DirAccess.open(dir_name)
 		dirs.pop_back()
 
+		if dir_name.lstrip("res://").get_slice("/", 0) in ignored_dirs:
+			continue
+
 		if dir:
-			var _dirlist_error: int = dir.list_dir_begin() # TODOConverter3To4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+			var _dirlist_error: int = dir.list_dir_begin()
 			var file_name := dir.get_next()
 			if include_empty_dirs and not dir_name == p_dir:
 				data.append(dir_name)
@@ -151,7 +161,7 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 				if not dir_name == "res://":
 					first = false
 				# ignore hidden, temporary, or system content
-				if not file_name.begins_with(".") and not file_name.get_extension() in ["tmp"]:
+				if not file_name.begins_with(".") and not file_name.get_extension() == "tmp":
 					# If a directory, then add to list of directories to visit
 					if dir.current_is_dir():
 						dirs.push_back(dir.get_current_dir() + "/" + file_name)
@@ -159,13 +169,16 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 					else:
 						var path := dir.get_current_dir() + ("/" if not first else "") + file_name
 						# grab all
-						if not p_match:
+						if not p_match and not p_match_file_extensions:
 							data.append(path)
 						# grab matching strings
-						elif not p_match_is_regex and file_name.find(p_match, 0) != -1:
+						elif not p_match_is_regex and p_match and file_name.contains(p_match):
+							data.append(path)
+						# garb matching file extension
+						elif p_match_file_extensions and file_name.get_extension() in p_match_file_extensions:
 							data.append(path)
 						# grab matching regex
-						else:
+						elif p_match_is_regex:
 							var regex_match := regex.search(path)
 							if regex_match != null:
 								data.append(path)

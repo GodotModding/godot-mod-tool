@@ -21,6 +21,7 @@ var log_dock_button: Button
 @onready var manifest_editor := $"%Manifest Editor"
 @onready var export_path := $"%ExportPath"
 @onready var file_dialog := $"%FileDialog"
+@onready var hook_gen: ModToolInterfaceHookGen = %HookGen
 
 
 func _ready() -> void:
@@ -28,10 +29,14 @@ func _ready() -> void:
 
 	get_log_nodes()
 
-	# Load manifest.json file
-	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
-		manifest_editor.load_manifest()
-		manifest_editor.update_ui()
+	if mod_tool_store:
+		if not mod_tool_store.is_hook_generation_done:
+			hook_gen.show()
+
+		# Load manifest.json file
+		if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+			manifest_editor.load_manifest()
+			manifest_editor.update_ui()
 
 	_update_ui()
 

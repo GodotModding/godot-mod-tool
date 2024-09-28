@@ -34,6 +34,7 @@ var path_mod_files := []
 var current_os := ""
 var is_seven_zip_installed := true
 var pending_reloads: Array[String] = []
+var is_hook_generation_done := false
 
 # ModManifest instance
 var manifest_data : ModManifest
@@ -82,6 +83,7 @@ func init(store: Dictionary) -> void:
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = []
+	is_hook_generation_done = store.is_hook_generation_done if store.is_hook_generation_done else false
 
 
 func update_paths(new_name_mod_dir: String) -> void:
@@ -100,7 +102,8 @@ func save_store() -> void:
 		"path_export_dir": path_export_dir,
 		"path_global_project_dir": path_global_project_dir,
 		"path_temp_dir": path_temp_dir,
-		"excluded_file_extensions": excluded_file_extensions
+		"excluded_file_extensions": excluded_file_extensions,
+		"is_hook_generation_done": is_hook_generation_done
 	}
 
 	var file := FileAccess.open(PATH_SAVE_FILE, FileAccess.WRITE)
