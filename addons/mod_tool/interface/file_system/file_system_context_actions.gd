@@ -3,7 +3,7 @@ extends Control
 
 
 var mod_tool_store: ModToolStore
-
+var mod_hook_pre_processor := ModLoaderModHookPreProcessor.new()
 
 func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock) -> void:
 	mod_tool_store = _mod_tool_store
@@ -89,6 +89,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStrin
 		context_menu.add_separator()
 
 	if script_paths.size() > 0:
+		# Script Extension Context Action
 		context_menu.add_icon_item(
 			mod_tool_store.editor_base_control.get_theme_icon(&"ScriptExtend", &"EditorIcons"),
 			"ModTool: Create Script Extension" + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
@@ -100,6 +101,21 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStrin
 		context_menu.set_item_tooltip(
 			context_menu.get_item_count() -1,
 			"Will add extensions for: \n%s" %
+			str(script_paths).trim_prefix("[").trim_suffix("]").replace(", ", "\n")
+		)
+
+		# Add Hooks Context Action
+		context_menu.add_icon_item(
+			mod_tool_store.editor_base_control.get_theme_icon(&"Edit", &"EditorIcons"),
+			"ModTool: Add Mod Hooks" + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
+		)
+		context_menu.set_item_metadata(
+			context_menu.get_item_count() -1,
+			{ "mod_tool_hook_script_paths": script_paths }
+		)
+		context_menu.set_item_tooltip(
+			context_menu.get_item_count() -1,
+			"Will add mod hooks for: \n%s" %
 			str(script_paths).trim_prefix("[").trim_suffix("]").replace(", ", "\n")
 		)
 
@@ -164,6 +180,21 @@ func file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
 
 		#Switch to the script screen
 		EditorInterface.set_main_screen_editor("Script")
+
+	if metadata is Dictionary and metadata.has("mod_tool_hook_script_paths"):
+		file_paths = metadata.mod_tool_hook_script_paths
+
+		for file_path in file_paths:
+			var source_code := mod_hook_pre_processor.process_script(file_path)
+			var file := FileAccess.open(file_path, FileAccess.WRITE)
+
+			# TODO: Create a backup before changing the script file
+			if file:
+				file.resize(0)
+				file.store_string(source_code)
+				ModToolUtils.output_info("Created hooks for %s" % file_path)
+			else:
+				ModToolUtils.output_error("Error opening script %s" % file_path)
 
 
 func create_script_extension(file_path: String) -> String:
