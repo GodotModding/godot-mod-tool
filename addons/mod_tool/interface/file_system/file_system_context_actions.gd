@@ -106,7 +106,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: PackedStrin
 
 		# Add Hooks Context Action
 		context_menu.add_icon_item(
-			mod_tool_store.editor_base_control.get_theme_icon(&"Edit", &"EditorIcons"),
+			mod_tool_store.editor_base_control.get_theme_icon(&"ScriptCreate", &"EditorIcons"),
 			"ModTool: Add Mod Hooks" + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
 		)
 		context_menu.set_item_metadata(
