@@ -3,7 +3,7 @@ extends Control
 
 
 var mod_tool_store: ModToolStore
-var mod_hook_pre_processor := ModLoaderModHookPreProcessor.new()
+var mod_hook_pre_processor := _ModLoaderModHookPreProcessor.new()
 
 func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock) -> void:
 	mod_tool_store = _mod_tool_store

@@ -12,7 +12,7 @@ extends Window
 func generate_hooks() -> void:
 	# Get all script not in addons or mods-unpacked
 	var all_script_file_paths := ModToolUtils.get_flat_view_dict("res://", "", [&"gd"], false, false, [&"addons", &"mods-unpacked"])
-	var mod_hook_preprocessor = ModLoaderModHookPreProcessor.new()
+	var mod_hook_preprocessor = _ModLoaderModHookPreProcessor.new()
 
 	# Create a backup of the vanilla script files
 	var project_dir_name := ProjectSettings.globalize_path("res://").get_base_dir().rsplit("/", true, 1)[1]
