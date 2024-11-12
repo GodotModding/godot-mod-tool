@@ -119,6 +119,60 @@ static func remove_recursive(path: String) -> void:
 	directory.remove(path)
 
 
+static func check_for_hooked_script(script_paths: Array[String], mod_tool_store: ModToolStore) -> int:
+	var count := 0
+
+	for script_path in script_paths:
+		if mod_tool_store.hooked_scripts.has(script_path):
+			count += 1
+
+	return count
+
+
+static func quote_string(string: String) -> String:
+	var settings: EditorSettings = EditorInterface.get_editor_settings()
+	if settings.get_setting("text_editor/completion/use_single_quotes"):
+		return "'%s'" % string
+	return "\"%s\"" % string
+
+
+static func script_has_method(script_path: String, method: String) -> bool:
+	var script: Script = load(script_path)
+
+	for script_method in script.get_script_method_list():
+		if script_method.name == method:
+			return true
+
+	if method in script.source_code:
+		return true
+
+	return false
+
+
+static func get_index_at_method_end(method_name: String, text: String) -> int:
+	var starting_index := text.rfind(method_name)
+
+	# Find the end of the method
+	var next_method_line_index := text.find("func ", starting_index)
+	var method_end := -1
+
+	if next_method_line_index == -1:
+		# Backtrack empty lines from the end of the file
+		method_end = text.length() -1
+	else:
+		# Get the line before the next function line
+		method_end = text.rfind("\n", next_method_line_index)
+
+	# Backtrack to the last non-empty line
+	var last_non_empty_line_index := method_end
+	while last_non_empty_line_index > starting_index:
+		last_non_empty_line_index -= 1
+		# Remove spaces, tabs and newlines (whitespace) to check if the line really is empty
+		if text[last_non_empty_line_index].rstrip("\t\n "):
+			break # encountered a filled line
+
+	return last_non_empty_line_index +1
+
 # Slightly modified version of:
 # https://gist.github.com/willnationsdev/00d97aa8339138fd7ef0d6bd42748f6e
 # Removed .import from the extension filter.

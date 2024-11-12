@@ -2,4 +2,5 @@
 addons/mod_tool/vendor/7zip/mac/*
 addons/mod_tool/vendor/7zip/windows/*
 addons/mod_tool/vendor/7zip/linux/*
+addons/mod_tool/.script_backup
 
