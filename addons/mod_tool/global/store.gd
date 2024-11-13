@@ -47,6 +47,9 @@ var mod_hook_preprocessor := _ModLoaderModHookPreProcessor.new()
 func _ready() -> void:
 	load_store()
 
+	if not DirAccess.dir_exists_absolute(path_script_backup_dir):
+		create_script_backup_dir()
+
 
 func _exit_tree() -> void:
 	save_store()
@@ -91,17 +94,17 @@ func init(store: Dictionary) -> void:
 	mod_hook_preprocessor.hashmap = JSON.parse_string(store.mod_hook_preprocessor_hashmap)
 
 
-	if not DirAccess.dir_exists_absolute(path_script_backup_dir):
-		DirAccess.make_dir_recursive_absolute(path_script_backup_dir)
-		FileAccess.open("%s/.gdignore" % path_script_backup_dir, FileAccess.WRITE)
-
-
 func update_paths(new_name_mod_dir: String) -> void:
 	path_mod_dir = "res://mods-unpacked/" + new_name_mod_dir
 	path_temp_dir = "user://temp/" + new_name_mod_dir
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_final_zip =  "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
+
+
+func create_script_backup_dir() -> void:
+	DirAccess.make_dir_recursive_absolute(path_script_backup_dir)
+	FileAccess.open("%s/.gdignore" % path_script_backup_dir, FileAccess.WRITE)
 
 
 func save_store() -> void:
