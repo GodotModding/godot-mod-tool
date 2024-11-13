@@ -5,9 +5,11 @@ extends RefCounted
 
 static func transform_one(path: String, mod_tool_store: ModToolStore) -> Error:
 	var source_code_processed := mod_tool_store.mod_hook_preprocessor.process_script(path)
+	var backup_path := "%s/%s" % [mod_tool_store.path_script_backup_dir, path.trim_prefix("res://")]
 
 	# Create a backup of the vanilla script files
-	ModToolUtils.file_copy(path, "%s/%s" % [mod_tool_store.path_script_backup_dir, path.trim_prefix("res://")])
+	if not FileAccess.file_exists(backup_path):
+		ModToolUtils.file_copy(path, backup_path)
 
 	var file := FileAccess.open(path, FileAccess.WRITE)
 
@@ -28,7 +30,6 @@ static func transform_one(path: String, mod_tool_store: ModToolStore) -> Error:
 
 static func restore(path: String, mod_tool_store: ModToolStore) -> Error:
 	var backup_path := "%s/%s" % [mod_tool_store.path_script_backup_dir, path.trim_prefix("res://")]
-
 	var backup_file := FileAccess.open(backup_path, FileAccess.READ)
 
 	if not backup_file:
@@ -48,6 +49,7 @@ static func restore(path: String, mod_tool_store: ModToolStore) -> Error:
 	file.close()
 
 	mod_tool_store.hooked_scripts.erase(path)
+
 	clear_mod_hook_preprocessor_hashmap(path, mod_tool_store)
 
 	return OK

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://jgayt8758anm"]
+[gd_scene load_steps=13 format=3 uid="uid://jgayt8758anm"]
 
 [ext_resource type="PackedScene" uid="uid://glui2s46v4x4" path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://hpefgw6k5qpq" path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" id="2"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://du17jjwqtopix" path="res://addons/mod_tool/interface/global/directory_selection/select_directory.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" id="8"]
 [ext_resource type="PackedScene" uid="uid://cpll5clcnemyj" path="res://addons/mod_tool/interface/hook_gen/hook_gen.tscn" id="8_k13cs"]
+[ext_resource type="PackedScene" uid="uid://camcc83bvu086" path="res://addons/mod_tool/interface/hook_restore/hook_restore.tscn" id="9_2cgta"]
 
 [sub_resource type="StyleBoxEmpty" id="14"]
 
@@ -57,6 +58,7 @@ layout_mode = 2
 
 [node name="HSplit" type="HSplitContainer" parent="Panel/VSplit/Export"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="Console" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 visible = false
@@ -99,6 +101,7 @@ size_flags_stretch_ratio = 0.5
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 5
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
 layout_mode = 2
@@ -148,6 +151,7 @@ hint_text = "The directory to which the final mod zip is exported."
 
 [node name="Align" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 10
 alignment = 2
 
 [node name="ExportStatus" type="Label" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
@@ -162,6 +166,7 @@ text = "Export Mod"
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/VBox"]
 layout_mode = 2
@@ -182,6 +187,16 @@ text = "Create new Mod"
 layout_mode = 2
 text = "Connect existing Mod"
 
+[node name="AddHooks" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add Hooks to all Scripts"
+
+[node name="Restore" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Restore non Hooked Scripts"
+
 [node name="CreateMod" parent="." instance=ExtResource("1")]
 unique_name_in_owner = true
 initial_position = 2
@@ -200,6 +215,10 @@ visible = false
 unique_name_in_owner = true
 visible = false
 
+[node name="HookRestore" parent="." instance=ExtResource("9_2cgta")]
+unique_name_in_owner = true
+visible = false
+
 [node name="FileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true
 title = "Open a Directory"
@@ -215,6 +234,9 @@ access = 2
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/ConnectMod" to="." method="_on_ConnectMod_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/AddHooks" to="." method="_on_add_hooks_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/Restore" to="." method="_on_restore_pressed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
+[connection signal="hooks_exist_pressed" from="HookGen" to="." method="_on_hook_gen_hooks_exist_pressed"]
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]

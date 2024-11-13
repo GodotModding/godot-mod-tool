@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpll5clcnemyj"]
+[gd_scene load_steps=2 format=3 uid="uid://camcc83bvu086"]
 
-[ext_resource type="Script" path="res://addons/mod_tool/interface/hook_gen/hook_gen.gd" id="1_lrahv"]
+[ext_resource type="Script" path="res://addons/mod_tool/interface/hook_restore/hook_restore.gd" id="1_wq3ld"]
 
-[node name="HookGen" type="Window"]
+[node name="HookRestore" type="Window"]
 title = "Mod Dev Tool"
 initial_position = 1
 size = Vector2i(640, 375)
 wrap_controls = true
-script = ExtResource("1_lrahv")
+script = ExtResource("1_wq3ld")
 
 [node name="Restart" type="Window" parent="."]
 unique_name_in_owner = true
@@ -28,12 +28,13 @@ theme_override_constants/margin_bottom = 10
 [node name="VBC" type="VBoxContainer" parent="Restart/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="LabelInfoText" type="RichTextLabel" parent="Restart/MarginContainer/VBC"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
-text = "Successfully generated mod hooks. 
-To start modding, a restart of the editor is required."
+text = "Successfully restored all scripts. 
+A restart of the editor is required."
 fit_content = true
 
 [node name="HBC" type="HBoxContainer" parent="Restart/MarginContainer/VBC"]
@@ -67,7 +68,7 @@ theme_override_constants/separation = 20
 [node name="LabelInfoText" type="RichTextLabel" parent="MarginContainer/VBC"]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-text = "This will modify all existing scripts in the project, so please make sure to save your files before continuing.
+text = "This will restore all scripts to their state before mod hooks were added. Any changes made to these scripts will be lost!
 
 The process may take some time depending on the number of scripts."
 fit_content = true
@@ -76,15 +77,10 @@ fit_content = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="ButtonGenStart" type="Button" parent="MarginContainer/VBC/VBC"]
+[node name="ButtonRestoreStart" type="Button" parent="MarginContainer/VBC/VBC"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Generate mod hooks"
-
-[node name="ButtonHooksExist" type="Button" parent="MarginContainer/VBC/VBC"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Hooks already exist"
+text = "Start Restore"
 
 [node name="VBC2" type="VBoxContainer" parent="MarginContainer/VBC"]
 layout_mode = 2
@@ -101,5 +97,4 @@ scroll_following = true
 [connection signal="close_requested" from="Restart" to="." method="_on_restart_close_requested"]
 [connection signal="pressed" from="Restart/MarginContainer/VBC/HBC/ButtonRestartNow" to="." method="_on_button_restart_now_pressed"]
 [connection signal="pressed" from="Restart/MarginContainer/VBC/HBC/ButtonRestartLater" to="." method="_on_button_restart_later_pressed"]
-[connection signal="pressed" from="MarginContainer/VBC/VBC/ButtonGenStart" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="MarginContainer/VBC/VBC/ButtonHooksExist" to="." method="_on_button_hooks_exist_pressed"]
+[connection signal="pressed" from="MarginContainer/VBC/VBC/ButtonRestoreStart" to="." method="_on_button_restore_start_pressed"]

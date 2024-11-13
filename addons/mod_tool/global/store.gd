@@ -89,7 +89,7 @@ func init(store: Dictionary) -> void:
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = []
-	is_hook_generation_done = store.is_hook_generation_done if store.is_hook_generation_done else false
+	is_hook_generation_done = store.is_hook_generation_done
 	hooked_scripts = JSON.parse_string(store.hooked_scripts)
 	mod_hook_preprocessor.hashmap = JSON.parse_string(store.mod_hook_preprocessor_hashmap)
 
