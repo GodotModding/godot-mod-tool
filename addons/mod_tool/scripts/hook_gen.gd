@@ -57,5 +57,5 @@ static func clear_mod_hook_preprocessor_hashmap(path: String, mod_tool_store: Mo
 	var script: GDScript = load(path)
 
 	for method in script.get_script_method_list():
-		mod_tool_store.mod_hook_preprocessor.hashmap.erase(ModLoaderMod.get_hook_hash(path, method.name, true))
-		mod_tool_store.mod_hook_preprocessor.hashmap.erase(ModLoaderMod.get_hook_hash(path, method.name, false))
+		mod_tool_store.mod_hook_preprocessor.hashmap.erase(_ModLoaderHooks.get_hook_hash(path, method.name, true))
+		mod_tool_store.mod_hook_preprocessor.hashmap.erase(_ModLoaderHooks.get_hook_hash(path, method.name, false))
