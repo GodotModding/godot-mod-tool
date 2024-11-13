@@ -42,8 +42,6 @@ static func restore(path: String, mod_tool_store: ModToolStore) -> Error:
 	if not file:
 		return file.get_error()
 
-	# Clear existing file
-	file.resize(0)
 	# Write processed source_code to file
 	file.store_string(restored_source)
 	file.close()
