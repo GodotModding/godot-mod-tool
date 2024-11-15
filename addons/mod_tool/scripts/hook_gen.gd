@@ -17,8 +17,6 @@ static func transform_one(path: String, mod_tool_store: ModToolStore) -> Error:
 		var error := file.get_error()
 		return error
 
-	# Clear existing file
-	file.resize(0)
 	# Write processed source_code to file
 	file.store_string(source_code_processed)
 	file.close()
