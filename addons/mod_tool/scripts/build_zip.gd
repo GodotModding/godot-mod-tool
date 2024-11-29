@@ -31,13 +31,17 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 		# Copy mod_file to temp folder
 		ModToolUtils.file_copy(path_mod_file, path_zip_file)
 
-	# Zip that folder with 7zip
-	var path_global_temp_dir_with_wildcard: String = mod_tool_store.path_global_temp_dir + "/*"
+	# Zip that folder
+	var output: String
+	if OS.has_feature("Windows"):
+		output = zip_win(mod_tool_store)
+	if OS.has_feature("OSX"):
+		output = zip_linux(mod_tool_store)
+	if OS.has_feature("X11"):
+		output = zip_linux(mod_tool_store)
 
-	var output := []
-	var _exit_code := OS.execute(mod_tool_store.path_global_seven_zip, ["a", mod_tool_store.path_global_final_zip, path_global_temp_dir_with_wildcard], true, output)
-	# Output the 7zip cli info
-	ModToolUtils.output_info(output[0])
+	# Output the cli info
+	ModToolUtils.output_info(output)
 
 	# Delete the temp folder
 	ModToolUtils.remove_recursive(mod_tool_store.path_global_temp_dir)
@@ -67,3 +71,16 @@ func _get_imported_file_path(import_file_path: String) -> String:
 		return ''
 
 	return imported_file_path
+
+
+func zip_win(mod_tool_store: ModToolStore) -> String:
+	var output := []
+	var command := "Compress-Archive -Path '%s/*' -DestinationPath '%s'" % [mod_tool_store.path_global_temp_dir, mod_tool_store.path_global_final_zip]
+	OS.execute("powershell.exe", ["-command", command], true, output)
+	return "".join(output)
+
+
+func zip_linux(mod_tool_store: ModToolStore) -> String:
+	var output := []
+	OS.execute("zip", ["-r", mod_tool_store.path_global_final_zip, mod_tool_store.path_global_temp_dir + "/*"], true, output)
+	return "".join(output)

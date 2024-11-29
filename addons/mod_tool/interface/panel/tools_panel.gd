@@ -22,7 +22,6 @@ onready var manifest_editor := $"%Manifest Editor"
 onready var export_path := $"%ExportPath"
 onready var file_dialog_export := $"%FileDialogExport"
 onready var file_dialog_link_mod := $"%FileDialogLinkMod"
-onready var get_seven_zip := $"%Get7Zip"
 
 
 func _ready() -> void:
@@ -31,7 +30,7 @@ func _ready() -> void:
 	get_log_nodes()
 
 	# Load manifest.json file
-	if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
 
@@ -104,8 +103,6 @@ func _update_ui() -> void:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
 	export_path.input_text = mod_tool_store.path_export_dir
-	# Hide or show the "Get 7zip button"
-	get_seven_zip.hide() if mod_tool_store.is_seven_zip_installed else get_seven_zip.show()
 
 
 func _is_mod_dir_valid() -> bool:
@@ -200,10 +197,6 @@ func _on_FileDialogLinkMod_dir_selected(dir: String) -> void:
 	mod_tool_store.path_last_linked_mod = dir
 
 	file_dialog_link_mod.hide()
-
-
-func _on_Get7Zip_installed() -> void:
-	get_seven_zip.hide()
 
 
 func _on_LinkMod_pressed() -> void:
