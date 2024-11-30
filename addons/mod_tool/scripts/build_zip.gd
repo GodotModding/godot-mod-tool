@@ -82,5 +82,6 @@ func zip_win(mod_tool_store: ModToolStore) -> String:
 
 func zip_linux(mod_tool_store: ModToolStore) -> String:
 	var output := []
-	OS.execute("zip", ["-r", mod_tool_store.path_global_final_zip, mod_tool_store.path_global_temp_dir + "/*"], true, output)
+	var command := "(cd '%s' && zip -r '%s' .)" % [mod_tool_store.path_global_temp_dir, mod_tool_store.path_global_final_zip]
+	OS.execute("bash", [command], true, output)
 	return "".join(output)
