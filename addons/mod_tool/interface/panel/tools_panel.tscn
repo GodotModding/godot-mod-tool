@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/mod_tool/interface/global/directory_selection/select_directory.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" type="PackedScene" id=8]
+[ext_resource path="res://addons/mod_tool/interface/global/button_with_hint.gd" type="Script" id=9]
 
 [sub_resource type="StyleBoxEmpty" id=14]
 
@@ -216,7 +217,10 @@ text = "Export Status OK"
 margin_left = 608.0
 margin_right = 692.0
 margin_bottom = 20.0
+hint_tooltip = "Creates a mod zip at the selected 'Export Path'."
 text = "Export Mod"
+script = ExtResource( 9 )
+hint_text = "Creates a mod zip at the selected 'Export Path'."
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
 margin_left = 704.0
@@ -247,13 +251,20 @@ text = "Create new Mod"
 margin_top = 52.0
 margin_right = 300.0
 margin_bottom = 72.0
+hint_tooltip = "Connect a mod located in the mods-unpacked directory."
 text = "Connect existing Mod"
+script = ExtResource( 9 )
+hint_text = "Connect a mod located in the mods-unpacked directory."
 
 [node name="LinkMod" type="Button" parent="Panel/VSplit/Export/HSplit/VBox"]
+unique_name_in_owner = true
 margin_top = 76.0
 margin_right = 300.0
 margin_bottom = 96.0
+hint_tooltip = "Creates a sim-link in the mods-unpacked directory."
 text = "Link existing Mod"
+script = ExtResource( 9 )
+hint_text = "Creates a sim-link in the mods-unpacked directory."
 
 [node name="Get7Zip" parent="Panel/VSplit/Export/HSplit/VBox" instance=ExtResource( 5 )]
 unique_name_in_owner = true
@@ -294,7 +305,7 @@ unique_name_in_owner = true
 margin_right = 600.0
 margin_bottom = 350.0
 rect_min_size = Vector2( 600, 350 )
-window_title = "Open Mod Directory"
+window_title = "Open a Directory"
 resizable = true
 mode = 2
 access = 2
