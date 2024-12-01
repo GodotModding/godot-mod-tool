@@ -104,6 +104,7 @@ func _update_ui() -> void:
 		return
 	mod_id.input_text = mod_tool_store.name_mod_dir
 	export_path.input_text = mod_tool_store.path_export_dir
+
 	# Hide or show the "Get 7zip button"
 	get_seven_zip.hide() if mod_tool_store.is_seven_zip_installed else get_seven_zip.show()
 
@@ -191,6 +192,13 @@ func _on_FileDialogExport_dir_selected(dir: String) -> void:
 
 
 func _on_FileDialogLinkMod_dir_selected(dir: String) -> void:
+	# Check if unpacked-mods dir exists
+	if not _ModLoaderFile.dir_exists(ModLoaderMod.get_unpacked_dir()):
+		# If not - create it
+		var success := ModToolUtils.make_dir_recursive(ModLoaderMod.get_unpacked_dir())
+		if not success:
+			return
+
 	# Create the Symlink
 	var mods_unpacked_path := ModLoaderMod.get_unpacked_dir().plus_file(dir.get_file())
 	ModToolUtils.output_info("Linking Path -> %s" % dir.get_file())
