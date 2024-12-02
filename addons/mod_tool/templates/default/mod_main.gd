@@ -11,8 +11,8 @@ extends Node
 
 # ? Brief overview of what your mod does...
 
-const AUTHORNAME_MODNAME_DIR := "AuthorName-ModName" # Name of the directory that this file is in
-const AUTHORNAME_MODNAME_LOG_NAME := "AuthorName-ModName:Main" # Full ID of the mod (AuthorName-ModName)
+const MOD_DIR := "AuthorName-ModName" # Name of the directory that this file is in
+const LOG_NAME := "AuthorName-ModName:Main" # Full ID of the mod (AuthorName-ModName)
 
 var mod_dir_path := ""
 var extensions_dir_path := ""
@@ -21,11 +21,12 @@ var translations_dir_path := ""
 
 # ! your _ready func.
 func _init() -> void:
-	ModLoaderLog.info("Init", AUTHORNAME_MODNAME_LOG_NAME)
-	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(AUTHORNAME_MODNAME_DIR)
+	ModLoaderLog.info("Init", LOG_NAME)
+	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(MOD_DIR)
 
 	# Add extensions
 	install_script_extensions()
+	install_script_hook_files()
 
 	# Add translations
 	add_translations()
@@ -44,6 +45,11 @@ func install_script_extensions() -> void:
 	#ModLoaderMod.install_script_extension("res://mods-unpacked/AuthorName-ModName/extensions/entities/units/player/player.gd")
 
 
+func install_script_hook_files() -> void:
+	extensions_dir_path = mod_dir_path.path_join("extensions")
+	ModLoaderMod.install_script_hooks("res://main.gd", extensions_dir_path.path_join("main.gd"))
+
+
 func add_translations() -> void:
 	# ! Place all of your translation files into this directory
 	translations_dir_path = mod_dir_path.path_join("translations")
@@ -57,10 +63,10 @@ func add_translations() -> void:
 
 
 func _ready() -> void:
-	ModLoaderLog.info("Ready", AUTHORNAME_MODNAME_LOG_NAME)
+	ModLoaderLog.info("Ready", LOG_NAME)
 
 	# ! This uses Godot's native `tr` func, which translates a string. You'll
 	# ! find this particular string in the example CSV here: translations/modname.csv
-	ModLoaderLog.info("Translation Demo: " + tr("MODNAME_READY_TEXT"), AUTHORNAME_MODNAME_LOG_NAME)
+	ModLoaderLog.info("Translation Demo: " + tr("MODNAME_READY_TEXT"), LOG_NAME)
 
 
