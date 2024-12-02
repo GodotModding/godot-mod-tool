@@ -31,21 +31,28 @@ var path_global_seven_zip_base_dir := ""
 var path_global_final_zip := ""
 var excluded_file_extensions: PackedStringArray = [".csv.import"]
 var path_mod_files := []
+var path_script_backup_dir := "res://addons/mod_tool/.script_backup"
 var current_os := ""
 var is_seven_zip_installed := true
 var pending_reloads: Array[String] = []
+var is_hook_generation_done := false
+var hooked_scripts := {}
 
 # ModManifest instance
 var manifest_data : ModManifest
+
+var mod_hook_preprocessor := _ModLoaderModHookPreProcessor.new()
 
 
 func _ready() -> void:
 	load_store()
 
+	if not DirAccess.dir_exists_absolute(path_script_backup_dir):
+		create_script_backup_dir()
+
 
 func _exit_tree() -> void:
-	if not name_mod_dir == "":
-		save_store()
+	save_store()
 
 
 func set_name_mod_dir(new_name_mod_dir: String) -> void:
@@ -82,6 +89,9 @@ func init(store: Dictionary) -> void:
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = []
+	is_hook_generation_done = store.is_hook_generation_done
+	hooked_scripts = JSON.parse_string(store.hooked_scripts)
+	mod_hook_preprocessor.hashmap = JSON.parse_string(store.mod_hook_preprocessor_hashmap)
 
 
 func update_paths(new_name_mod_dir: String) -> void:
@@ -92,6 +102,11 @@ func update_paths(new_name_mod_dir: String) -> void:
 	path_global_final_zip =  "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 
 
+func create_script_backup_dir() -> void:
+	DirAccess.make_dir_recursive_absolute(path_script_backup_dir)
+	FileAccess.open("%s/.gdignore" % path_script_backup_dir, FileAccess.WRITE)
+
+
 func save_store() -> void:
 	var save_data := {
 		"name_mod_dir": name_mod_dir,
@@ -100,7 +115,10 @@ func save_store() -> void:
 		"path_export_dir": path_export_dir,
 		"path_global_project_dir": path_global_project_dir,
 		"path_temp_dir": path_temp_dir,
-		"excluded_file_extensions": excluded_file_extensions
+		"excluded_file_extensions": excluded_file_extensions,
+		"is_hook_generation_done": is_hook_generation_done,
+		"hooked_scripts": JSON.stringify(hooked_scripts),
+		"mod_hook_preprocessor_hashmap": JSON.stringify(mod_hook_preprocessor.hashmap)
 	}
 
 	var file := FileAccess.open(PATH_SAVE_FILE, FileAccess.WRITE)

@@ -21,6 +21,10 @@ var log_dock_button: Button
 @onready var manifest_editor := $"%Manifest Editor"
 @onready var export_path := $"%ExportPath"
 @onready var file_dialog := $"%FileDialog"
+@onready var hook_gen: ModToolInterfaceHookGen = %HookGen
+@onready var hook_restore: ModToolInterfaceHookRestore = %HookRestore
+@onready var button_add_hooks: Button = %AddHooks
+@onready var button_restore: Button = %Restore
 
 
 func _ready() -> void:
@@ -28,10 +32,15 @@ func _ready() -> void:
 
 	get_log_nodes()
 
-	# Load manifest.json file
-	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
-		manifest_editor.load_manifest()
-		manifest_editor.update_ui()
+	if mod_tool_store:
+		if mod_tool_store.is_hook_generation_done:
+			button_add_hooks.hide()
+		else:
+			button_restore.hide()
+		# Load manifest.json file
+		if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
+			manifest_editor.load_manifest()
+			manifest_editor.update_ui()
 
 	_update_ui()
 
@@ -182,3 +191,16 @@ func _on_FileDialog_dir_selected(dir: String) -> void:
 	mod_tool_store.path_export_dir = dir
 	export_path.input_text = dir
 	file_dialog.hide()
+
+
+func _on_add_hooks_pressed() -> void:
+	hook_gen.show()
+
+
+func _on_restore_pressed() -> void:
+	hook_restore.show()
+
+
+func _on_hook_gen_hooks_exist_pressed() -> void:
+	button_add_hooks.hide()
+	button_restore.show()
