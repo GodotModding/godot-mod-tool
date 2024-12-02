@@ -10,7 +10,7 @@ var translations_dir_path := ""
 
 
 func _init() -> void:
-	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(AUTHORNAME_MODNAME_DIR)
+	mod_dir_path = ModLoaderMod.get_unpacked_dir().path_join(MOD_DIR)
 	# Add extensions
 	install_script_extensions()
 	install_script_hook_files()
