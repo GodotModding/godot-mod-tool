@@ -22,8 +22,10 @@ func _init() -> void:
 func install_script_extensions() -> void:
 	extensions_dir_path = mod_dir_path.path_join("extensions")
 
+
 func install_script_hook_files() -> void:
 	extensions_dir_path = mod_dir_path.path_join("extensions")
+
 
 func add_translations() -> void:
 	translations_dir_path = mod_dir_path.path_join("translations")
