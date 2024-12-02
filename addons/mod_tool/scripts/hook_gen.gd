@@ -31,14 +31,16 @@ static func restore(path: String, mod_tool_store: ModToolStore) -> Error:
 	var backup_file := FileAccess.open(backup_path, FileAccess.READ)
 
 	if not backup_file:
-		return backup_file.get_error()
+		mod_tool_store.hooked_scripts.erase(path)
+		clear_mod_hook_preprocessor_hashmap(path, mod_tool_store)
+		return FileAccess.get_open_error()
 
 	var restored_source := backup_file.get_as_text()
 
 	var file := FileAccess.open(path, FileAccess.WRITE)
 
 	if not file:
-		return file.get_error()
+		return FileAccess.get_open_error()
 
 	# Write processed source_code to file
 	file.store_string(restored_source)

@@ -76,6 +76,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: Array[Strin
 
 	if script_paths.size() > 0:
 		add_script_extension_context_action(context_menu, script_paths)
+		add_mod_hook_file_context_action(context_menu, script_paths)
 
 		var script_with_hook_count := ModToolUtils.check_for_hooked_script(script_paths, mod_tool_store)
 
@@ -117,6 +118,34 @@ func create_script_extension(file_path: String) -> String:
 	return extension_path
 
 
+func create_mod_hook_file(file_path: String) -> String:
+	if not mod_tool_store.name_mod_dir:
+		ModToolUtils.output_error("Select an existing mod or create a new one to create script overrides")
+		return ""
+
+	var file_directory := file_path.get_base_dir().trim_prefix("res://")
+	var extension_directory: String = mod_tool_store.path_mod_dir.path_join("extensions").path_join(file_directory)
+	ModToolUtils.make_dir_recursive(extension_directory)
+
+	var hook_file_name := "%s.hooks.%s" % [file_path.get_file().get_basename(), file_path.get_extension()]
+	var extension_path := extension_directory.path_join(hook_file_name)
+	print(extension_path)
+	var file := FileAccess.open(extension_path, FileAccess.WRITE)
+	if not FileAccess.file_exists(extension_path):
+		file.store_line('extends Object')
+		file.close()
+		ModToolUtils.output_info('Created mod hook file for "%s" at path %s' % [file_path.get_file(), extension_path])
+
+	mod_tool_store.editor_file_system.scan()
+	EditorInterface.get_file_system_dock().navigate_to_path(extension_path)
+	# Load the new extension script
+	var extension_script: Script = load(extension_path)
+	# Open the new extension script in the script editor
+	EditorInterface.edit_script(extension_script)
+
+	return extension_path
+
+
 func add_script_extension_to_mod_main(extension_path: String) -> void:
 	var main_script_path: String = mod_tool_store.path_mod_dir.path_join("mod_main.gd")
 
@@ -124,7 +153,7 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 	if not file:
 		ModToolUtils.output_error("Failed to open mod_main.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
 	if not ModToolUtils.script_has_method(main_script_path, "install_script_extensions"):
-		ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add the method "install_script_extensions" to it.')
+		ModToolUtils.output_error('To automatically add new script extensions to "mod_main.gd", add "func install_script_extensions():" to it.')
 		return
 
 	var file_content := file.get_as_text()
@@ -159,6 +188,50 @@ func add_script_extension_to_mod_main(extension_path: String) -> void:
 	file.close()
 
 	ModToolUtils.output_info('Added script extension "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
+
+
+func add_hook_file_to_mod_main(vanilla_path: String, extension_path: String) -> void:
+	var main_script_path: String = mod_tool_store.path_mod_dir.path_join("mod_main.gd")
+
+	var file := FileAccess.open(main_script_path, FileAccess.READ_WRITE)
+	if not file:
+		ModToolUtils.output_error("Failed to open mod_main.gd with error \"%s\"" % error_string(FileAccess.get_open_error()))
+	if not ModToolUtils.script_has_method(main_script_path, "install_script_hook_files"):
+		ModToolUtils.output_error('To automatically add new script hook files to "mod_main.gd", add "func install_script_hook_files():" to it.')
+		return
+
+	var file_content := file.get_as_text()
+
+	var index_find_from := file_content.find("func install_script_hook_files")
+	var mod_extensions_dir_path_index := file_content.find("extensions_dir_path", index_find_from)
+
+	# Construct the line required to install the extension. If the standard way is used and a
+	# variable "extensions_dir_path" is found, use that variable in combination with path_join
+	var extension_install_line := "\tModLoaderMod.install_script_hooks(" + ModToolUtils.quote_string(vanilla_path) + ", %s)\n"
+	if mod_extensions_dir_path_index == -1:
+		extension_install_line = extension_install_line % ModToolUtils.quote_string(extension_path)
+	else:
+		extension_path = extension_path.trim_prefix(mod_tool_store.path_mod_dir.path_join("extensions/"))
+		extension_install_line = extension_install_line % "extensions_dir_path.path_join(%s)" % ModToolUtils.quote_string(extension_path)
+
+	# Check if that file was already used as script extension
+	if extension_install_line.strip_edges() in file_content:
+		return
+
+	var last_install_line_index := file_content.rfind("ModLoaderMod.install_script_hooks")
+	if last_install_line_index == -1:
+		# If there is no ModLoaderMod.install_script_hooks yet, put it at the end of install_script_hook_files
+		var insertion_index := ModToolUtils.get_index_at_method_end("install_script_hook_files", file_content)
+		file_content = file_content.insert(insertion_index, "\n" + extension_install_line)
+	else:
+		var last_install_line_end_index := file_content.find("\n", last_install_line_index)
+		file_content = file_content.insert(last_install_line_end_index +1, extension_install_line)
+
+	file.store_string(file_content)
+
+	file.close()
+
+	ModToolUtils.output_info('Added mod hooks file "%s" to mod "%s"' % [extension_path, main_script_path.get_base_dir().get_file()])
 
 
 func create_overwrite_asset(file_path: String) -> String:
@@ -283,6 +356,19 @@ func add_script_extension_context_action(context_menu: PopupMenu, script_paths: 
 	)
 
 
+func add_mod_hook_file_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+	add_context_action(
+		context_menu,
+		script_paths,
+		ContextActionOptions.new(
+			&"ScriptExtend",
+			"Create Mod Hook File",
+			&"mod_tool_mod_hook_file_paths",
+			"Will add mod hook files for"
+		)
+	)
+
+
 func add_restore_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
 	var script_paths_to_restore: Array[String] = script_paths.filter(
 		func(script_path): return mod_tool_store.hooked_scripts.has(script_path)
@@ -292,8 +378,8 @@ func add_restore_context_action(context_menu: PopupMenu, script_paths: Array[Str
 		context_menu,
 		script_paths_to_restore,
 		ContextActionOptions.new(
-			&"PlayStartBackwards",
-			"Restore non Hook Script",
+			&"UndoRedo",
+			"Restore script to unhooked version",
 			&"mod_tool_restore_script_paths",
 			"Will restore the non hooked script for"
 		)
@@ -322,8 +408,8 @@ func add_hooks_context_action(context_menu: PopupMenu, script_paths: Array[Strin
 		context_menu,
 		script_paths_to_add_hooks,
 		ContextActionOptions.new(
-			&"ScriptCreate",
-			"Add Mod Hooks",
+			&"ShaderGlobalsOverride",
+			"Convert script to hooked version",
 			&"mod_tool_hook_script_paths",
 			"Will add mod hooks for"
 		)
@@ -338,6 +424,26 @@ func handle_script_extension_creation(metadata: Dictionary) -> void:
 		var extension_path := create_script_extension(file_path)
 		if extension_path:
 			add_script_extension_to_mod_main(extension_path)
+
+	# We navigate to the created script extension in `create_script_extension()`, so we should never
+	# instantly refresh the mod main script here. If we call `ModToolUtils.reload_script()`
+	# after this, it's possible that the `mod_main` content gets copied into the
+	# newly created extension script. If that script is then saved, we
+	# unintentionally overwrite the original script content.
+	mod_tool_store.pending_reloads.push_back(mod_main_path)
+
+	 #Switch to the script screen
+	EditorInterface.set_main_screen_editor("Script")
+
+
+func handle_mod_hook_file_creation(metadata: Dictionary) -> void:
+	var file_paths = metadata.mod_tool_mod_hook_file_paths
+	var mod_main_path := mod_tool_store.path_mod_dir.path_join("mod_main.gd")
+
+	for file_path in file_paths:
+		var extension_path := create_mod_hook_file(file_path)
+		if extension_path:
+			add_hook_file_to_mod_main(file_path, extension_path)
 
 	# We navigate to the created script extension in `create_script_extension()`, so we should never
 	# instantly refresh the mod main script here. If we call `ModToolUtils.reload_script()`
@@ -450,6 +556,9 @@ func _on_file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> v
 
 	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
 		handle_override_creation(metadata)
+
+	if metadata is Dictionary and metadata.has("mod_tool_mod_hook_file_paths"):
+		handle_mod_hook_file_creation(metadata)
 
 	if metadata is Dictionary and metadata.has("mod_tool_hook_script_paths"):
 		handle_mod_hook_creation(metadata)

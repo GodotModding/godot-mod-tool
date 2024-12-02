@@ -44,7 +44,7 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 
 	# Open the export dir
 	var file_manager_path: String = mod_tool_store.path_global_export_dir
-	if OS.has_feature("OSX"):
+	if OS.has_feature("macos"):
 		file_manager_path = "file://" + file_manager_path
 	OS.shell_open(file_manager_path)
 
