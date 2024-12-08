@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/mod_tool/interface/global/button_with_hint.gd" type="Script" id=1]
+
+[node name="Button" type="Button"]
+margin_right = 12.0
+margin_bottom = 20.0
+script = ExtResource( 1 )
