@@ -25,14 +25,11 @@ var path_global_project_dir := ""
 var path_global_temp_dir := ""
 var path_addon_dir := "res://addons/mod_tool/"
 var path_global_addon_dir := ""
-var path_global_seven_zip := ""
-var path_global_seven_zip_base_dir := ""
 var path_global_final_zip := ""
 var path_last_linked_mod := ""
 var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
-var is_seven_zip_installed := true
 
 # ModManifest instance
 var manifest_data : ModManifest
@@ -65,25 +62,6 @@ func set_path_export_dir(new_path_export_dir: String) -> void:
 func init(store: Dictionary) -> void:
 	path_global_project_dir = ProjectSettings.globalize_path(_ModLoaderPath.get_local_folder_dir())
 	path_global_addon_dir = path_global_project_dir + "addons/mod_tool/"
-	if OS.has_feature("Windows"):
-		current_os = "windows"
-		path_global_seven_zip_base_dir = path_global_addon_dir + "vendor/7zip/windows/"
-		path_global_seven_zip = path_global_seven_zip_base_dir + "7z.exe"
-	elif OS.has_feature("OSX"):
-		current_os = "osx"
-		path_global_seven_zip_base_dir = path_global_addon_dir + "vendor/7zip/mac/"
-		path_global_seven_zip = path_global_seven_zip_base_dir + "7zz"
-	elif OS.has_feature("X11"):
-		current_os = "x11"
-		path_global_seven_zip_base_dir = path_global_addon_dir + "vendor/7zip/linux/"
-		path_global_seven_zip = path_global_seven_zip_base_dir + "7zz"
-	else:
-		ModToolUtils.output_error("OS currently not supported to export zips via mod tool. Please open an issue on GitHub")
-
-	if not File.new().file_exists(path_global_seven_zip):
-		is_seven_zip_installed = false
-		ModToolUtils.output_error("7-Zip installation not found at the path: %s. Please install it at this location." % path_global_seven_zip)
-		ModToolUtils.output_error("You can use the \"Get 7zip\" button in the \"Mod Tool\" panel to download and install it.")
 
 	name_mod_dir = store.name_mod_dir
 	path_mod_dir = "res://mods-unpacked/" + store.name_mod_dir
