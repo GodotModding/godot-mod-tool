@@ -26,7 +26,6 @@ static func mk_soft_dir(p_target: String, p_linkpath: String = "") -> int:
 				target,
 				"-name",
 				target.get_file(),
-
 			]
 			OS.execute("powershell.exe", ["-command", "Start-Process -FilePath \"powershell\" -Verb RunAs -ArgumentList '%s'" % " ".join(params)], true, output)
 			return OK
