@@ -22,7 +22,7 @@ func _ready() -> void:
 
 func add_mod() -> void:
 	# Validate mod-id
-	if not ModManifest.is_mod_id_valid(mod_tool_store.name_mod_dir, mod_tool_store.name_mod_dir, "", true):
+	if not mod_tool_store.manifest_data.is_mod_id_valid(mod_tool_store.name_mod_dir, mod_tool_store.name_mod_dir, "", true):
 		ModToolUtils.output_error('Invalid name or namespace: "%s". You may only use letters, numbers, underscores and at least 3 characters for each.' % mod_tool_store.name_mod_dir)
 		return
 
@@ -115,17 +115,17 @@ func get_template_options() -> Array[String]:
 
 
 func _on_Namespace_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
-	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
+	input_node.validate(mod_tool_store.manifest_data.is_name_or_namespace_valid(new_value, true))
 	mod_id.input_text = "%s-%s" % [mod_namespace.get_input_value(), mod_name.get_input_value()]
 
 
 func _on_ModName_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
-	input_node.validate(ModManifest.is_name_or_namespace_valid(new_value, true))
+	input_node.validate(mod_tool_store.manifest_data.is_name_or_namespace_valid(new_value, true))
 	mod_id.input_text = "%s-%s" % [mod_namespace.get_input_value(), mod_name.get_input_value()]
 
 
 func _on_ModId_value_changed(new_value: String, input_node: ModToolInterfaceInputString) -> void:
-	input_node.validate(ModManifest.is_mod_id_valid(new_value, new_value, "", true))
+	input_node.validate(mod_tool_store.manifest_data.is_mod_id_valid(new_value, new_value, "", true))
 	mod_tool_store.name_mod_dir = new_value
 
 
