@@ -4,7 +4,7 @@ extends RefCounted
 
 
 static func transform_one(path: String, mod_tool_store: ModToolStore) -> Error:
-	var source_code_processed := mod_tool_store.mod_hook_preprocessor.process_script(path)
+	var source_code_processed := mod_tool_store.mod_hook_preprocessor.process_script(path, true)
 	var backup_path := "%s/%s" % [mod_tool_store.path_script_backup_dir, path.trim_prefix("res://")]
 
 	# Create a backup of the vanilla script files

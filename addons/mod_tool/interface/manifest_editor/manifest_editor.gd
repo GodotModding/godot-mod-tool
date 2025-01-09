@@ -4,7 +4,7 @@ extends PanelContainer
 
 var input_fields := []
 
-@onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
+@onready var mod_tool_store: ModToolStore = get_node_or_null("/root/ModToolStore")
 @onready var manifest_input_vbox := $"%InputVBox"
 @onready var input_incompatibilities: ModToolInterfaceInputString = $"%Incompatibilities"
 @onready var input_dependencies: ModToolInterfaceInputString = $"%Dependencies"
@@ -23,7 +23,7 @@ func _ready() -> void:
 
 func load_manifest() -> void:
 	var manifest_dict_json := _ModLoaderFile.get_json_as_dict(mod_tool_store.path_manifest)
-	mod_tool_store.manifest_data = ModManifest.new(manifest_dict_json)
+	mod_tool_store.manifest_data = ModManifest.new(manifest_dict_json, mod_tool_store.path_mod_dir)
 	ModToolUtils.output_info("Loaded manifest from " + mod_tool_store.path_manifest)
 
 
@@ -80,17 +80,17 @@ func _on_SaveManifest_pressed() -> void:
 
 func _on_ModName_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
-	input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true))
+	input_node.validate(mod_tool_store.manifest_data.is_name_or_namespace_valid(new_text, true))
 
 
 func _on_Namespace_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
-	input_node.validate(ModManifest.is_name_or_namespace_valid(new_text, true))
+	input_node.validate(mod_tool_store.manifest_data.is_name_or_namespace_valid(new_text, true))
 
 
 func _on_Version_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	_update_manifest_value(input_node, new_text)
-	input_node.validate(ModManifest.is_semver_valid("", new_text, "version", true))
+	input_node.validate(mod_tool_store.manifest_data.is_semver_valid("", new_text, "version", true))
 
 
 # When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
@@ -106,8 +106,8 @@ func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfa
 		dependencies = input_dependencies.get_input_as_array_from_comma_separated_string()
 		_update_manifest_value(input_dependencies, dependencies)
 
-	var is_id_array_valid := ModManifest.is_mod_id_array_valid(mod_tool_store.name_mod_dir, dependencies, "dependencies", true)
-	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_id_array_valid := mod_tool_store.manifest_data.is_mod_id_array_valid(mod_tool_store.name_mod_dir, dependencies, "dependencies", true)
+	var is_distinct_mod_id_incompatibilities := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			dependencies,
 			mod_tool_store.manifest_data.incompatibilities,
@@ -115,7 +115,7 @@ func _on_Dependencies_value_changed(new_text: String, input_node: ModToolInterfa
 			"",
 			true
 		)
-	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_distinct_mod_id_optional_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			dependencies,
 			mod_tool_store.manifest_data.optional_dependencies,
@@ -144,8 +144,8 @@ func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToo
 		optional_dependencies = input_optional_dependencies.get_input_as_array_from_comma_separated_string()
 		_update_manifest_value(input_optional_dependencies, optional_dependencies)
 
-	var is_id_array_valid := ModManifest.is_mod_id_array_valid(mod_tool_store.name_mod_dir, optional_dependencies, "optional_dependencies", true)
-	var is_distinct_mod_id_incompatibilities := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_id_array_valid := mod_tool_store.manifest_data.is_mod_id_array_valid(mod_tool_store.name_mod_dir, optional_dependencies, "optional_dependencies", true)
+	var is_distinct_mod_id_incompatibilities := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			optional_dependencies,
 			mod_tool_store.manifest_data.incompatibilities,
@@ -153,7 +153,7 @@ func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToo
 			"",
 			true
 		)
-	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_distinct_mod_id_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			optional_dependencies,
 			mod_tool_store.manifest_data.dependencies,
@@ -172,7 +172,7 @@ func _on_OptionalDependencies_value_changed(new_text: String, input_node: ModToo
 func _on_CompatibleModLoaderVersions_value_changed(new_text: String, input_node: ModToolInterfaceInputString) -> void:
 	var compatible_modloader_versions := input_node.get_input_as_array_from_comma_separated_string()
 	_update_manifest_value(input_node, compatible_modloader_versions)
-	input_node.validate(ModManifest.is_semver_version_array_valid(mod_tool_store.name_mod_dir, compatible_modloader_versions, "Compatible ModLoader Versions", true))
+	input_node.validate(mod_tool_store.manifest_data.is_semver_version_array_valid(mod_tool_store.name_mod_dir, compatible_modloader_versions, "Compatible ModLoader Versions", true))
 
 
 # When dealing with Inputs that depend on other Inputs, the `input_node` is not utilized.
@@ -188,8 +188,8 @@ func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolIn
 		incompatibilities = input_incompatibilities.get_input_as_array_from_comma_separated_string()
 		_update_manifest_value(input_incompatibilities, incompatibilities)
 
-	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(mod_tool_store.name_mod_dir, incompatibilities, "incompatibilities", true)
-	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_mod_id_array_valid := mod_tool_store.manifest_data.is_mod_id_array_valid(mod_tool_store.name_mod_dir, incompatibilities, "incompatibilities", true)
+	var is_distinct_mod_id_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			mod_tool_store.manifest_data.dependencies,
 			incompatibilities,
@@ -197,7 +197,7 @@ func _on_Incompatibilities_value_changed(new_text: String, input_node: ModToolIn
 			"",
 			true
 		)
-	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_distinct_mod_id_optional_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			mod_tool_store.manifest_data.optional_dependencies,
 			incompatibilities,
@@ -226,8 +226,8 @@ func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterface
 		load_before = input_load_before.get_input_as_array_from_comma_separated_string()
 		_update_manifest_value(input_load_before, load_before)
 
-	var is_mod_id_array_valid := ModManifest.is_mod_id_array_valid(mod_tool_store.name_mod_dir, load_before, "load_before", true)
-	var is_distinct_mod_id_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_mod_id_array_valid := mod_tool_store.manifest_data.is_mod_id_array_valid(mod_tool_store.name_mod_dir, load_before, "load_before", true)
+	var is_distinct_mod_id_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			load_before,
 			mod_tool_store.manifest_data.dependencies,
@@ -235,7 +235,7 @@ func _on_LoadBefore_value_changed(new_text: String, input_node: ModToolInterface
 			"\"load_before\" should be handled as optional dependency adding it to \"dependencies\" will cancel out the desired effect.",
 			true
 		)
-	var is_distinct_mod_id_optional_dependencies := ModManifest.validate_distinct_mod_ids_in_arrays(
+	var is_distinct_mod_id_optional_dependencies := mod_tool_store.manifest_data.validate_distinct_mod_ids_in_arrays(
 			mod_tool_store.name_mod_dir,
 			load_before,
 			mod_tool_store.manifest_data.optional_dependencies,
