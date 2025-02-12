@@ -41,6 +41,10 @@ func _ready() -> void:
 		if _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
 			manifest_editor.load_manifest()
 			manifest_editor.update_ui()
+		else:
+			# Create empty Manifest
+			var template_manifest_data := _ModLoaderFile.get_json_as_dict("res://addons/mod_tool/templates/minimal/manifest.json")
+			mod_tool_store.manifest_data = ModManifest.new(template_manifest_data, "")
 
 	_update_ui()
 
