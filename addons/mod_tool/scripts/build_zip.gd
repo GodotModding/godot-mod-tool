@@ -73,7 +73,70 @@ func _get_imported_file_path(import_file_path: String) -> String:
 	return imported_file_path
 
 
+func version_to_int(major: int, minor: int, patch: int) -> int:
+	return (major << 16) | (minor << 8) | patch
+
+
+func get_win_archive_module_version_string() -> String:
+	var output_archive_module_version := []
+	var command_archive_module_version := "(Get-InstalledModule -Name Microsoft.PowerShell.Archive).Version.toString()"
+	OS.execute("powershell.exe", ["-command", command_archive_module_version], true, output_archive_module_version)
+
+	if output_archive_module_version.empty():
+		ModToolUtils.output_error("Failed to retrieve PowerShell Archive module version.")
+		return ""
+
+	return "".join(output_archive_module_version)
+
+
+func get_win_archive_module_version_array() -> PoolStringArray:
+	var archive_module_version := get_win_archive_module_version_string()
+	if archive_module_version.empty():
+		return PoolStringArray([])
+
+	var archive_module_version_array := archive_module_version.split(".")
+
+	if archive_module_version_array.size() < 3:
+		ModToolUtils.output_error("Invalid version format: %s" % archive_module_version)
+		return PoolStringArray([])
+
+	return archive_module_version_array
+
+
+func get_win_archive_module_version_hex() -> int:
+	var archive_module_version := get_win_archive_module_version_array()
+
+	if archive_module_version.size() < 3:
+		return -1
+
+	return version_to_int(
+		int(archive_module_version[0]),
+		int(archive_module_version[1]),
+		int(archive_module_version[2])
+	)
+
+
+func update_win_archive_module() -> bool:
+	var output_update_nuGet := []
+	var command_update_nuGet := "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser"
+	OS.execute("powershell.exe", ["-command", command_update_nuGet], true, output_update_nuGet)
+
+	var output_update_archive_module := []
+	var command_update_archive_module := "Install-module -Name Microsoft.PowerShell.Archive -Scope CurrentUser -Force"
+	OS.execute("powershell.exe", ["-command", command_update_archive_module], true, output_update_archive_module)
+
+	return true
+
+
 func zip_win(mod_tool_store: ModToolStore) -> String:
+	var version_hex := get_win_archive_module_version_hex()
+	# The powershell archive module needs to be at least version 1.2.5
+	# See https://github.com/PowerShell/Microsoft.PowerShell.Archive/pull/62
+	if version_hex < 0x010205:
+		ModToolUtils.output_info("Powershell archive module update required - starting update process.")
+		var _success := update_win_archive_module()
+		ModToolUtils.output_info("Successfully updated archive module to: %s" % get_win_archive_module_version_string())
+
 	var output := []
 	var command := "Compress-Archive -Path '%s/*' -DestinationPath '%s'" % [mod_tool_store.path_global_temp_dir, mod_tool_store.path_global_final_zip]
 	OS.execute("powershell.exe", ["-command", command], true, output)
