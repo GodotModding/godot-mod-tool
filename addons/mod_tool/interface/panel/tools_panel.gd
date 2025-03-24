@@ -22,6 +22,12 @@ onready var manifest_editor := $"%Manifest Editor"
 onready var export_path := $"%ExportPath"
 onready var file_dialog_export := $"%FileDialogExport"
 onready var file_dialog_link_mod := $"%FileDialogLinkMod"
+onready var export_status: Label = $"%ExportStatus"
+onready var export_button: Button = $"%Export"
+onready var update_archive_module: Button = $"%UpdateArchiveModule"
+onready var update_archive_module_info: Button = $"%UpdateArchiveModuleInfo"
+
+onready var zip_builder: ModToolZipBuilder = ModToolZipBuilder.new()
 
 
 func _ready() -> void:
@@ -33,6 +39,20 @@ func _ready() -> void:
 	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
+
+	# Check powershell archive module version if on windows
+	if OS.has_feature("Windows") and not zip_builder.is_win_archive_module_fixed():
+		export_status.text = "Export Status: PowerShell Archive Module Update required!"
+		export_button.disabled =  true
+		update_archive_module.show()
+		update_archive_module_info.show()
+	else:
+		# Make sure to reset everything to default, don't rely on what is set in the scene file.
+		# It's easy to accidentally manipulate that in the editor.
+		export_status.text = "Export Status: OK"
+		export_button.disabled =  false
+		update_archive_module.hide()
+		update_archive_module_info.hide()
 
 	_update_ui()
 
@@ -132,10 +152,36 @@ func load_mod(name_mod_dir: String) -> void:
 	ModToolUtils.output_info("Mod \"%s\" loaded." % name_mod_dir)
 
 
+func wait_for_win_archive_module_update(update_archive_module_shell_pids: Array, timeout_counter := 0) -> void:
+	yield(get_tree().create_timer(0.15), "timeout")
+
+	var processes_completed := 0
+
+	for pid in update_archive_module_shell_pids:
+		if not OS.is_process_running(pid):
+			processes_completed += 1
+
+	if processes_completed < 2:
+		if timeout_counter > 100:
+			ModToolUtils.output_error("Error Updating Archive Module: Timeout.")
+			return
+		ModToolUtils.output_info("Updating Archive Module")
+		wait_for_win_archive_module_update(update_archive_module_shell_pids, timeout_counter + 1)
+		return
+
+	if zip_builder.is_win_archive_module_fixed():
+		ModToolUtils.output_info("Successfully updated archive module to: %s" % zip_builder.get_win_archive_module_version_string())
+		export_status.text = "Export Status: OK"
+		export_button.disabled = false
+		update_archive_module.hide()
+		update_archive_module_info.hide()
+	else:
+		ModToolUtils.output_error("Something went wrong updating the archive module.")
+
+
 func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
-		var zipper := ModToolZipBuilder.new()
-		zipper.build_zip(mod_tool_store)
+		zip_builder.build_zip(mod_tool_store)
 
 
 func _on_clear_output_pressed() -> void:
@@ -215,3 +261,12 @@ func _on_LinkMod_pressed() -> void:
 
 	file_dialog_link_mod.current_path = current_path
 	file_dialog_link_mod.popup_centered()
+
+
+func _on_UpdateArchiveModule_pressed() -> void:
+	var update_archive_module_shell_pids := zip_builder.update_win_archive_module()
+	wait_for_win_archive_module_update(update_archive_module_shell_pids)
+
+
+func _on_UpdateArchiveModuleInfo_pressed() -> void:
+	OS.shell_open("https://github.com/GodotModding/godot-mod-tool/issues/127")

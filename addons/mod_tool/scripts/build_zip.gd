@@ -116,27 +116,28 @@ func get_win_archive_module_version_hex() -> int:
 	)
 
 
-func update_win_archive_module() -> bool:
-	var output_update_nuGet := []
-	var command_update_nuGet := "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser"
-	OS.execute("powershell.exe", ["-command", command_update_nuGet], true, output_update_nuGet)
-
-	var output_update_archive_module := []
-	var command_update_archive_module := "Install-module -Name Microsoft.PowerShell.Archive -Scope CurrentUser -Force"
-	OS.execute("powershell.exe", ["-command", command_update_archive_module], true, output_update_archive_module)
+# The powershell archive module needs to be at least version 1.2.5
+# See https://github.com/PowerShell/Microsoft.PowerShell.Archive/pull/62
+func is_win_archive_module_fixed() -> bool:
+	if get_win_archive_module_version_hex() < 0x010205:
+		return false
 
 	return true
 
 
-func zip_win(mod_tool_store: ModToolStore) -> String:
-	var version_hex := get_win_archive_module_version_hex()
-	# The powershell archive module needs to be at least version 1.2.5
-	# See https://github.com/PowerShell/Microsoft.PowerShell.Archive/pull/62
-	if version_hex < 0x010205:
-		ModToolUtils.output_info("Powershell archive module update required - starting update process.")
-		var _success := update_win_archive_module()
-		ModToolUtils.output_info("Successfully updated archive module to: %s" % get_win_archive_module_version_string())
+func update_win_archive_module() -> Array:
+	var output_update_nuGet := []
+	var command_update_nuGet := "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser"
+	var pid_0 := OS.execute("powershell.exe", ["-command", command_update_nuGet], false, output_update_nuGet)
 
+	var output_update_archive_module := []
+	var command_update_archive_module := "Install-module -Name Microsoft.PowerShell.Archive -Scope CurrentUser -Force"
+	var pid_1 := OS.execute("powershell.exe", ["-command", command_update_archive_module], false, output_update_archive_module)
+
+	return [pid_0, pid_1]
+
+
+func zip_win(mod_tool_store: ModToolStore) -> String:
 	var output := []
 	var command := "Compress-Archive -Path '%s/*' -DestinationPath '%s'" % [mod_tool_store.path_global_temp_dir, mod_tool_store.path_global_final_zip]
 	OS.execute("powershell.exe", ["-command", command], true, output)
