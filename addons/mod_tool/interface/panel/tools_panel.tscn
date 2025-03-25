@@ -277,10 +277,10 @@ unique_name_in_owner = true
 margin_top = 76.0
 margin_right = 300.0
 margin_bottom = 96.0
-hint_tooltip = "Creates a sim-link in the mods-unpacked directory."
+hint_tooltip = "Creates a symbolic link in the mods-unpacked directory."
 text = "Link existing Mod"
 script = ExtResource( 9 )
-hint_text = "Creates a sim-link in the mods-unpacked directory."
+hint_text = "Creates a symbolic link in the mods-unpacked directory."
 
 [node name="CreateMod" parent="." instance=ExtResource( 1 )]
 unique_name_in_owner = true
