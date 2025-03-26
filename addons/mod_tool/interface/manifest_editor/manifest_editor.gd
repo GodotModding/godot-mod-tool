@@ -3,6 +3,9 @@ extends PanelContainer
 
 
 var input_fields := []
+var auto_save_timer: Timer
+var auto_save_cool_down := 2.5 # time from last input to autosave
+
 
 onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
 onready var manifest_input_vbox := $"%InputVBox"
@@ -10,7 +13,8 @@ onready var input_incompatibilities: ModToolInterfaceInputString = $"%Incompatib
 onready var input_dependencies: ModToolInterfaceInputString = $"%Dependencies"
 onready var input_optional_dependencies: ModToolInterfaceInputString = $"%OptionalDependencies"
 onready var input_load_before: ModToolInterfaceInputString = $"%LoadBefore"
-
+onready var unsaved_changes: CheckButton = $"%UnsavedChanges"
+onready var auto_save: CheckBox = $"%AutoSave"
 
 
 func _ready() -> void:
@@ -20,6 +24,14 @@ func _ready() -> void:
 		if node is ModToolInterfaceInputString:
 			input_fields.append(node)
 
+	auto_save.pressed = mod_tool_store.auto_save_enabled
+	unsaved_changes.pressed = false
+
+	auto_save_timer = Timer.new()
+	add_child(auto_save_timer)
+	auto_save_timer.one_shot = true
+	auto_save_timer.connect("timeout", self, "_on_auto_save_timer_timeout")
+
 
 func load_manifest() -> void:
 	var manifest_dict_json := _ModLoaderFile.get_json_as_dict(mod_tool_store.path_manifest)
@@ -27,13 +39,33 @@ func load_manifest() -> void:
 	ModToolUtils.output_info("Loaded manifest from " + mod_tool_store.path_manifest)
 
 
-func save_manifest() -> void:
-	var invalid_inputs := get_invalid()
+func save_manifest_auto() -> void:
+	if not auto_save_timer:
+		return
 
-	if invalid_inputs.size() == 0:
-		var _is_success := ModToolUtils.save_to_manifest_json(mod_tool_store.manifest_data, mod_tool_store.path_manifest)
+	auto_save_timer.start(auto_save_cool_down)
+
+
+func save_manifest_verbose() -> void:
+	var error_message := save_manifest()
+	if error_message.empty():
+		unsaved_changes.pressed = false
+		unsaved_changes.disabled = true
+		ModToolUtils.output_info("Successfully saved manifest.json file!")
 	else:
-		ModToolUtils.output_error('Invalid Manifest - Manifest not saved! Please check your inputs in the following fields -> ' + ", ".join(invalid_inputs))
+		ModToolUtils.output_error(error_message)
+
+
+func save_manifest() -> String:
+	var invalid_inputs := get_invalid()
+	if invalid_inputs.size() == 0:
+		var is_success := ModToolUtils.save_to_manifest_json(mod_tool_store.manifest_data, mod_tool_store.path_manifest)
+		if is_success:
+			return ""
+		else:
+			return "Something went wrong saving the manifest.json file to \"%s\"" % mod_tool_store.path_manifest
+	else:
+		return 'Invalid Manifest - manifest.json not saved! Please check your inputs in the following fields -> ' + ", ".join(invalid_inputs)
 
 
 func update_ui() -> void:
@@ -68,10 +100,23 @@ func get_invalid() -> Array:
 func _update_manifest_value(input: ModToolInterfaceInputString, new_value) -> void:
 	if mod_tool_store.manifest_data:
 		mod_tool_store.manifest_data.set(input.key, new_value)
+		unsaved_changes.pressed = true
+		unsaved_changes.disabled = false
+
+		if mod_tool_store.auto_save_enabled:
+			save_manifest_auto()
 
 
 func _on_SaveManifest_pressed() -> void:
-	save_manifest()
+	save_manifest_verbose()
+
+
+func _on_auto_save_timer_timeout() -> void:
+	save_manifest_verbose()
+
+
+func _on_AutoSave_toggled(button_pressed: bool) -> void:
+	mod_tool_store.auto_save_enabled = button_pressed
 
 
 # Validated StringInputs

@@ -30,6 +30,7 @@ var path_last_linked_mod := ""
 var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
+var auto_save_enabled := true
 
 # ModManifest instance
 var manifest_data : ModManifest
@@ -72,6 +73,7 @@ func init(store: Dictionary) -> void:
 	path_manifest = path_mod_dir + "/manifest.json"
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 	path_last_linked_mod = store.path_last_linked_mod
+	auto_save_enabled = store.auto_save_enabled
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = [".csv.import"]
@@ -96,6 +98,7 @@ func save_store() -> void:
 		"path_temp_dir": path_temp_dir,
 		"excluded_file_extensions": excluded_file_extensions,
 		"path_last_linked_mod": path_last_linked_mod,
+		"auto_save_enabled": auto_save_enabled,
 	}
 
 	var file := File.new()
