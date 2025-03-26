@@ -31,6 +31,10 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 		# Copy mod_file to temp folder
 		ModToolUtils.file_copy(path_mod_file, path_zip_file)
 
+	# Delete the zip if it already exists
+	if _ModLoaderFile.file_exists(mod_tool_store.path_global_final_zip):
+		_ModLoaderFile.remove_file(mod_tool_store.path_global_final_zip)
+
 	# Zip that folder
 	var output: String
 	if OS.has_feature("Windows"):
