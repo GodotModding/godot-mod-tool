@@ -58,9 +58,6 @@ static func save_to_manifest_json(manifest_data: ModManifest, path_manifest: Str
 		path_manifest
 	)
 
-	if is_success:
-		output_info("Successfully saved manifest.json file!")
-
 	return is_success
 
 
