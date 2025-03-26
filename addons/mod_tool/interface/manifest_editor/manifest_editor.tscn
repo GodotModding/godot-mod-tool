@@ -34,26 +34,25 @@ margin_bottom = 40.0
 
 [node name="Label" type="Label" parent="VBox/HBox2"]
 margin_top = 13.0
-margin_right = 661.0
+margin_right = 558.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Metadata required for your mod"
 
-[node name="ErrorLabel" type="Label" parent="VBox/HBox2"]
+[node name="UnsavedChanges" type="CheckButton" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 665.0
-margin_top = 13.0
-margin_right = 769.0
-margin_bottom = 27.0
-text = "Manifest is valid"
+margin_left = 562.0
+margin_right = 754.0
+margin_bottom = 40.0
+disabled = true
+text = "Unsaved Changes"
 
-[node name="ShouldValidate" type="CheckButton" parent="VBox/HBox2"]
+[node name="AutoSave" type="CheckBox" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 773.0
+margin_left = 758.0
 margin_right = 849.0
 margin_bottom = 40.0
-pressed = true
-flat = true
+text = "Auto Save"
 
 [node name="VSeparator" type="VSeparator" parent="VBox/HBox2"]
 margin_left = 853.0
@@ -333,24 +332,25 @@ label_text = "Tags"
 hint_text = "Comma-separated list of tags that describe your mod.."
 input_placeholder = "Tag1, Tag2"
 
+[connection signal="toggled" from="VBox/HBox2/AutoSave" to="." method="_on_AutoSave_toggled"]
 [connection signal="pressed" from="VBox/HBox2/SaveManifest" to="." method="_on_SaveManifest_pressed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/ModName" to="." method="_on_ModName_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Namespace" to="." method="_on_Namespace_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Version" to="." method="_on_Version_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/WebsiteUrl" to="." method="_on_WebsiteUrl_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Dependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Dependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Description" to="." method="_on_Description_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Authors" to="." method="_on_Authors_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Incompatibilities_value_changed" binds= [ false ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_OptionalDependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_LoadBefore_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleGameVersions" to="." method="_on_CompatibleGameVersions_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleModLoaderVersions" to="." method="_on_CompatibleModLoaderVersions_value_changed"]
