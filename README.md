@@ -2,7 +2,7 @@
 
 # Godot Mod Loader Development Tool
 
-<img alt="Godot Mod Loader Devtool Logo" src="https://github.com/GodotModding/godot-mod-tool/blob/main/icon.png" width="256" />
+<img alt="Godot Mod Loader Devtool Logo" src="./icon.png" width="256" />
 
 <br />
 <br />
