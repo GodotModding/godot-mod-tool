@@ -56,7 +56,7 @@ func add_mod() -> void:
 		ModToolUtils.output_info("Added base mod files to " + mod_tool_store.path_mod_dir)
 
 		# Replace the mod ID in mod_main.gd with the specified one
-		# However, keep comments mentioning "(AuthorName-ModName)
+		# However, keep comments mentioning "(AuthorName-ModName)"
 		var mod_main_script: GDScript = load(mod_tool_store.path_mod_dir.path_join("mod_main.gd"))
 		mod_main_script.source_code = mod_main_script.source_code.replace('"AuthorName-ModName', '"%s' % mod_tool_store.name_mod_dir)
 		mod_main_script.source_code = mod_main_script.source_code.replace('/AuthorName-ModName', '/%s' % mod_tool_store.name_mod_dir)
