@@ -25,65 +25,66 @@ script = ExtResource( 4 )
 [node name="VBox" type="VBoxContainer" parent="."]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 593.0
+margin_right = 1913.0
+margin_bottom = 1073.0
 
 [node name="HBox2" type="HBoxContainer" parent="VBox"]
-margin_right = 1010.0
+margin_right = 1906.0
 margin_bottom = 40.0
 
 [node name="Label" type="Label" parent="VBox/HBox2"]
 margin_top = 13.0
-margin_right = 558.0
+margin_right = 1454.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Metadata required for your mod"
 
 [node name="UnsavedChanges" type="CheckButton" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 562.0
-margin_right = 754.0
+margin_left = 1458.0
+margin_right = 1650.0
 margin_bottom = 40.0
 disabled = true
 text = "Unsaved Changes"
 
 [node name="AutoSave" type="CheckBox" parent="VBox/HBox2"]
 unique_name_in_owner = true
-margin_left = 758.0
-margin_right = 849.0
+margin_left = 1654.0
+margin_right = 1745.0
 margin_bottom = 40.0
+pressed = true
 text = "Auto Save"
 
 [node name="VSeparator" type="VSeparator" parent="VBox/HBox2"]
-margin_left = 853.0
-margin_right = 857.0
+margin_left = 1749.0
+margin_right = 1753.0
 margin_bottom = 40.0
 
 [node name="SaveManifest" type="Button" parent="VBox/HBox2"]
-margin_left = 861.0
-margin_right = 1010.0
+margin_left = 1757.0
+margin_right = 1906.0
 margin_bottom = 40.0
 text = "Save to manifest.json"
 
 [node name="Panel" type="PanelContainer" parent="VBox"]
 margin_top = 44.0
-margin_right = 1010.0
-margin_bottom = 586.0
+margin_right = 1906.0
+margin_bottom = 1066.0
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 1 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBox/Panel"]
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 1006.0
-margin_bottom = 538.0
+margin_right = 1902.0
+margin_bottom = 1018.0
 size_flags_vertical = 3
 follow_focus = true
 scroll_horizontal_enabled = false
 
 [node name="InputVBox" type="VBoxContainer" parent="VBox/Panel/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 700.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -91,7 +92,7 @@ __meta__ = {
 }
 
 [node name="Category" type="LineEdit" parent="VBox/Panel/ScrollContainer/InputVBox"]
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 24.0
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -107,7 +108,7 @@ middle_mouse_paste_enabled = false
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 28.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 60.0
 hint_tooltip = "Name of the Mod.
 Only letters, numbers and underscores allowed."
@@ -122,7 +123,7 @@ Only letters, numbers and underscores allowed."
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 64.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 96.0
 hint_tooltip = "Namespace of the Mod.
 Often just the main author or team name.
@@ -139,7 +140,7 @@ Only letters, numbers and underscores allowed."
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 100.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 132.0
 hint_tooltip = "Semantic version string.
 Only integers and periods allowed.
@@ -159,7 +160,7 @@ input_text = "0.0.1"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 136.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 168.0
 hint_tooltip = "URL for your website or repository."
 mouse_default_cursor_shape = 16
@@ -172,7 +173,7 @@ input_placeholder = "https://example.com"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 172.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 204.0
 hint_tooltip = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
@@ -195,14 +196,14 @@ input_placeholder = "Namespace-ModName, Author-Name"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 208.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 420.0
 key = "description"
 label_text = "Description"
 
 [node name="Category2" type="LineEdit" parent="VBox/Panel/ScrollContainer/InputVBox"]
 margin_top = 424.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 448.0
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -218,7 +219,7 @@ middle_mouse_paste_enabled = false
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 452.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 484.0
 hint_tooltip = "Comma-separated list of Authors"
 mouse_default_cursor_shape = 16
@@ -231,7 +232,7 @@ input_placeholder = "Author1, Autor2"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 488.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 520.0
 hint_tooltip = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
@@ -252,7 +253,7 @@ input_placeholder = "Namespace-ModName, Author-Name"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 524.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 556.0
 hint_tooltip = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
@@ -273,7 +274,7 @@ input_placeholder = "Namespace-ModName, Author-Name"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 560.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 592.0
 hint_tooltip = "Comma-separated list of mod IDs.
 Only letters, numbers and underscores allowed.
@@ -296,7 +297,7 @@ input_placeholder = "Namespace-ModName, Author-Name"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 596.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 628.0
 hint_tooltip = "Comma-separated list of valid game versions."
 mouse_default_cursor_shape = 16
@@ -309,7 +310,7 @@ input_placeholder = "1.0.0, 1.2.0"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 632.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 664.0
 hint_tooltip = "Comma-separated list of ModLoader versions."
 mouse_default_cursor_shape = 16
@@ -323,7 +324,7 @@ input_placeholder = "5.0.0, 4.1.0"
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 668.0
-margin_right = 990.0
+margin_right = 1898.0
 margin_bottom = 700.0
 hint_tooltip = "Comma-separated list of tags that describe your mod.."
 mouse_default_cursor_shape = 16
@@ -338,20 +339,20 @@ input_placeholder = "Tag1, Tag2"
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Namespace" to="." method="_on_Namespace_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Version" to="." method="_on_Version_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/WebsiteUrl" to="." method="_on_WebsiteUrl_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Dependencies_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Dependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Description" to="." method="_on_Description_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Authors" to="." method="_on_Authors_value_changed"]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Incompatibilities_value_changed" binds= [ false ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Incompatibilities" to="." method="_on_Incompatibilities_value_changed" binds= [ false ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_OptionalDependencies_value_changed" binds= [ false ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/OptionalDependencies" to="." method="_on_Incompatibilities_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_Dependencies_value_changed" flags=3 binds= [ true ]]
-[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_LoadBefore_value_changed" binds= [ false ]]
+[connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/LoadBefore" to="." method="_on_OptionalDependencies_value_changed" flags=3 binds= [ true ]]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleGameVersions" to="." method="_on_CompatibleGameVersions_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/CompatibleModLoaderVersions" to="." method="_on_CompatibleModLoaderVersions_value_changed"]
 [connection signal="value_changed" from="VBox/Panel/ScrollContainer/InputVBox/Tags" to="." method="_on_Tags_value_changed"]

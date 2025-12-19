@@ -1,13 +1,16 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/create_mod/create_mod.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/mod_tool/interface/manifest_editor/manifest_editor.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/mod_tool/interface/panel/tools_panel.gd" type="Script" id=3]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=4]
+[ext_resource path="res://addons/mod_tool/interface/global/button_with_hint.tscn" type="PackedScene" id=5]
 [ext_resource path="res://addons/mod_tool/interface/global/input_options.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/mod_tool/interface/global/directory_selection/select_directory.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" type="PackedScene" id=8]
 [ext_resource path="res://addons/mod_tool/interface/global/button_with_hint.gd" type="Script" id=9]
+[ext_resource path="res://addons/mod_tool/interface/steam_workshop_editor/steam_workshop_editor.tscn" type="PackedScene" id=10]
+[ext_resource path="res://addons/mod_tool/interface/steam_workshop_editor/steam_workshop_upload_overview.tscn" type="PackedScene" id=11]
 
 [sub_resource type="StyleBoxEmpty" id=14]
 
@@ -59,13 +62,13 @@ margin_bottom = 4.0
 [node name="VSplit" type="VSplitContainer" parent="Panel"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 1025.0
-margin_bottom = 603.0
+margin_right = 1921.0
+margin_bottom = 1083.0
 
 [node name="TabContainer" type="TabContainer" parent="Panel/VSplit"]
 unique_name_in_owner = true
-margin_right = 1018.0
-margin_bottom = 450.0
+margin_right = 1914.0
+margin_bottom = 930.0
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 14 )
 tab_align = 0
@@ -73,15 +76,18 @@ tab_align = 0
 [node name="Manifest Editor" parent="Panel/VSplit/TabContainer" instance=ExtResource( 2 )]
 margin_top = 24.0
 
+[node name="Steam Workshop Editor" parent="Panel/VSplit/TabContainer" instance=ExtResource( 10 )]
+visible = false
+
 [node name="Export" type="PanelContainer" parent="Panel/VSplit"]
-margin_top = 462.0
-margin_right = 1018.0
-margin_bottom = 596.0
+margin_top = 942.0
+margin_right = 1914.0
+margin_bottom = 1076.0
 
 [node name="HSplit" type="HSplitContainer" parent="Panel/VSplit/Export"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 1011.0
+margin_right = 1907.0
 margin_bottom = 127.0
 
 [node name="Console" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
@@ -128,7 +134,7 @@ scroll_following = true
 selection_enabled = true
 
 [node name="Settings" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit"]
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 300, 0 )
 rect_pivot_offset = Vector2( -1685, 180 )
@@ -136,12 +142,12 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.5
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings"]
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 120.0
 size_flags_horizontal = 3
 
 [node name="Category" type="LineEdit" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 24.0
 mouse_filter = 2
 mouse_default_cursor_shape = 0
@@ -157,7 +163,7 @@ middle_mouse_paste_enabled = false
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 28.0
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 60.0
 hint_tooltip = "ID of the mod to be exported.
 Format: Namespace-ModName
@@ -188,7 +194,7 @@ input_options = PoolStringArray( "Steam Workshop", "Thunderstore" )
 unique_name_in_owner = true
 anchor_right = 0.0
 margin_top = 64.0
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 96.0
 hint_tooltip = "The directory to which the final mod zip is exported."
 mouse_default_cursor_shape = 16
@@ -200,33 +206,42 @@ input_text = "C:/Users/Kai/Documents/godot/Brotato/mods/Mods/exports"
 
 [node name="Align" type="HBoxContainer" parent="Panel/VSplit/Export/HSplit/Settings/VBox"]
 margin_top = 100.0
-margin_right = 692.0
+margin_right = 1588.0
 margin_bottom = 120.0
 alignment = 2
 
 [node name="ExportStatus" type="Label" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
 unique_name_in_owner = true
-margin_left = 318.0
+margin_left = 1297.0
 margin_top = 3.0
-margin_right = 604.0
+margin_right = 1407.0
 margin_bottom = 17.0
 text = "Export Status: OK"
 
 [node name="Export" type="Button" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
 unique_name_in_owner = true
-margin_left = 608.0
-margin_right = 692.0
+margin_left = 1411.0
+margin_right = 1495.0
 margin_bottom = 20.0
 hint_tooltip = "Creates a mod zip at the selected 'Export Path'."
 text = "Export Mod"
 script = ExtResource( 9 )
 hint_text = "Creates a mod zip at the selected 'Export Path'."
 
+[node name="Upload" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align" instance=ExtResource( 5 )]
+unique_name_in_owner = true
+margin_left = 1499.0
+margin_right = 1588.0
+hint_tooltip = "Upload your mod to the Steam Workshop"
+disabled = true
+text = "Upload Mod"
+hint_text = "Upload your mod to the Steam Workshop"
+
 [node name="UpdateArchiveModule" type="Button" parent="Panel/VSplit/Export/HSplit/Settings/VBox/Align"]
 unique_name_in_owner = true
 visible = false
-margin_left = 456.0
-margin_right = 692.0
+margin_left = 1352.0
+margin_right = 1588.0
 margin_bottom = 20.0
 text = "Update PowerShell Archive Module"
 
@@ -239,8 +254,8 @@ margin_bottom = 20.0
 text = " ? "
 
 [node name="VBox" type="VBoxContainer" parent="Panel/VSplit/Export/HSplit"]
-margin_left = 704.0
-margin_right = 1004.0
+margin_left = 1600.0
+margin_right = 1900.0
 margin_bottom = 120.0
 rect_min_size = Vector2( 300, 0 )
 
@@ -298,6 +313,20 @@ window_title = "Connect existing Mod"
 unique_name_in_owner = true
 window_title = "Select Mod Template"
 
+[node name="SteamWorkshopUploadOverview" parent="." instance=ExtResource( 11 )]
+unique_name_in_owner = true
+visible = false
+
+[node name="FileDialogSteamPreviewImage" type="FileDialog" parent="."]
+unique_name_in_owner = true
+margin_right = 600.0
+margin_bottom = 350.0
+rect_min_size = Vector2( 600, 350 )
+window_title = "Open a File"
+resizable = true
+mode = 0
+access = 2
+
 [node name="FileDialogExport" type="FileDialog" parent="."]
 unique_name_in_owner = true
 margin_right = 600.0
@@ -318,10 +347,15 @@ resizable = true
 mode = 2
 access = 2
 
+[connection signal="linked_mod" from="Panel/VSplit/TabContainer/Steam Workshop Editor" to="." method="_on_Steam_Workshop_Editor_linked_mod"]
+[connection signal="local_mod_selection_changed" from="Panel/VSplit/TabContainer/Steam Workshop Editor" to="." method="_on_Steam_Workshop_Editor_local_mod_selection_changed"]
+[connection signal="steam_inited" from="Panel/VSplit/TabContainer/Steam Workshop Editor" to="." method="_on_Steam_Workshop_Editor_steam_inited"]
+[connection signal="steam_preview_image_button_pressed" from="Panel/VSplit/TabContainer/Steam Workshop Editor" to="." method="_on_Steam_Workshop_Editor_steam_preview_image_button_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/CopyOutput" to="." method="_on_copy_output_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Console/HBox/ClearOutput" to="." method="_on_clear_output_pressed"]
 [connection signal="button_pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/ExportPath" to="." method="_on_ButtonExportPath_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Export" to="." method="_on_export_pressed"]
+[connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/Upload" to="." method="_on_Upload_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/UpdateArchiveModule" to="." method="_on_UpdateArchiveModule_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/Settings/VBox/Align/UpdateArchiveModuleInfo" to="." method="_on_UpdateArchiveModuleInfo_pressed"]
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/CreateMod" to="." method="_on_export_settings_create_new_mod_pressed"]
@@ -329,5 +363,7 @@ access = 2
 [connection signal="pressed" from="Panel/VSplit/Export/HSplit/VBox/LinkMod" to="." method="_on_LinkMod_pressed"]
 [connection signal="mod_dir_created" from="CreateMod" to="." method="_on_CreateMod_mod_dir_created"]
 [connection signal="dir_selected" from="SelectMod" to="." method="_on_SelectMod_dir_selected"]
+[connection signal="start_upload_pressed" from="SteamWorkshopUploadOverview" to="." method="_on_SteamWorkshopUploadOverview_start_upload_pressed"]
+[connection signal="file_selected" from="FileDialogSteamPreviewImage" to="." method="_on_FileDialogSteamPreviewImage_file_selected"]
 [connection signal="dir_selected" from="FileDialogExport" to="." method="_on_FileDialogExport_dir_selected"]
 [connection signal="dir_selected" from="FileDialogLinkMod" to="." method="_on_FileDialogLinkMod_dir_selected"]
