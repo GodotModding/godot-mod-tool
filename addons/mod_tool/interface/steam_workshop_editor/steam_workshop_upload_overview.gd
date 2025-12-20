@@ -30,17 +30,22 @@ var update_status_messages := [
 	"The item update is committing all changes."
 ]
 
-var upload_results := [
-	"Operation completed successfully",
-	"Generic failure",
-	"Either the provided app ID is invalid / doesn't match the consumer app ID of the item, ISteamUGC for the provided app ID on the Steam Workshop Configuration App Admin page is not enabled or the preview file is smaller than 16 bytes.",
+var upload_results := {
+	2: "Operation completed successfully.",
+	3: "Generic failure.",
+	8: "Either the provided app ID is invalid / doesn't match the consumer app ID of the item, ISteamUGC for the provided app ID on the Steam Workshop Configuration App Admin page is not enabled or the preview file is smaller than 16 bytes.",
+	9: "Either Failed to get the workshop info for the item, failed to read the preview file or provided content folder is not valid.",
+	15: "The user doesn't own a license for the provided app ID.",
+	25: "The preview image is too large, it must be less than 1 Megabyte; or there is not enough space available on the user's Steam Cloud.",
+	33: "Failed to aquire UGC Lock.",
+}
 
-]
 
 func init() -> void:
 	change_visibility(before_upload) # Chust to make sure
 	input_export_path.set_input_text(mod_tool_store.path_global_final_zip)
 	input_workshop_id.set_input_text(str(mod_tool_store.steam_selected_file_id))
+	rich_label_after_upload_error_message.clear()
 
 
 func change_visibility(node: Node) -> void:
@@ -72,13 +77,14 @@ func upload_failed(result: int, need_to_accept_tos: bool) -> void:
 		rich_label_after_upload_error_message.add_text("You have to accept the Steam Workshop TOS before you can continue.")
 		OS.shell_open("https://steamcommunity.com/workshop/workshoplegalagreement/")
 	else:
-		pass
+		rich_label_after_upload_error_message.add_text(upload_results[result])
 
 
 func _on_timer_upload_progress_timeout(update_handle: int) -> void:
 	var progress := Steam.getItemUpdateProgress(update_handle)
 	label_upload_current_state.text = update_status_messages[progress.status]
-	upload_progress_bar.value = stepify(progress.processed / progress.total, 0.01)
+	if progress.total > 0:
+		upload_progress_bar.value = stepify(progress.processed / progress.total, 0.01)
 
 
 func _on_ButtonOpenWorkshopPage_pressed() -> void:
@@ -95,4 +101,8 @@ func _on_ButtonStartUpload_pressed() -> void:
 
 
 func _on_ButtonUploadSuccess_pressed() -> void:
+	hide()
+
+
+func _on_ButtonAfterUploadError_pressed() -> void:
 	hide()

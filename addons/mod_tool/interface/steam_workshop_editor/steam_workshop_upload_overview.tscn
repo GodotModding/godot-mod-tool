@@ -4,6 +4,7 @@
 [ext_resource path="res://addons/mod_tool/interface/steam_workshop_editor/steam_workshop_upload_overview.gd" type="Script" id=2]
 
 [node name="SteamWorkshopUploadOverview" type="WindowDialog"]
+visible = true
 margin_right = 48.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 500, 300 )
@@ -26,17 +27,18 @@ margin_bottom = 275.0
 
 [node name="Space2" type="Control" parent="MarginContainer/HBoxContainer"]
 margin_right = 480.0
-margin_bottom = 3.0
+margin_bottom = 24.0
 size_flags_vertical = 3
 
 [node name="Content" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_top = 7.0
+margin_top = 28.0
 margin_right = 480.0
-margin_bottom = 242.0
+margin_bottom = 222.0
 
 [node name="BeforeUpload" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Content"]
 unique_name_in_owner = true
+visible = false
 margin_right = 480.0
 margin_bottom = 235.0
 custom_constants/separation = 20
@@ -137,6 +139,7 @@ unique_name_in_owner = true
 margin_top = 49.0
 margin_right = 480.0
 margin_bottom = 63.0
+max_value = 1.0
 
 [node name="LabelUploadCurrentState" type="Label" parent="MarginContainer/HBoxContainer/Content/DuringUpload/VBox"]
 unique_name_in_owner = true
@@ -149,9 +152,8 @@ align = 1
 [node name="AfterUploadSuccess" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Content"]
 unique_name_in_owner = true
 visible = false
-margin_top = 4.0
 margin_right = 480.0
-margin_bottom = 118.0
+margin_bottom = 114.0
 custom_constants/separation = 20
 
 [node name="LabelInfo" type="Label" parent="MarginContainer/HBoxContainer/Content/AfterUploadSuccess"]
@@ -190,7 +192,6 @@ text = "Awesome"
 
 [node name="AfterUploadError" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Content"]
 unique_name_in_owner = true
-visible = false
 margin_right = 480.0
 margin_bottom = 194.0
 custom_constants/separation = 20
@@ -198,7 +199,7 @@ custom_constants/separation = 20
 [node name="LabelInfo" type="Label" parent="MarginContainer/HBoxContainer/Content/AfterUploadError"]
 margin_right = 480.0
 margin_bottom = 14.0
-text = "Uploaded failed"
+text = "Upload failed"
 align = 1
 autowrap = true
 
@@ -226,13 +227,14 @@ margin_bottom = 194.0
 size_flags_horizontal = 4
 custom_constants/separation = 100
 
-[node name="ButtonStartUpload" type="Button" parent="MarginContainer/HBoxContainer/Content/AfterUploadError/Buttons"]
+[node name="ButtonAfterUploadError" type="Button" parent="MarginContainer/HBoxContainer/Content/AfterUploadError/Buttons"]
+unique_name_in_owner = true
 margin_right = 50.0
 margin_bottom = 20.0
 text = "Uh oh"
 
 [node name="Space" type="Control" parent="MarginContainer/HBoxContainer"]
-margin_top = 246.0
+margin_top = 226.0
 margin_right = 480.0
 margin_bottom = 250.0
 size_flags_vertical = 3
@@ -246,4 +248,4 @@ wait_time = 0.5
 [connection signal="pressed" from="MarginContainer/HBoxContainer/Content/BeforeUpload/Buttons/ButtonStartUpload" to="." method="_on_ButtonStartUpload_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/Content/AfterUploadSuccess/ButtonOpenWorkshopPage" to="." method="_on_ButtonOpenWorkshopPage_pressed"]
 [connection signal="pressed" from="MarginContainer/HBoxContainer/Content/AfterUploadSuccess/Buttons/ButtonUploadSuccess" to="." method="_on_ButtonUploadSuccess_pressed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/Content/AfterUploadError/Buttons/ButtonStartUpload" to="." method="_on_ButtonStartUpload_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/Content/AfterUploadError/Buttons/ButtonAfterUploadError" to="." method="_on_ButtonAfterUploadError_pressed"]
