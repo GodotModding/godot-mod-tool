@@ -220,10 +220,11 @@ func _on_LinkMod_left_value_changed(new_value, input_node) -> void:
 	if new_value.empty():
 		return
 
+	preview_image_preview.texture = preview_image_placeholder
+
 	if new_value == "new item":
 		input_title.set_input_text("")
 		input_description.set_input_text("")
-		preview_image_preview.texture = preview_image_placeholder
 		link_mod.set_button_disabled(true)
 		copy_manifest_data()
 		button_open_workshop_page.disabled = true
@@ -239,11 +240,16 @@ func _on_LinkMod_left_value_changed(new_value, input_node) -> void:
 	download_image(workshop_mods[file_id].preview_url, file_id)
 	input_title.set_input_text(mod_tool_store.steam_mod_data.title)
 	input_description.set_input_text(mod_tool_store.steam_mod_data.description)
-	link_mod.set_button_disabled(false)
 	button_open_workshop_page.disabled = false
+
+	if file_id == mod_tool_store.manifest_data.steam_workshop_id:
+		link_mod.set_button_disabled(true)
+	else:
+		link_mod.set_button_disabled(false)
 
 
 func _on_LinkMod_right_value_changed(new_value, input_node) -> void:
+	preview_image_preview.texture = preview_image_placeholder
 	emit_signal("local_mod_selection_changed", new_value)
 	# update_link_mod() is called after the manifest is loaded in tools_panel.gd
 
