@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://addons/mod_tool/interface/global/input_string.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string_multiline.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://addons/mod_tool/interface/steam_workshop_editor/preview_image.png" type="Texture" id=5]
 [ext_resource path="res://addons/mod_tool/interface/global/input_string_with_button.tscn" type="PackedScene" id=6]
 [ext_resource path="res://addons/mod_tool/interface/global/input_options_link.tscn" type="PackedScene" id=7]
+[ext_resource path="res://addons/mod_tool/interface/global/input_check_box_collection.tscn" type="PackedScene" id=8]
 
 [node name="Steam Workshop Editor" type="PanelContainer"]
 unique_name_in_owner = true
@@ -60,7 +61,7 @@ margin_bottom = 1015.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/ScrollContainer"]
 margin_right = 1892.0
-margin_bottom = 740.0
+margin_bottom = 796.0
 size_flags_horizontal = 3
 
 [node name="CategoryGame" type="LineEdit" parent="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer"]
@@ -210,6 +211,17 @@ key = "steam_workshop_description"
 label_text = "Description"
 hint_text = "If no Description is given the Mod Description from the Manifest is used."
 
+[node name="Tags" parent="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 8 )]
+unique_name_in_owner = true
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 744.0
+margin_right = 1892.0
+margin_bottom = 796.0
+key = "tags"
+label_text = "Tags"
+input_options = PoolStringArray( "Characters", "Weapons", "Items", "GUI", "New Mechanics", "Reworks", "Cheats", "Challenges", "Utilities", "Translations" )
+
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/InitSteam" to="." method="_on_InitSteam_pressed"]
 [connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/SteamAppID" to="." method="_on_SteamGameID_value_changed"]
 [connection signal="button_pressed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/LinkMod" to="." method="_on_LinkMod_button_pressed"]
@@ -220,3 +232,4 @@ hint_text = "If no Description is given the Mod Description from the Manifest is
 [connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/PreviewImage" to="." method="_on_PreviewImage_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/Title" to="." method="_on_Title_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/Description" to="." method="_on_Description_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/Tags" to="." method="_on_Tags_value_changed"]

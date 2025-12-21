@@ -17,6 +17,7 @@ onready var steam_state: CheckButton = $"%SteamState"
 onready var preview_image: HBoxContainer = $"%PreviewImage"
 onready var preview_image_preview: TextureRect = $"%PreviewImagePreview"
 onready var button_open_workshop_page: Button = $"%ButtonOpenWorkshopPage"
+onready var tags: HBoxContainer = $"%Tags"
 
 
 var steam = Engine.get_singleton("Steam")
@@ -32,6 +33,7 @@ func _ready() -> void:
 	link_mod.set_button_disabled(true)
 	update_local_mods()
 	button_open_workshop_page.disabled = true
+	init_mod_loader_tags()
 
 
 func update_local_mods() -> void:
@@ -112,6 +114,25 @@ func init_steam() -> void:
 			emit_signal("steam_inited")
 
 
+func init_mod_loader_tags() -> void:
+	var mod_loader_options: ModLoaderCurrentOptions = load("res://addons/mod_loader/options/options.tres")
+	var mod_loader_options_profile: ModLoaderOptionsProfile
+	if mod_loader_options.feature_override_options.has("editor"):
+		mod_loader_options_profile = mod_loader_options.feature_override_options.editor
+	else:
+		mod_loader_options_profile = mod_loader_options.current_options
+	tags.input_options = mod_loader_options_profile.steam_workshop_tags
+	tags.disable_all()
+
+
+func update_selected_tags() -> void:
+	for tag in tags.input_options:
+		if mod_tool_store.steam_mod_data.tags.has(tag):
+			tags.set_check_box_state(tag, true)
+		else:
+			tags.set_check_box_state(tag, false)
+
+
 func _on_SteamGameID_value_changed(new_value, input_node) -> void:
 	mod_tool_store.steam_app_id = new_value # TODO: Validate
 
@@ -156,6 +177,7 @@ func _on_ugc_query_completed(
 		workshop_mods[result.file_id].title = result.title
 		workshop_mods[result.file_id].description = result.description
 		workshop_mods[result.file_id].preview_url = preview_url
+		workshop_mods[result.file_id].tags = result.tags
 
 	var select_workshop_mods_selection := ["new item"]
 
@@ -166,6 +188,7 @@ func _on_ugc_query_completed(
 	link_mod.set_input_options_left(PoolStringArray(select_workshop_mods_selection))
 	update_link_mod()
 	link_mod.set_input_disabled_left(false)
+	tags.enable_all()
 
 	Steam.releaseQueryUGCRequest(_query_handle)
 
@@ -189,6 +212,10 @@ func _on_PreviewImage_value_changed(new_value, input_node) -> void:
 
 func _on_PreviewImage_button_pressed() -> void:
 	emit_signal("steam_preview_image_button_pressed")
+
+
+func _on_Tags_value_changed(new_value, input_node) -> void:
+	mod_tool_store.steam_mod_data.tags = PoolStringArray(new_value)
 
 
 func _http_request_completed(result, response_code, headers, body, url: String, http_request: HTTPRequest, file_id: int):
@@ -223,11 +250,13 @@ func _on_LinkMod_left_value_changed(new_value, input_node) -> void:
 	preview_image_preview.texture = preview_image_placeholder
 
 	if new_value == "new item":
+		mod_tool_store.steam_mod_data = ModToolSteamWorkshopData.new(-1, "", "")
 		input_title.set_input_text("")
 		input_description.set_input_text("")
 		link_mod.set_button_disabled(true)
 		copy_manifest_data()
 		button_open_workshop_page.disabled = true
+		update_selected_tags()
 		return
 
 	var file_id = int(new_value.split("-")[-1].strip_edges())
@@ -237,10 +266,14 @@ func _on_LinkMod_left_value_changed(new_value, input_node) -> void:
 		workshop_mods[file_id].title,
 		workshop_mods[file_id].description
 	)
-	download_image(workshop_mods[file_id].preview_url, file_id)
+	mod_tool_store.steam_mod_data.tags = PoolStringArray(workshop_mods[file_id].tags.split(","))
+	if not workshop_mods[file_id].preview_url.empty():
+		download_image(workshop_mods[file_id].preview_url, file_id)
 	input_title.set_input_text(mod_tool_store.steam_mod_data.title)
 	input_description.set_input_text(mod_tool_store.steam_mod_data.description)
 	button_open_workshop_page.disabled = false
+	update_selected_tags()
+
 
 	if file_id == mod_tool_store.manifest_data.steam_workshop_id:
 		link_mod.set_button_disabled(true)

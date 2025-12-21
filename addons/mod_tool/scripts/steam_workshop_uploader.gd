@@ -20,6 +20,7 @@ func update() -> int:
 	var update_handle := Steam.startItemUpdate(mod_tool_store.steam_app_id, mod_tool_store.steam_selected_file_id)
 	Steam.setItemTitle(update_handle, mod_tool_store.steam_mod_data.title)
 	Steam.setItemDescription(update_handle, mod_tool_store.steam_mod_data.description)
+	Steam.setItemTags(update_handle, mod_tool_store.steam_mod_data.tags)
 
 	if mod_tool_store.steam_mod_data.preview_file_path:
 		Steam.setItemPreview(update_handle, mod_tool_store.steam_mod_data.preview_file_path)
