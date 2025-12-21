@@ -39,7 +39,8 @@ margin_bottom = 40.0
 disabled = true
 text = "Steam Initilaized"
 
-[node name="InitSteam" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 4 )]
+[node name="ButtonInitSteam" parent="VBoxContainer/HBoxContainer" instance=ExtResource( 4 )]
+unique_name_in_owner = true
 margin_left = 1795.0
 margin_right = 1906.0
 margin_bottom = 40.0
@@ -222,7 +223,7 @@ key = "tags"
 label_text = "Tags"
 input_options = PoolStringArray( "Characters", "Weapons", "Items", "GUI", "New Mechanics", "Reworks", "Cheats", "Challenges", "Utilities", "Translations" )
 
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/InitSteam" to="." method="_on_InitSteam_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonInitSteam" to="." method="_on_InitSteam_pressed"]
 [connection signal="value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/SteamAppID" to="." method="_on_SteamGameID_value_changed"]
 [connection signal="button_pressed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/LinkMod" to="." method="_on_LinkMod_button_pressed"]
 [connection signal="left_value_changed" from="VBoxContainer/PanelContainer/ScrollContainer/VBoxContainer/LinkMod" to="." method="_on_LinkMod_left_value_changed"]

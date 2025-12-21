@@ -9,6 +9,7 @@ signal linked_mod
 
 onready var mod_tool_store = get_node_or_null("/root/ModToolStore")
 
+onready var button_init_steam: Button = $"%ButtonInitSteam"
 onready var input_steam_app_id: HBoxContainer = $"%SteamAppID"
 onready var input_title: HBoxContainer = $"%Title"
 onready var input_description: HBoxContainer = $"%Description"
@@ -53,7 +54,6 @@ func get_published_mods() -> void:
 		Steam.getAppID(),
 		1
 	)
-	print("Send UGC Request!")
 	Steam.setReturnLongDescription(query_handle, true)
 	Steam.sendQueryUGCRequest(query_handle)
 
@@ -63,13 +63,12 @@ func download_image(url: String, file_id: int) -> void:
 	add_child(http_request)
 	http_request.connect("request_completed", self, "_http_request_completed", [url, http_request, file_id])
 
-	var error = http_request.request(url)
-	if error != OK:
-		push_error("An error occurred in the HTTP request.")
+	var result = http_request.request(url)
+	if not result == OK:
+		ModToolUtils.output_error("An error(%s) occurred in the HTTP request." % str(result))
 
 
 func copy_manifest_data() -> void:
-	print("copy_manifest_data")
 	input_title.set_input_text(mod_tool_store.manifest_data.get_mod_id())
 	if mod_tool_store.manifest_data.description_rich.empty():
 		input_description.set_input_text(mod_tool_store.manifest_data.description)
@@ -104,14 +103,17 @@ func update_link_mod() -> void:
 func init_steam() -> void:
 	if steam:
 		var steam_init_result = Steam.steamInit(true, mod_tool_store.steam_app_id, true)
-		ModToolUtils.output_info("steam_init_result: %s" % steam_init_result)
 
 		if steam_init_result.status == 1:
+			ModToolUtils.output_info("Successfully initialized Steam!")
 			mod_tool_store.steam_initialized = true
 			steam_state.pressed = true
 			input_steam_app_id.set_input_text(str(Steam.getAppID()))
 			get_published_mods()
 			emit_signal("steam_inited")
+		else:
+			ModToolUtils.output_error("Failed to initialize Steam: %s" % steam_init_result)
+			button_init_steam.disabled = false
 
 
 func init_mod_loader_tags() -> void:
@@ -139,17 +141,16 @@ func _on_SteamGameID_value_changed(new_value, input_node) -> void:
 
 func _on_Title_value_changed(new_value, input_node) -> void:
 	if mod_tool_store.steam_mod_data:
-		print("Updated Title: %s" % new_value)
 		mod_tool_store.steam_mod_data.title = new_value # TODO: Validate
 
 
 func _on_Description_value_changed(new_value, input_node) -> void:
 	if mod_tool_store.steam_mod_data:
-		print("Updated Description: %s" % new_value)
 		mod_tool_store.steam_mod_data.description = new_value
 
 
 func _on_InitSteam_pressed() -> void:
+	button_init_steam.disabled = true
 	init_steam()
 
 

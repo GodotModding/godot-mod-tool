@@ -35,7 +35,6 @@ func clear() -> void:
 
 
 func set_check_box_state(tag: String, new_value: bool) -> void:
-	print("set_check_box_state tag: %s new_value: %s" % [tag, new_value])
 	var tag_check_box: CheckBox = check_boxes.get_node_or_null(tag)
 	if tag_check_box:
 		tag_check_box.pressed = new_value
@@ -52,7 +51,6 @@ func enable_all() -> void:
 
 
 func _on_check_box_pressed(check_box: CheckBox) -> void:
-	print("Checkbox pressed: %s" % check_box.pressed)
 	if check_box.pressed:
 		selected_options.push_back(check_box.text)
 	else:
