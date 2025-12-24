@@ -22,12 +22,17 @@ onready var manifest_editor := $"%Manifest Editor"
 onready var export_path := $"%ExportPath"
 onready var file_dialog_export := $"%FileDialogExport"
 onready var file_dialog_link_mod := $"%FileDialogLinkMod"
+onready var file_dialog_steam_preview_image := $"%FileDialogSteamPreviewImage"
 onready var export_status: Label = $"%ExportStatus"
 onready var export_button: Button = $"%Export"
 onready var update_archive_module: Button = $"%UpdateArchiveModule"
 onready var update_archive_module_info: Button = $"%UpdateArchiveModuleInfo"
+onready var upload_button: Button = $"%Upload"
+onready var steam_workshop_editor: PanelContainer = $"%Steam Workshop Editor"
+onready var steam_workshop_upload_overview: WindowDialog = $"%SteamWorkshopUploadOverview"
 
 onready var zip_builder: ModToolZipBuilder = ModToolZipBuilder.new()
+onready var steam_workshop: ModToolSteamWorkshopUploader = ModToolSteamWorkshopUploader.new(mod_tool_store)
 
 
 func _ready() -> void:
@@ -39,6 +44,7 @@ func _ready() -> void:
 	if mod_tool_store and _ModLoaderFile.file_exists(mod_tool_store.path_manifest):
 		manifest_editor.load_manifest()
 		manifest_editor.update_ui()
+		steam_workshop_editor.copy_manifest_data()
 
 	# Check powershell archive module version if on windows
 	if OS.has_feature("Windows") and not zip_builder.is_win_archive_module_fixed():
@@ -54,7 +60,12 @@ func _ready() -> void:
 		update_archive_module.hide()
 		update_archive_module_info.hide()
 
+	upload_button.disabled = true
+
 	_update_ui()
+
+	steam_workshop.connect("created", self, "_on_steam_workshop_item_created")
+	steam_workshop.connect("updated", self, "_on_steam_workshop_item_updated")
 
 
 func set_editor_plugin(plugin: EditorPlugin) -> void:
@@ -183,6 +194,9 @@ func _on_export_pressed() -> void:
 	if _is_mod_dir_valid():
 		zip_builder.build_zip(mod_tool_store)
 
+	if _ModLoaderFile.file_exists(mod_tool_store.path_global_final_zip):
+		upload_button.disabled = false
+
 
 func _on_clear_output_pressed() -> void:
 	label_output.clear()
@@ -206,6 +220,7 @@ func _on_CreateMod_mod_dir_created() -> void:
 	_update_ui()
 	manifest_editor.load_manifest()
 	manifest_editor.update_ui()
+	steam_workshop_editor.update_local_mods()
 
 
 func _on_ConnectMod_pressed() -> void:
@@ -229,6 +244,9 @@ func _on_ButtonExportPath_pressed() -> void:
 func _on_FileDialogExport_dir_selected(dir: String) -> void:
 	mod_tool_store.path_export_dir = dir
 	export_path.input_text = dir
+
+	if _ModLoaderFile.file_exists(mod_tool_store.path_global_final_zip):
+		upload_button.disabled = false
 
 	file_dialog_export.hide()
 
@@ -270,3 +288,59 @@ func _on_UpdateArchiveModule_pressed() -> void:
 
 func _on_UpdateArchiveModuleInfo_pressed() -> void:
 	OS.shell_open("https://github.com/GodotModding/godot-mod-tool/issues/127")
+
+
+func _on_Upload_pressed() -> void:
+	steam_workshop_upload_overview.init()
+	steam_workshop_upload_overview.popup_centered()
+
+
+func _on_Steam_Workshop_Editor_steam_inited() -> void:
+	if _ModLoaderFile.file_exists(mod_tool_store.path_global_final_zip):
+		upload_button.disabled = false
+
+
+func _on_FileDialogSteamPreviewImage_file_selected(path: String) -> void:
+	steam_workshop_editor.set_preview_image_path(path)
+	file_dialog_steam_preview_image.hide()
+
+
+func _on_Steam_Workshop_Editor_steam_preview_image_button_pressed() -> void:
+	file_dialog_steam_preview_image.popup_centered()
+
+
+func _on_Steam_Workshop_Editor_local_mod_selection_changed(name_mod_dir) -> void:
+	if manifest_editor:
+		load_mod(name_mod_dir)
+		_update_ui()
+		steam_workshop_editor.copy_manifest_data()
+		steam_workshop_editor.update_link_mod()
+
+
+func _on_Steam_Workshop_Editor_linked_mod() -> void:
+	manifest_editor.save_manifest_verbose()
+
+
+func _on_steam_workshop_item_created(result:int, file_id: int, need_to_accept_tos: bool) -> void:
+	if result == Steam.RESULT_OK:
+		manifest_editor.save_manifest()
+		steam_workshop_editor.update_link_mod()
+
+
+func _on_steam_workshop_item_updated(result:int, need_to_accept_tos: bool) -> void:
+	if result == Steam.RESULT_OK:
+		steam_workshop_upload_overview.upload_completed()
+	else:
+		steam_workshop_upload_overview.upload_failed(result, need_to_accept_tos)
+
+
+func _on_SteamWorkshopUploadOverview_start_upload_pressed() -> void:
+	if not _ModLoaderFile.file_exists(mod_tool_store.path_global_final_zip):
+		ModToolUtils.output_error("No exported mod zip found at \"%s\"." % mod_tool_store.path_global_final_zip)
+		return
+
+	if mod_tool_store.manifest_data.steam_workshop_id == -1:
+		steam_workshop.create()
+	else:
+		var upate_handle := steam_workshop.update()
+		steam_workshop_upload_overview.upload_started(upate_handle)

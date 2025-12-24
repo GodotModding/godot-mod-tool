@@ -149,3 +149,13 @@ static func get_flat_view_dict(p_dir := "res://", p_match := "", p_match_is_rege
 			# We've exhausted all files in this directory. Close the iterator.
 			dir.list_dir_end()
 	return data
+
+
+static func get_mod_dir_names() -> PoolStringArray:
+	var dir_paths := _ModLoaderPath.get_dir_paths_in_dir(ModLoaderMod.get_unpacked_dir())
+	var dir_names := []
+
+	for dir_path in dir_paths:
+		dir_names.push_back(dir_path.split('/')[-1])
+
+	return PoolStringArray(dir_names)

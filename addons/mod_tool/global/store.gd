@@ -31,9 +31,14 @@ var excluded_file_extensions: PoolStringArray = [".csv.import"]
 var path_mod_files := []
 var current_os := ""
 var auto_save_enabled := true
+var steam_app_id: int
+var steam_selected_file_id: int
+var steam_initialized := false
 
 # ModManifest instance
-var manifest_data : ModManifest
+var manifest_data: ModManifest
+
+var steam_mod_data := ModToolSteamWorkshopData.new(-1, "", "")
 
 
 func _ready() -> void:
@@ -74,6 +79,7 @@ func init(store: Dictionary) -> void:
 	path_global_temp_dir = ProjectSettings.globalize_path(path_temp_dir)
 	path_last_linked_mod = store.path_last_linked_mod
 	auto_save_enabled = store.auto_save_enabled
+	steam_app_id = store.steam_app_id
 
 	path_global_final_zip = "%s/%s.zip" % [path_global_export_dir, name_mod_dir]
 	excluded_file_extensions = [".csv.import"]
@@ -99,6 +105,7 @@ func save_store() -> void:
 		"excluded_file_extensions": excluded_file_extensions,
 		"path_last_linked_mod": path_last_linked_mod,
 		"auto_save_enabled": auto_save_enabled,
+		"steam_app_id": steam_app_id
 	}
 
 	var file := File.new()

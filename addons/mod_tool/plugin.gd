@@ -18,6 +18,10 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
+	var steam = Engine.get_singleton("Steam")
+
+	Steam.steamShutdown()
+
 	if mod_tool_store:
 		mod_tool_store.queue_free()
 
