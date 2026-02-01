@@ -22,11 +22,11 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 
 		# If it's a .import file
 		if path_mod_file.get_extension() == "import":
-			# Get the path to the imported file
-			var path_imported_file := _get_imported_file_path(path_mod_file)
-			# And add it to the mod file paths
-			if not path_imported_file == "":
-				mod_tool_store.path_mod_files.append(path_imported_file)
+			# Get the paths to the imported file
+			var path_imported_files := _get_imported_file_paths(path_mod_file)
+			# And add them to the mod file paths
+			for path in path_imported_files:
+				mod_tool_store.path_mod_files.append(path)
 
 	# Add each file to the mod zip
 	for i in mod_tool_store.path_mod_files.size():
@@ -49,7 +49,7 @@ func build_zip(mod_tool_store: ModToolStore) -> void:
 	OS.shell_open(file_manager_path)
 
 
-func _get_imported_file_path(import_file_path: String) -> String:
+func _get_imported_file_paths(import_file_path: String) -> Array[String]:
 	var config := ConfigFile.new()
 
 	# Open file
@@ -57,13 +57,20 @@ func _get_imported_file_path(import_file_path: String) -> String:
 	if error != OK:
 		ModToolUtils.output_error("Failed to load import file -> " + str(error))
 
-	# Get the path to the imported file
+	# Get all paths to the imported file
 	# Imported file example path:
 	# res://.godot/imported/ImportedPNG.png-eddc81c8e2d2fc90950be5862656c2b5.stex
-	var imported_file_path := config.get_value('remap', 'path', '') as String
+	var path_keys := Array(config.get_section_keys('remap')) \
+		.filter(func(key): return key.begins_with('path'))
 
-	if imported_file_path == '':
-		ModToolUtils.output_error("No remap path found in import file -> " + import_file_path)
-		return ''
+	# Grab all paths that are not empty
+	var valid_paths: Array[String] = []
+	for key in path_keys:
+		var imported_file_path := config.get_value('remap', key, '') as String
+		if imported_file_path != '':
+			valid_paths.append(imported_file_path)
 
-	return imported_file_path
+	if len(valid_paths) == 0:
+		ModToolUtils.output_error("No remap paths found in import file")
+
+	return valid_paths
