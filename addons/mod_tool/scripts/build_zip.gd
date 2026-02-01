@@ -61,11 +61,11 @@ func _get_imported_file_paths(import_file_path: String) -> Array[String]:
 	# Imported file example path:
 	# res://.godot/imported/ImportedPNG.png-eddc81c8e2d2fc90950be5862656c2b5.stex
 	var path_keys := Array(config.get_section_keys('remap')) \
-		.filter(func(key): return key.begins_with('path'))
+		.filter(func(key): return key.begins_with('path.'))
 
 	# Grab all paths that are not empty
 	var valid_paths: Array[String] = []
-	for key in path_keys:
+	for key in path_keys + ['path']:
 		var imported_file_path := config.get_value('remap', key, '') as String
 		if imported_file_path != '':
 			valid_paths.append(imported_file_path)
