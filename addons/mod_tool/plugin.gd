@@ -3,6 +3,7 @@ extends EditorPlugin
 
 var mod_tool_store
 var tools_panel
+var context_menu_file_system
 
 func _enter_tree() -> void:
 	mod_tool_store = preload("res://addons/mod_tool/global/store.gd").new() as ModToolStore
@@ -17,6 +18,9 @@ func _enter_tree() -> void:
 	_make_visible(false)
 	connect_to_script_editor()
 
+	context_menu_file_system = preload("res://addons/mod_tool/interface/file_system/file_system_context_actions.gd").new(mod_tool_store)
+	add_context_menu_plugin(EditorContextMenuPlugin.CONTEXT_SLOT_FILESYSTEM, context_menu_file_system)
+
 
 func _exit_tree() -> void:
 	if mod_tool_store:
@@ -24,6 +28,10 @@ func _exit_tree() -> void:
 
 	if tools_panel:
 		tools_panel.free()
+
+	if context_menu_file_system:
+		remove_context_menu_plugin(context_menu_file_system)
+		context_menu_file_system = null
 
 
 func _make_visible(visible):

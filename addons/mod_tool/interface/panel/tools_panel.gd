@@ -6,7 +6,6 @@ extends Control
 # passed from the EditorPlugin
 var mod_tool_store: ModToolStore
 var editor_plugin: EditorPlugin: set = set_editor_plugin
-var context_actions: FileSystemContextActions
 
 var tab_parent_bottom_panel: PanelContainer
 var log_richtext_label: RichTextLabel
@@ -55,11 +54,6 @@ func set_editor_plugin(plugin: EditorPlugin) -> void:
 	mod_tool_store.editor_plugin = editor_plugin
 	mod_tool_store.editor_file_system = EditorInterface.get_resource_filesystem()
 	mod_tool_store.editor_base_control = EditorInterface.get_base_control()
-
-	context_actions = FileSystemContextActions.new(
-		mod_tool_store,
-		EditorInterface.get_file_system_dock()
-	)
 
 
 func get_log_nodes() -> void:
