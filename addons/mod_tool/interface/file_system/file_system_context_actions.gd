@@ -1,5 +1,5 @@
 class_name FileSystemContextActions
-extends Control
+extends EditorContextMenuPlugin
 
 
 var mod_tool_store: ModToolStore
@@ -12,48 +12,29 @@ class ContextActionOptions:
 	var title: String
 	var meta_key: StringName
 	var tooltip: String
+	var action: Callable
 
-	func _init(_icon, _title, _meta_key, _tooltip) -> void:
+	func _init(_icon, _title, _meta_key, _tooltip, _action) -> void:
 		icon = _icon
 		title = _title
 		meta_key = _meta_key
 		tooltip = _tooltip
+		action = _action
 
 
-func _init(_mod_tool_store: ModToolStore, file_system_dock: FileSystemDock) -> void:
+func _init(_mod_tool_store: ModToolStore) -> void:
 	mod_tool_store = _mod_tool_store
-	connect_file_system_context_actions(file_system_dock)
 
 
-func connect_file_system_context_actions(file_system : FileSystemDock) -> void:
-	var file_tree : Tree
-	var file_list : ItemList
-
-	for node in file_system.get_children():
-		if is_instance_of(node, SplitContainer):
-			file_tree = node.get_child(0)
-			file_list = node.get_child(1).get_child(1)
-			break
-
-	for node in file_system.get_children():
-		var context_menu : PopupMenu = node as PopupMenu
-		if not context_menu:
-			continue
-
-		context_menu.id_pressed.connect(_on_file_system_context_menu_pressed.bind(context_menu))
-
-		var signals := context_menu.get_signal_connection_list(&"id_pressed")
-		if not signals.is_empty():
-			match signals[0]["callable"].get_method():
-				&"FileSystemDock::_tree_rmb_option":
-					context_menu.about_to_popup.connect(_on_file_tree_context_actions_about_to_popup.bind(context_menu, file_tree))
-				&"FileSystemDock::_file_list_rmb_option":
-					context_menu.about_to_popup.connect(_on_file_list_context_actions_about_to_popup.bind(context_menu, file_tree))
+func _popup_menu(paths: PackedStringArray) -> void:
+	var file_paths: Array[String] = []
+	file_paths.assign(paths)
+	add_custom_context_actions(file_paths)
 
 
 # Called every time the file system context actions pop up
 # Since they are dynamic, they are cleared every time and need to be refilled
-func add_custom_context_actions(context_menu: PopupMenu, file_paths: Array[String]) -> void:
+func add_custom_context_actions(file_paths: Array[String]) -> void:
 	if file_paths.is_empty():
 		return
 
@@ -71,25 +52,23 @@ func add_custom_context_actions(context_menu: PopupMenu, file_paths: Array[Strin
 				continue
 			asset_override_paths.append(file_path)
 
-	if script_paths.size() > 0 or asset_override_paths.size() > 0:
-		context_menu.add_separator()
 
 	if script_paths.size() > 0:
-		add_script_extension_context_action(context_menu, script_paths)
-		add_mod_hook_file_context_action(context_menu, script_paths)
+		add_script_extension_context_action(script_paths)
+		add_mod_hook_file_context_action(script_paths)
 
 		var script_with_hook_count := ModToolUtils.check_for_hooked_script(script_paths, mod_tool_store)
 
 		if script_with_hook_count == script_paths.size():
-			add_restore_context_action(context_menu, script_paths)
+			add_restore_context_action(script_paths)
 		elif script_with_hook_count > 0:
-			add_restore_context_action(context_menu, script_paths)
-			add_hooks_context_action(context_menu, script_paths)
+			add_restore_context_action(script_paths)
+			add_hooks_context_action(script_paths)
 		else:
-			add_hooks_context_action(context_menu, script_paths)
+			add_hooks_context_action(script_paths)
 
 	if asset_override_paths.size() > 0:
-		add_asset_override_context_action(context_menu, asset_override_paths)
+		add_asset_override_context_action(asset_override_paths)
 
 
 func create_script_extension(file_path: String) -> String:
@@ -254,12 +233,6 @@ func create_overwrite_asset(file_path: String) -> String:
 	return overwrite_path
 
 
-
-
-
-
-
-
 func add_asset_overwrite_to_overwrites(vanilla_asset_path: String, asset_path: String) -> void:
 	var overwrites_script_path: String = mod_tool_store.path_mod_dir.path_join("overwrites.gd")
 	var overwrites_script: GDScript
@@ -327,97 +300,88 @@ func _init():
 	ModToolUtils.output_info('Added asset overwrite "%s" to mod "%s"' % [asset_path, overwrites_script_path.get_base_dir().get_file()])
 
 
-func add_context_action(context_menu: PopupMenu, script_paths: Array[String], options: ContextActionOptions) -> void:
-	context_menu.add_icon_item(
-				mod_tool_store.editor_base_control.get_theme_icon(options.icon, &"EditorIcons"),
-				"ModTool: %s" % options.title + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else "")
-			)
-	context_menu.set_item_metadata(
-		context_menu.get_item_count() -1,
-		{ options.meta_key: script_paths }
-	)
-	context_menu.set_item_tooltip(
-		context_menu.get_item_count() -1,
-		"%s: \n%s" %
-		[options.tooltip, str(script_paths).trim_prefix("[").trim_suffix("]").replace(", ", "\n")]
-	)
+func add_context_action(script_paths: Array[String], options: ContextActionOptions) -> void:
+	add_context_menu_item(
+		"ModTool: %s" % options.title + ("s (%s)" % script_paths.size() if script_paths.size() > 1 else ""),
+		options.action,
+		mod_tool_store.editor_base_control.get_theme_icon(options.icon, &"EditorIcons")
+		)
 
 
-func add_script_extension_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+func add_script_extension_context_action(script_paths: Array[String]) -> void:
 	add_context_action(
-		context_menu,
 		script_paths,
 		ContextActionOptions.new(
 			&"ScriptExtend",
 			"Create Script Extension",
 			&"mod_tool_script_paths",
-			"Will add extensions for"
+			"Will add extensions for",
+			handle_script_extension_creation,
 		)
 	)
 
 
-func add_mod_hook_file_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+func add_mod_hook_file_context_action(script_paths: Array[String]) -> void:
 	add_context_action(
-		context_menu,
 		script_paths,
 		ContextActionOptions.new(
 			&"ScriptExtend",
 			"Create Mod Hook File",
 			&"mod_tool_mod_hook_file_paths",
-			"Will add mod hook files for"
+			"Will add mod hook files for",
+			handle_mod_hook_file_creation,
 		)
 	)
 
 
-func add_restore_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+func add_restore_context_action(script_paths: Array[String]) -> void:
 	var script_paths_to_restore: Array[String] = script_paths.filter(
 		func(script_path): return mod_tool_store.hooked_scripts.has(script_path)
 	)
 
 	add_context_action(
-		context_menu,
 		script_paths_to_restore,
 		ContextActionOptions.new(
 			&"UndoRedo",
 			"Restore script to unhooked version",
 			&"mod_tool_restore_script_paths",
-			"Will restore the non hooked script for"
+			"Will restore the non hooked script for",
+			handle_mod_hook_restore,
 		)
 	)
 
 
-func add_asset_override_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+func add_asset_override_context_action(script_paths: Array[String]) -> void:
 	add_context_action(
-		context_menu,
 		script_paths,
 		ContextActionOptions.new(
 			&"Override",
 			"Create Asset Overwrite",
 			&"mod_tool_override_paths",
-			"Will overwrite assets"
+			"Will overwrite assets",
+			handle_override_creation,
 		)
 	)
 
 
-func add_hooks_context_action(context_menu: PopupMenu, script_paths: Array[String]) -> void:
+func add_hooks_context_action(script_paths: Array[String]) -> void:
 	var script_paths_to_add_hooks: Array[String] = script_paths.filter(
 		func(script_path): return not mod_tool_store.hooked_scripts.has(script_path)
 	)
 
 	add_context_action(
-		context_menu,
 		script_paths_to_add_hooks,
 		ContextActionOptions.new(
 			&"ShaderGlobalsOverride",
 			"Convert script to hooked version",
 			&"mod_tool_hook_script_paths",
-			"Will add mod hooks for"
+			"Will add mod hooks for",
+			handle_mod_hook_creation,
 		)
 	)
 
 
-func handle_script_extension_creation(metadata: Dictionary) -> void:
-	var file_paths = metadata.mod_tool_script_paths
+func handle_script_extension_creation(file_paths: Array[String]) -> void:
 	var mod_main_path := mod_tool_store.path_mod_dir.path_join("mod_main.gd")
 
 	for file_path in file_paths:
@@ -436,8 +400,7 @@ func handle_script_extension_creation(metadata: Dictionary) -> void:
 	EditorInterface.set_main_screen_editor("Script")
 
 
-func handle_mod_hook_file_creation(metadata: Dictionary) -> void:
-	var file_paths = metadata.mod_tool_mod_hook_file_paths
+func handle_mod_hook_file_creation(file_paths: Array[String]) -> void:
 	var mod_main_path := mod_tool_store.path_mod_dir.path_join("mod_main.gd")
 
 	for file_path in file_paths:
@@ -456,8 +419,7 @@ func handle_mod_hook_file_creation(metadata: Dictionary) -> void:
 	EditorInterface.set_main_screen_editor("Script")
 
 
-func handle_override_creation(metadata: Dictionary) -> void:
-	var file_paths: Array[String] = metadata.mod_tool_override_paths
+func handle_override_creation(file_paths: Array[String]) -> void:
 	var current_script: GDScript
 	var overwrites_path := mod_tool_store.path_mod_dir.path_join("overwrites.gd")
 
@@ -477,8 +439,7 @@ func handle_override_creation(metadata: Dictionary) -> void:
 	EditorInterface.set_main_screen_editor("Script")
 
 
-func handle_mod_hook_creation(metadata: Dictionary) -> void:
-	var file_paths: Array[String] = metadata.mod_tool_hook_script_paths
+func handle_mod_hook_creation(file_paths: Array[String]) -> void:
 	var current_script: GDScript
 
 	for file_path in file_paths:
@@ -497,8 +458,7 @@ func handle_mod_hook_creation(metadata: Dictionary) -> void:
 		ModToolUtils.output_info("Mod Hooks created for script at path: \"%s\"" % file_path)
 
 
-func handle_mod_hook_restore(metadata: Dictionary) -> void:
-	var file_paths: Array[String] = metadata.mod_tool_restore_script_paths
+func handle_mod_hook_restore(file_paths: Array[String]) -> void:
 	var current_script: GDScript
 
 	for file_path in file_paths:
@@ -513,55 +473,3 @@ func handle_mod_hook_restore(metadata: Dictionary) -> void:
 
 		if current_script.resource_path == file_path:
 			ModToolUtils.reload_script(current_script, mod_tool_store)
-
-
-func _on_file_tree_context_actions_about_to_popup(context_menu: PopupMenu, tree: Tree) -> void:
-	var selected := tree.get_next_selected(null)
-	if not selected:		# Empty space was clicked
-		return
-
-	# multiselection
-	var file_paths: Array[String] = []
-	while selected:
-		var file_path = selected.get_metadata(0)
-		if file_path is String:
-			file_paths.append(file_path)
-		selected = tree.get_next_selected(selected)
-
-	add_custom_context_actions(context_menu, file_paths)
-
-
-func _on_file_list_context_actions_about_to_popup(context_menu: PopupMenu, list: ItemList) -> void:
-	if not list.get_selected_items().size() > 0:		# Empty space was clicked
-		return
-
-	var file_paths := []
-	for item_index in list.get_selected_items():
-		var file_path = list.get_item_metadata(item_index)
-		if file_path is String:
-			file_paths.append(file_path)
-
-	add_custom_context_actions(context_menu, file_paths)
-
-
-func _on_file_system_context_menu_pressed(id: int, context_menu: PopupMenu) -> void:
-	var file_paths: PackedStringArray
-	var metadata = context_menu.get_item_metadata(id)
-	var current_script: GDScript
-
-	# Ensure that the metadata is actually set by the ModTool
-	# Since id and index of the item can always change
-	if metadata is Dictionary and metadata.has("mod_tool_script_paths"):
-		handle_script_extension_creation(metadata)
-
-	if metadata is Dictionary and metadata.has("mod_tool_override_paths"):
-		handle_override_creation(metadata)
-
-	if metadata is Dictionary and metadata.has("mod_tool_mod_hook_file_paths"):
-		handle_mod_hook_file_creation(metadata)
-
-	if metadata is Dictionary and metadata.has("mod_tool_hook_script_paths"):
-		handle_mod_hook_creation(metadata)
-
-	if metadata is Dictionary and metadata.has("mod_tool_restore_script_paths"):
-		handle_mod_hook_restore(metadata)
